@@ -101,7 +101,7 @@ public class Player extends Entity {
 		return running;
 	}
 	
-	public void update(Camera cam, Engine engine) {
+	public void update(World world, Camera cam, Engine engine) {
 		//Movement
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
@@ -152,7 +152,7 @@ public class Player extends Entity {
 		
 		//Item
 		if(item != null)
-			item.update(engine, cam);
+			item.update(world, engine, cam);
 	}
 	
 	public static ArrayList<Player> getAllPlayers(){
