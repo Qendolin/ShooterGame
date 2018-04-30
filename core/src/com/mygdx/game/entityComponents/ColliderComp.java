@@ -13,7 +13,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
-public class CollisonComp implements Component {
+public class ColliderComp implements Component {
 	//TODO: Eine Klasse Impelmentieren die einen 2 collider von "bodx2D" enthält
 	private Body body;
 	private World world;
@@ -23,7 +23,8 @@ public class CollisonComp implements Component {
 	 * Erstellt einen Body mit Circle Shape.
 	 * @param radius
 	 */
-	public CollisonComp(World world, Vector2 pos, float radius, BodyType type) {
+	public ColliderComp(World world, Vector2 pos, float radius, BodyType type) {
+		this.world = world;
 		createBody(type, pos);
 		// Create a circle shape and set its radius to 6
 		CircleShape circle = new CircleShape();
@@ -38,7 +39,8 @@ public class CollisonComp implements Component {
 	 * @param sprite
 	 * @param type
 	 */
-	public CollisonComp(World world, Vector2 pos, Sprite sprite, BodyType type) {
+	public ColliderComp(World world, Vector2 pos, Sprite sprite, BodyType type) {
+		this.world = world;
 		createBody(type, pos);
 		// Create a circle shape and set its radius to 6
 		PolygonShape rect = new PolygonShape();
@@ -65,6 +67,10 @@ public class CollisonComp implements Component {
 
 		// Create our fixture and attach it to the body
 		fixture = body.createFixture(fixtureDef);
+	}
+	
+	public Body getBody() {
+		return body;
 	}
 	
 }

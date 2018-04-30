@@ -13,8 +13,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.entites.Player;
+import com.mygdx.game.entityComponents.ColliderComp;
 import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.entityComponents.VisualComp;
@@ -32,6 +34,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Player player;
 	private Camera cam;
 	private World world;
+	private Box2DDebugRenderer physicDebugRenderer;
 	
 	@Override
 	public void create () {
@@ -44,6 +47,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		Texture playerSpriteSheet = new Texture("george.png");
 		
 		world = new World(new Vector2(), false);
+		physicDebugRenderer =  new Box2DDebugRenderer();
 		
 		player = new Player(new SpriteSheetComp(playerSpriteSheet, 4, 4, true, new SpriteSheetSpriteGroup(0, 3, 0.1f, Player.ANIM_WALK_DOWN), 
 																			   new SpriteSheetSpriteGroup(4, 7, 0.1f, Player.ANIM_WALK_LEFT),
@@ -66,8 +70,11 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		player.update(cam, engine);
 		
+		//Dinge bewegen
 		updatePositions();
+		world.step(Gdx.graphics.getDeltaTime(), 4, 6); //Physik simulieren
 		
+		//Sprites rendern
 		cam.update();
 		Family renderableFamily = Family.one(VisualComp.class, PositionComp.class).get();
 		ImmutableArray<Entity> renderables = engine.getEntitiesFor(renderableFamily);
@@ -88,10 +95,11 @@ public class MyGdxGame extends ApplicationAdapter {
 				continue;
 			Vector2 pos = renderable.getComponent(PositionComp.class).pos;
 			sprite.setPosition(pos.x, pos.y);
-//			batch.draw(sprite, pos.x, pos.y);
 			sprite.draw(batch);
 		}
 		batch.end();
+		
+		physicDebugRenderer.render(world, cam.combined);
 	}
 
 	private void updatePositions() {
@@ -104,6 +112,10 @@ public class MyGdxGame extends ApplicationAdapter {
 				continue;
 			pos.x+=vel.x*Gdx.graphics.getDeltaTime();
 			pos.y+=vel.y*Gdx.graphics.getDeltaTime();
+//			CollisonComp colliderComp = movable.getComponent(CollisonComp.class);
+//			if(colliderComp != null) {
+//				colliderComp.getBody().
+//			}
 		}
 	}
 

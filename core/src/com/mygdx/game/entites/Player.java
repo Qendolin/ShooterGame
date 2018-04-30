@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.mygdx.game.entityComponents.CollisonComp;
+import com.mygdx.game.entityComponents.ColliderComp;
 import com.mygdx.game.entityComponents.FixedAccelerationComp;
 import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.VelocityComp;
@@ -39,7 +39,7 @@ public class Player extends Entity{
 	public VelocityComp velocityComp = new VelocityComp();
 	public PositionComp positionComp = new PositionComp();
 	public FixedAccelerationComp accelerationComp = new FixedAccelerationComp(playerBaseSpeed*5f);
-	public CollisonComp collisionComp;
+	public ColliderComp collisionComp;
 	
 	private boolean running = false;
 	private int playerDirection;
@@ -50,7 +50,7 @@ public class Player extends Entity{
 		add(velocityComp);
 		add(positionComp);
 		add(accelerationComp);
-		collisionComp = new CollisonComp(world, positionComp.pos, (visual.getHeight()+visual.getWidth())/4f, BodyType.DynamicBody);
+		collisionComp = new ColliderComp(world, positionComp.pos, (visual.getHeight()+visual.getWidth())/4f, BodyType.DynamicBody);
 		add(collisionComp);
 	}
 	
@@ -62,7 +62,7 @@ public class Player extends Entity{
 		add(position);
 		positionComp = position;
 		add(accelerationComp);
-		collisionComp = new CollisonComp(world, positionComp.pos, (visual.getHeight()+visual.getWidth())/4f, BodyType.DynamicBody);
+		collisionComp = new ColliderComp(world, positionComp.pos, (visual.getHeight()+visual.getWidth())/4f, BodyType.DynamicBody);
 		add(collisionComp);
 	}
 	
@@ -75,7 +75,7 @@ public class Player extends Entity{
 		positionComp = position;
 		add(acceleration);
 		accelerationComp = acceleration;
-		collisionComp = new CollisonComp(world, positionComp.pos, (visual.getHeight()+visual.getWidth())/4f, BodyType.DynamicBody);
+		collisionComp = new ColliderComp(world, positionComp.pos, (visual.getHeight()+visual.getWidth())/4f, BodyType.DynamicBody);
 		add(collisionComp);
 	}
 	
