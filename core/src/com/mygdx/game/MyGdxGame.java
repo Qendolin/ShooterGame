@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.entites.Boss1;
 import com.mygdx.game.entites.Player;
 import com.mygdx.game.entityComponents.ColliderComp;
 import com.mygdx.game.entityComponents.PositionComp;
@@ -34,6 +35,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private Engine engine;
 	private Player player;
+	private Boss1 boss1;
 	private Camera cam;
 	private World world;
 	private Box2DDebugRenderer physicDebugRenderer;
@@ -64,7 +66,15 @@ public class MyGdxGame extends ApplicationAdapter {
 																			   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)), world);
 		player.setItem(new Shotgun());
 		engine.addEntity(player);
-		
+		boss1 = new Boss1(new SpriteSheetComp(playerSpriteSheet, 4, 4, true, new SpriteSheetSpriteGroup(0, 3, 0.1f, Player.ANIM_WALK_DOWN), 
+				   new SpriteSheetSpriteGroup(4, 7, 0.1f, Player.ANIM_WALK_LEFT),
+				   new SpriteSheetSpriteGroup(8, 11, 0.1f, Player.ANIM_WALK_UP),
+				   new SpriteSheetSpriteGroup(12, 15, 0.1f, Player.ANIM_WALK_RIGHT),
+				   new SpriteSheetSpriteGroup(0, 3, 0.05f, Player.ANIM_RUN_DOWN), 
+				   new SpriteSheetSpriteGroup(4, 7, 0.05f, Player.ANIM_RUN_LEFT),
+				   new SpriteSheetSpriteGroup(8, 11, 0.05f, Player.ANIM_RUN_UP),
+				   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)), world, new PositionComp(new Vector2(50,50)));
+		engine.addEntity(boss1);
 		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.x = Gdx.graphics.getWidth()/2; 
 		cam.position.y = Gdx.graphics.getHeight()/2;
@@ -78,7 +88,7 @@ public class MyGdxGame extends ApplicationAdapter {
 //		updateTimouts();
 		
 		player.update(cam, engine);
-		
+		boss1.update();
 		//Dieser prozess kann vereinfacht werden
 		//Dinge bewegen
 		updatePositions();
