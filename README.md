@@ -3,6 +3,7 @@ Shooter mit LetsCyb und Stin
 
 # WICHTIG
 Alles immer kommentieren!!! Auch beim commit ein Kommentar mit den Änderungen hinzufügen!
+Außerdem wen etwas noch nicht fertig ist in deb code "//TODO: was zu tun ist" schreiben
 
 # Branches
 Master: Stabiele vollständige Versionen
