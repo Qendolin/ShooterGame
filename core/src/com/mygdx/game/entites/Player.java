@@ -1,5 +1,7 @@
 package com.mygdx.game.entites;
 
+import java.util.ArrayList;
+
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
@@ -30,6 +32,8 @@ public class Player extends Entity {
 	public static final String ANIM_RUN_LEFT = "runLeft";
 	public static final String ANIM_RUN_RIGHT = "runRight";
 	
+	public static ArrayList<Player> playerList = new ArrayList<>();
+	
 	public static float playerHitCircleRadiusMultiplyer = 0.8f;
 	public static float playerBaseSpeed = 150;
 	
@@ -54,6 +58,7 @@ public class Player extends Entity {
 		add(accelerationComp);
 		collisionComp = new ColliderComp(world, visualComp.getCenter(), ((visual.getHeight()+visual.getWidth())/4f)*playerHitCircleRadiusMultiplyer, BodyType.DynamicBody);
 		add(collisionComp);
+		playerList.add(this);
 	}
 	
 	public Player(SpriteSheetComp visual, VelocityComp velocity, PositionComp position, World world) {
@@ -66,6 +71,7 @@ public class Player extends Entity {
 		add(accelerationComp);
 		collisionComp = new ColliderComp(world, visualComp.getCenter(), ((visual.getHeight()+visual.getWidth())/4f)*playerHitCircleRadiusMultiplyer, BodyType.DynamicBody);
 		add(collisionComp);
+		playerList.add(this);
 	}
 	
 	public Player(SpriteSheetComp visual, VelocityComp velocity, PositionComp position, FixedAccelerationComp acceleration, World world) {
@@ -79,6 +85,7 @@ public class Player extends Entity {
 		accelerationComp = acceleration;
 		collisionComp = new ColliderComp(world, visualComp.getCenter(), ((visual.getHeight()+visual.getWidth())/4f)*playerHitCircleRadiusMultiplyer, BodyType.DynamicBody);
 		add(collisionComp);
+		playerList.add(this);
 	}
 	
 	public void setItem(Item item) {
@@ -147,4 +154,9 @@ public class Player extends Entity {
 		if(item != null)
 			item.update(engine, cam);
 	}
+	
+	public static ArrayList<Player> getAllPlayers(){
+		return playerList;
+	}
+	
 }

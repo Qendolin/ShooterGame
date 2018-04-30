@@ -6,7 +6,9 @@ import com.mygdx.game.items.*;
 
 public enum EnemyTypes {
 
+	// Bosse mit HP/Geschwindigkeit/Guns
 	Boss1(new VelocityComp(),new HealthComp(1000),new MachineGun());
+	/* Mehrere Typen von Bossen müssen noch erstellt werden*/
 	
 	VelocityComp velocity;
 	HealthComp health;
