@@ -2,7 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6/"/>
+<<<<<<< HEAD
 	<classpathentry kind="src" path="/ShooterGame-core"/>
+=======
+>>>>>>> stable
 	<classpathentry kind="lib" path="C:/Users/ICH/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-lwjgl/1.9.8/b7c138f14ed67ad830ae7597da3d86ae02b20eee/gdx-backend-lwjgl-1.9.8.jar" sourcepath="C:/Users/ICH/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-lwjgl/1.9.8/680fd8ed8d823a1510d4bea1ab59248934d1deca/gdx-backend-lwjgl-1.9.8-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Users/ICH/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-platform/1.9.8/604a2ef2c7c92a5900114757cbd3fb4dcbb8270c/gdx-platform-1.9.8-natives-desktop.jar"/>
 	<classpathentry kind="lib" path="C:/Users/ICH/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d-platform/1.9.8/3195b56f82751d7cd7de85edb6824d17bf479781/gdx-box2d-platform-1.9.8-natives-desktop.jar"/>
@@ -31,5 +34,9 @@
 	<classpathentry kind="lib" path="C:/Users/ICH/.gradle/caches/modules-2/files-2.1/net.java.jinput/jinput-platform/2.0.5/385ee093e01f587f30ee1c8a2ee7d408fd732e16/jinput-platform-2.0.5-natives-windows.jar"/>
 	<classpathentry kind="lib" path="C:/Users/ICH/.gradle/caches/modules-2/files-2.1/net.java.jinput/jinput-platform/2.0.5/53f9c919f34d2ca9de8c51fc4e1e8282029a9232/jinput-platform-2.0.5-natives-osx.jar"/>
 	<classpathentry kind="src" path="assets"/>
+<<<<<<< HEAD
+=======
+	<classpathentry combineaccessrules="false" kind="src" path="/ShooterGame-core"/>
+>>>>>>> stable
 	<classpathentry kind="output" path="bin"/>
 </classpath>
