@@ -18,6 +18,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.entites.Player;
 import com.mygdx.game.entityComponents.ColliderComp;
 import com.mygdx.game.entityComponents.PositionComp;
+import com.mygdx.game.entityComponents.RotationComp;
 import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.entityComponents.VisualComp;
 import com.mygdx.game.entityComponents.visualComps.AnimationComp;
@@ -138,7 +139,11 @@ public class MyGdxGame extends ApplicationAdapter {
 			pos.y+=vel.y*Gdx.graphics.getDeltaTime();
 			ColliderComp colliderComp = movable.getComponent(ColliderComp.class);
 			if(colliderComp != null) {
-				colliderComp.getBody().setTransform(pos, 0);
+				RotationComp rotation = movable.getComponent(RotationComp.class);
+				if(rotation != null)
+					colliderComp.getBody().setTransform(pos, rotation.asRadians());
+				else
+					colliderComp.getBody().setTransform(pos, 0);
 			}
 		}
 	}
