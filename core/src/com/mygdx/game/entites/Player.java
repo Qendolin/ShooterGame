@@ -9,6 +9,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.mygdx.game.entityComponents.CollisonComp;
 import com.mygdx.game.entityComponents.FixedAccelerationComp;
 import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.VelocityComp;
@@ -22,6 +25,10 @@ public class Player extends Entity{
 	public static final String ANIM_WALK_UP = "walkUp";
 	public static final String ANIM_WALK_LEFT = "walkLeft";
 	public static final String ANIM_WALK_RIGHT = "walkRight";
+	public static final String ANIM_RUN_DOWN = "runDown";
+	public static final String ANIM_RUN_UP = "runUp";
+	public static final String ANIM_RUN_LEFT = "runLeft";
+	public static final String ANIM_RUN_RIGHT = "runRight";
 	
 	public static float playerBaseSpeed = 150;
 	public float currentPlayerSpeed = playerBaseSpeed;
@@ -32,17 +39,22 @@ public class Player extends Entity{
 	public VelocityComp velocityComp = new VelocityComp();
 	public PositionComp positionComp = new PositionComp();
 	public FixedAccelerationComp accelerationComp = new FixedAccelerationComp(playerBaseSpeed*5f);
+	public CollisonComp collisionComp;
+	
+	private boolean running = false;
 	private int playerDirection;
 	
-	public Player(SpriteSheetComp visual) {
+	public Player(SpriteSheetComp visual, World world) {
 		add(visual);
 		visualComp=visual;
 		add(velocityComp);
 		add(positionComp);
 		add(accelerationComp);
+		collisionComp = new CollisonComp(world, positionComp.pos, (visual.getHeight()+visual.getWidth())/4f, BodyType.DynamicBody);
+		add(collisionComp);
 	}
 	
-	public Player(SpriteSheetComp visual, VelocityComp velocity, PositionComp position) {
+	public Player(SpriteSheetComp visual, VelocityComp velocity, PositionComp position, World world) {
 		add(visual);
 		visualComp = visual;
 		add(velocity);
@@ -50,9 +62,11 @@ public class Player extends Entity{
 		add(position);
 		positionComp = position;
 		add(accelerationComp);
+		collisionComp = new CollisonComp(world, positionComp.pos, (visual.getHeight()+visual.getWidth())/4f, BodyType.DynamicBody);
+		add(collisionComp);
 	}
 	
-	public Player(SpriteSheetComp visual, VelocityComp velocity, PositionComp position, FixedAccelerationComp acceleration) {
+	public Player(SpriteSheetComp visual, VelocityComp velocity, PositionComp position, FixedAccelerationComp acceleration, World world) {
 		add(visual);
 		visualComp = visual;
 		add(velocity);
@@ -61,6 +75,8 @@ public class Player extends Entity{
 		positionComp = position;
 		add(acceleration);
 		accelerationComp = acceleration;
+		collisionComp = new CollisonComp(world, positionComp.pos, (visual.getHeight()+visual.getWidth())/4f, BodyType.DynamicBody);
+		add(collisionComp);
 	}
 	
 	public void setItem(Item item) {
@@ -72,13 +88,21 @@ public class Player extends Entity{
 		return item;
 	}
 	
+	public boolean isRunning() {
+		return running;
+	}
+	
 	public void update(Camera cam, Engine engine) {
 		//Movement
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+		if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
 			currentPlayerSpeed = playerBaseSpeed * 1.8f;
-		else 
+			running = true;
+		}
+		else {
 			currentPlayerSpeed = playerBaseSpeed;
+			running = false;
+		}
 		
 		
 		Vector2 newVel = new Vector2();
@@ -98,16 +122,16 @@ public class Player extends Entity{
 		playerDirection = newVel.isZero() ? playerDirection : Math.round(newVel.angle() / 90f - 0.5f);
 		switch(playerDirection) {
 			case(0):
-				visualComp.currentAnimation = ANIM_WALK_RIGHT;
+				visualComp.currentAnimation = running ? ANIM_RUN_RIGHT : ANIM_WALK_RIGHT;
 				break;
 			case(1):
-				visualComp.currentAnimation = ANIM_WALK_UP;
+				visualComp.currentAnimation = running ? ANIM_RUN_UP : ANIM_WALK_UP;
 				break;
 			case(2):
-				visualComp.currentAnimation = ANIM_WALK_LEFT;
+				visualComp.currentAnimation = running ? ANIM_RUN_LEFT : ANIM_WALK_LEFT;
 				break;
 			case(3):
-				visualComp.currentAnimation = ANIM_WALK_DOWN;
+				visualComp.currentAnimation = running ? ANIM_RUN_DOWN : ANIM_WALK_DOWN;
 				break;
 		}
 		

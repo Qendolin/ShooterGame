@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.entites.Player;
 import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.VelocityComp;
@@ -30,6 +31,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Engine engine;
 	private Player player;
 	private Camera cam;
+	private World world;
 	
 	@Override
 	public void create () {
@@ -40,10 +42,17 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		batch = new SpriteBatch();
 		Texture playerSpriteSheet = new Texture("george.png");
+		
+		world = new World(new Vector2(), false);
+		
 		player = new Player(new SpriteSheetComp(playerSpriteSheet, 4, 4, true, new SpriteSheetSpriteGroup(0, 3, 0.1f, Player.ANIM_WALK_DOWN), 
 																			   new SpriteSheetSpriteGroup(4, 7, 0.1f, Player.ANIM_WALK_LEFT),
 																			   new SpriteSheetSpriteGroup(8, 11, 0.1f, Player.ANIM_WALK_UP),
-																			   new SpriteSheetSpriteGroup(12, 15, 0.1f, Player.ANIM_WALK_RIGHT)));
+																			   new SpriteSheetSpriteGroup(12, 15, 0.1f, Player.ANIM_WALK_RIGHT),
+																			   new SpriteSheetSpriteGroup(0, 3, 0.05f, Player.ANIM_WALK_DOWN), 
+																			   new SpriteSheetSpriteGroup(4, 7, 0.05f, Player.ANIM_WALK_LEFT),
+																			   new SpriteSheetSpriteGroup(8, 11, 0.05f, Player.ANIM_WALK_UP),
+																			   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_WALK_RIGHT)), world);
 		player.setItem(new Pistol());
 		engine.addEntity(player);
 		
@@ -60,7 +69,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		updatePositions();
 		
 		cam.update();
-		@SuppressWarnings("unchecked")
 		Family renderableFamily = Family.one(VisualComp.class, PositionComp.class).get();
 		ImmutableArray<Entity> renderables = engine.getEntitiesFor(renderableFamily);
 		Gdx.gl.glClearColor(1, 1, 1, 1);
@@ -87,7 +95,6 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 
 	private void updatePositions() {
-		@SuppressWarnings("unchecked")
 		Family movableFamily = Family.one(VelocityComp.class, PositionComp.class).get();
 		ImmutableArray<Entity> movables = engine.getEntitiesFor(movableFamily);
 		for(Entity movable : movables) {
@@ -103,7 +110,6 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		@SuppressWarnings("unchecked")
 		Family spriteFamily = Family.one(SpriteComp.class).get();
 		ImmutableArray<Entity> sprites = engine.getEntitiesFor(spriteFamily);
 		for(Entity spriteEntity : sprites) {
