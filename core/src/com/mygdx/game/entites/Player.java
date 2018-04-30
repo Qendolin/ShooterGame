@@ -19,7 +19,7 @@ import com.mygdx.game.entityComponents.visualComps.SpriteComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteSheetComp;
 import com.mygdx.game.items.Item;
 
-public class Player extends Entity{
+public class Player extends Entity {
 
 	public static final String ANIM_WALK_DOWN = "walkDown";
 	public static final String ANIM_WALK_UP = "walkUp";
@@ -30,7 +30,9 @@ public class Player extends Entity{
 	public static final String ANIM_RUN_LEFT = "runLeft";
 	public static final String ANIM_RUN_RIGHT = "runRight";
 	
+	public static float playerHitCircleRadiusMultiplyer = 0.8f;
 	public static float playerBaseSpeed = 150;
+	
 	public float currentPlayerSpeed = playerBaseSpeed;
 	
 	private Item item;
@@ -50,7 +52,7 @@ public class Player extends Entity{
 		add(velocityComp);
 		add(positionComp);
 		add(accelerationComp);
-		collisionComp = new ColliderComp(world, positionComp.pos, (visual.getHeight()+visual.getWidth())/4f, BodyType.DynamicBody);
+		collisionComp = new ColliderComp(world, visualComp.getCenter(), ((visual.getHeight()+visual.getWidth())/4f)*playerHitCircleRadiusMultiplyer, BodyType.DynamicBody);
 		add(collisionComp);
 	}
 	
@@ -62,7 +64,7 @@ public class Player extends Entity{
 		add(position);
 		positionComp = position;
 		add(accelerationComp);
-		collisionComp = new ColliderComp(world, positionComp.pos, (visual.getHeight()+visual.getWidth())/4f, BodyType.DynamicBody);
+		collisionComp = new ColliderComp(world, visualComp.getCenter(), ((visual.getHeight()+visual.getWidth())/4f)*playerHitCircleRadiusMultiplyer, BodyType.DynamicBody);
 		add(collisionComp);
 	}
 	
@@ -75,7 +77,7 @@ public class Player extends Entity{
 		positionComp = position;
 		add(acceleration);
 		accelerationComp = acceleration;
-		collisionComp = new ColliderComp(world, positionComp.pos, (visual.getHeight()+visual.getWidth())/4f, BodyType.DynamicBody);
+		collisionComp = new ColliderComp(world, visualComp.getCenter(), ((visual.getHeight()+visual.getWidth())/4f)*playerHitCircleRadiusMultiplyer, BodyType.DynamicBody);
 		add(collisionComp);
 	}
 	

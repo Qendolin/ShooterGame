@@ -29,6 +29,7 @@ public class ColliderComp implements Component {
 		// Create a circle shape and set its radius to 6
 		CircleShape circle = new CircleShape();
 		circle.setRadius(radius);
+		circle.setPosition(pos);
 		
 		setShape(circle);
 	}
@@ -44,7 +45,7 @@ public class ColliderComp implements Component {
 		createBody(type, pos);
 		// Create a circle shape and set its radius to 6
 		PolygonShape rect = new PolygonShape();
-		rect.setAsBox(sprite.getWidth(), sprite.getHeight());
+		rect.setAsBox(sprite.getWidth()/2f, sprite.getHeight()/2f);
 		
 		setShape(rect);
 	}
@@ -67,6 +68,10 @@ public class ColliderComp implements Component {
 
 		// Create our fixture and attach it to the body
 		fixture = body.createFixture(fixtureDef);
+	}
+	
+	public Vector2 getPosition() {
+		return body.getTransform().getPosition();
 	}
 	
 	public Body getBody() {

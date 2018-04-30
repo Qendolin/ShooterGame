@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.entites.Player;
@@ -26,6 +27,9 @@ import com.mygdx.game.entityComponents.visualComps.SpriteSheetComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteSheetSpriteGroup;
 import com.mygdx.game.items.MachineGun;
 import com.mygdx.game.items.Pistol;
+import com.mygdx.game.utils.WorldBorderFactory;
+
+import javafx.geometry.Pos;
 
 public class MyGdxGame extends ApplicationAdapter {
 	
@@ -39,7 +43,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void create () {
 		
-		Gdx.graphics.setWindowedMode(1600, 900);
+		Gdx.graphics.setWindowedMode(1600/2, 900/2);
 		
 		engine = new Engine();
 		
@@ -47,16 +51,19 @@ public class MyGdxGame extends ApplicationAdapter {
 		Texture playerSpriteSheet = new Texture("george.png");
 		
 		world = new World(new Vector2(), false);
+		
+		WorldBorderFactory.createBorder(world, new Vector2(), 1000, 1000);
+		
 		physicDebugRenderer =  new Box2DDebugRenderer();
 		
 		player = new Player(new SpriteSheetComp(playerSpriteSheet, 4, 4, true, new SpriteSheetSpriteGroup(0, 3, 0.1f, Player.ANIM_WALK_DOWN), 
 																			   new SpriteSheetSpriteGroup(4, 7, 0.1f, Player.ANIM_WALK_LEFT),
 																			   new SpriteSheetSpriteGroup(8, 11, 0.1f, Player.ANIM_WALK_UP),
 																			   new SpriteSheetSpriteGroup(12, 15, 0.1f, Player.ANIM_WALK_RIGHT),
-																			   new SpriteSheetSpriteGroup(0, 3, 0.05f, Player.ANIM_WALK_DOWN), 
-																			   new SpriteSheetSpriteGroup(4, 7, 0.05f, Player.ANIM_WALK_LEFT),
-																			   new SpriteSheetSpriteGroup(8, 11, 0.05f, Player.ANIM_WALK_UP),
-																			   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_WALK_RIGHT)), world);
+																			   new SpriteSheetSpriteGroup(0, 3, 0.05f, Player.ANIM_RUN_DOWN), 
+																			   new SpriteSheetSpriteGroup(4, 7, 0.05f, Player.ANIM_RUN_LEFT),
+																			   new SpriteSheetSpriteGroup(8, 11, 0.05f, Player.ANIM_RUN_UP),
+																			   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)), world);
 		player.setItem(new Pistol());
 		engine.addEntity(player);
 		
@@ -70,9 +77,18 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		player.update(cam, engine);
 		
+		//Dieser prozess kann vereinfacht werden
 		//Dinge bewegen
 		updatePositions();
-		world.step(Gdx.graphics.getDeltaTime(), 4, 6); //Physik simulieren
+		//Physik simulieren
+		world.step(Gdx.graphics.getDeltaTime(), 4, 6);
+		//Simulierte physik anwenden
+		fixPositions();
+		
+		//Camera bewegen
+		//Die kontrolle der kamera gehört nicht in die spieler klasse!! (Weil man z.b. mehrer spieler haben kann)
+		cam.position.x = player.positionComp.pos.x;
+		cam.position.y = player.positionComp.pos.y;
 		
 		//Sprites rendern
 		cam.update();
@@ -94,12 +110,24 @@ public class MyGdxGame extends ApplicationAdapter {
 			if(sprite == null)
 				continue;
 			Vector2 pos = renderable.getComponent(PositionComp.class).pos;
-			sprite.setPosition(pos.x, pos.y);
+			//Zentrieren
+			sprite.setPosition(pos.x-sprite.getWidth()/2f, pos.y-sprite.getHeight()/2f);
 			sprite.draw(batch);
 		}
 		batch.end();
 		
 		physicDebugRenderer.render(world, cam.combined);
+	}
+
+	private void fixPositions() {
+		Family colliderFamily = Family.one(ColliderComp.class, PositionComp.class).get();
+		ImmutableArray<Entity> colliders = engine.getEntitiesFor(colliderFamily);
+		for(Entity collider : colliders) {
+			ColliderComp colliderComp = collider.getComponent(ColliderComp.class);
+			PositionComp positionComp = collider.getComponent(PositionComp.class);
+			if(colliderComp != null && positionComp != null)
+				positionComp.pos = new Vector2(colliderComp.getPosition());
+		}
 	}
 
 	private void updatePositions() {
@@ -112,10 +140,10 @@ public class MyGdxGame extends ApplicationAdapter {
 				continue;
 			pos.x+=vel.x*Gdx.graphics.getDeltaTime();
 			pos.y+=vel.y*Gdx.graphics.getDeltaTime();
-//			CollisonComp colliderComp = movable.getComponent(CollisonComp.class);
-//			if(colliderComp != null) {
-//				colliderComp.getBody().
-//			}
+			ColliderComp colliderComp = movable.getComponent(ColliderComp.class);
+			if(colliderComp != null) {
+				colliderComp.getBody().setTransform(pos, 0);
+			}
 		}
 	}
 

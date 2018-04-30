@@ -56,6 +56,10 @@ public class SpriteSheetComp extends VisualComp {
 	 */
 	public void setCurrentAnimationFrame(int frame) {
 		SpriteSheetSpriteGroup anim = animationGroups.get(currentAnimation);
+		if(anim == null) {
+			new Exception("Invalid animation group: \""+currentAnimation+"\"").printStackTrace();
+			return;
+		}
 		currentFrame = anim.start + (frame % (anim.end - anim.start + 1));
 	}
 	
