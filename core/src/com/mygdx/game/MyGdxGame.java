@@ -76,7 +76,7 @@ public class MyGdxGame extends ApplicationAdapter {
 				   new SpriteSheetSpriteGroup(0, 3, 0.05f, Player.ANIM_RUN_DOWN), 
 				   new SpriteSheetSpriteGroup(4, 7, 0.05f, Player.ANIM_RUN_LEFT),
 				   new SpriteSheetSpriteGroup(8, 11, 0.05f, Player.ANIM_RUN_UP),
-				   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)), world);
+				   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)), world, new PositionComp(new Vector2()));
 		engine.addEntity(boss1);
 		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.x = Gdx.graphics.getWidth()/2; 
@@ -91,7 +91,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		updateTimouts();
 		
 		player.update(world, cam, engine);
-//		boss1.update();
+		boss1.update();
 		
 		//Dieser prozess kann vereinfacht werden
 		//Dinge bewegen
