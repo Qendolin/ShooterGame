@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.entites.Player;
@@ -25,11 +24,8 @@ import com.mygdx.game.entityComponents.visualComps.AnimationComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteSheetComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteSheetSpriteGroup;
-import com.mygdx.game.items.MachineGun;
 import com.mygdx.game.items.Pistol;
 import com.mygdx.game.utils.WorldBorderFactory;
-
-import javafx.geometry.Pos;
 
 public class MyGdxGame extends ApplicationAdapter {
 	
