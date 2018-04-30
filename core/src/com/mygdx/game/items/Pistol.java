@@ -16,7 +16,7 @@ import com.mygdx.game.entityComponents.visualComps.SpriteComp;
 public class Pistol extends Gun {
 
 	public Pistol() {
-		super("Pistol", 1.5f, 20, 50, 10, 10, 1500, false);
+		super("Pistol", 1.5f, 50, 50, 10, 10, 1500, false, 0);
 	}
 
 	@Override
@@ -27,8 +27,8 @@ public class Pistol extends Gun {
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) && Gdx.input.justTouched()) {
 			Vector3 mousePos = cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 			
-			Entity shot = new Entity();
-			shot.add(new VelocityComp(getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y))));
+			Projectile shot = new Projectile(engine, 2, 5000/bulletSpeed);
+			shot.add(new VelocityComp(getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y), true)));
 			Sprite shotSprite = new Sprite(new Texture("badlogic.jpg"));
 			shotSprite.setSize(25f, 25f);
 			shot.add(new PositionComp(getOwnerCenter().sub((shotSprite.getWidth()*shotSprite.getScaleX())/2f, (shotSprite.getHeight()*shotSprite.getScaleY())/2f)));

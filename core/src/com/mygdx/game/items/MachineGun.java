@@ -16,7 +16,7 @@ import com.mygdx.game.entityComponents.visualComps.SpriteComp;
 public class MachineGun extends Gun {
 
 	public MachineGun() {
-		super("MG", 5.f, 200, 300, 50, 10f, 500, true);
+		super("MG", 5.f, 300, 300, 50, 10f, 500, true, 5);
 	}
 
 	@Override
@@ -28,8 +28,9 @@ public class MachineGun extends Gun {
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
 			Vector3 mousePos = cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 
-			Entity shot = new Entity();
-			shot.add(new VelocityComp(getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y))));
+			//Das projektil wird 5k units fliegen bevor es despawnt
+			Projectile shot = new Projectile(engine, 2, 5000/bulletSpeed);
+			shot.add(new VelocityComp(getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y), true)));
 			Sprite shotSprite = new Sprite(new Texture("badlogic.jpg"));
 			shotSprite.setSize(25f, 25f);
 			shot.add(new PositionComp(getOwnerCenter().sub((shotSprite.getWidth()*shotSprite.getScaleX())/2f, (shotSprite.getHeight()*shotSprite.getScaleY())/2f)));

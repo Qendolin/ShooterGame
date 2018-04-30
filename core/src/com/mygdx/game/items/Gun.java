@@ -14,11 +14,24 @@ public abstract class Gun extends Item {
 	protected float fireRate;
 	protected boolean auto;
 	protected float bulletSpeed;
+	protected float spread;
 	private double miscTimer;
 	private boolean reloading;
 	private boolean cooldown;
 	
-	public Gun(String name, float reloadTime, int ammo, int maxAmmo, int magSize, float fireRate, float bulletSpeed, boolean auto) {
+	/**
+	 * 
+	 * @param name
+	 * @param reloadTime
+	 * @param ammo
+	 * @param maxAmmo
+	 * @param magSize
+	 * @param fireRate
+	 * @param bulletSpeed
+	 * @param auto
+	 * @param spread in grad, nach links und rechts, nicht von links nach rechts
+	 */
+	public Gun(String name, float reloadTime, int ammo, int maxAmmo, int magSize, float fireRate, float bulletSpeed, boolean auto, float spread) {
 		super(name);
 		this.reloadTime = reloadTime;
 		this.ammo = Math.min(maxAmmo, ammo);
@@ -27,6 +40,7 @@ public abstract class Gun extends Item {
 		this.fireRate = fireRate;
 		this.auto = auto;
 		this.bulletSpeed = bulletSpeed;
+		this.spread = spread;
 		magAmmo = Math.min(magSize, ammo);
 	}
 	
@@ -66,9 +80,13 @@ public abstract class Gun extends Item {
 		return new Vector2(owner.positionComp.pos).add(new Vector2(owner.visualComp.getWidth()/2, owner.visualComp.getHeight()/2));
 	}
 	
-	protected Vector2 getProjectileVelocityTowards(Vector2 target) {
+	protected Vector2 getProjectileVelocityTowards(Vector2 target, boolean applySpread) {
 		Vector2 vel = new Vector2(target).sub(getOwnerCenter());
 		vel.nor();
+		if(applySpread) {
+			//Zufällige zahl von -1 - 1 mal dem spread in beide reichtungen plus die originale richtung gibt die neue richtung
+			vel.setAngle((float) (spread * (Math.random() * 2 - 1)) + vel.angle());
+		}
 		vel.scl(bulletSpeed);
 		vel.add(owner.velocityComp.vel);
 		return vel;

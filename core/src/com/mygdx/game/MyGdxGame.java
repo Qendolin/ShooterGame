@@ -26,6 +26,7 @@ import com.mygdx.game.entityComponents.visualComps.SpriteComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteSheetComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteSheetSpriteGroup;
 import com.mygdx.game.items.Pistol;
+import com.mygdx.game.items.Shotgun;
 import com.mygdx.game.utils.WorldBorderFactory;
 
 public class MyGdxGame extends ApplicationAdapter {
@@ -61,7 +62,7 @@ public class MyGdxGame extends ApplicationAdapter {
 																			   new SpriteSheetSpriteGroup(4, 7, 0.05f, Player.ANIM_RUN_LEFT),
 																			   new SpriteSheetSpriteGroup(8, 11, 0.05f, Player.ANIM_RUN_UP),
 																			   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)), world);
-		player.setItem(new Pistol());
+		player.setItem(new Shotgun());
 		engine.addEntity(player);
 		
 		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -69,8 +70,12 @@ public class MyGdxGame extends ApplicationAdapter {
 		cam.position.y = Gdx.graphics.getHeight()/2;
 	}
 
+	//TODO: 
 	@Override
 	public void render () {
+		
+		//Timeouts updated
+//		updateTimouts();
 		
 		player.update(cam, engine);
 		
