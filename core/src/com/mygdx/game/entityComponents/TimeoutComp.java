@@ -15,7 +15,7 @@ public class TimeoutComp implements Component {
 	}
 
 	public void update() {
-		if(timeoutTime >= System.currentTimeMillis() / 1000d) {
+		if(timeoutTime <= System.currentTimeMillis() / 1000d) {
 			listener.handle(new TimeoutEvent(timeoutTime));
 		}
 	}
