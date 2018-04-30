@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>MyFirstGame-desktop</name>
+	<name>ShooterGame-desktop</name>
 	<comment></comment>
-	<projects/>
-	<natures>
-		<nature>org.eclipse.jdt.core.javanature</nature>
-	</natures>
+	<projects>
+	</projects>
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
-			<arguments/>
+			<arguments>
+			</arguments>
 		</buildCommand>
 	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
 	<linkedResources>
 		<link>
 			<name>assets</name>
 			<type>2</type>
-			<location>PARENT-1-PROJECT_LOC/core/assets</location>
+			<locationURI>copy_PARENT/core/assets</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>copy_PARENT</name>
+			<value>$%7BPARENT-3-PROJECT_LOC%7D/Documents/GitHub/ShooterGame</value>
+		</variable>
+	</variableList>
 </projectDescription>
