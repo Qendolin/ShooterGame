@@ -17,7 +17,6 @@ public class ColliderComp implements Component {
 	//TODO: Eine Klasse Impelmentieren die einen 2 collider von "bodx2D" enthält
 	private Body body;
 	private World world;
-	private Fixture fixture;
 	
 	/**
 	 * Erstellt einen Body mit Circle Shape.
@@ -67,7 +66,7 @@ public class ColliderComp implements Component {
 		fixtureDef.shape = shape;
 
 		// Create our fixture and attach it to the body
-		fixture = body.createFixture(fixtureDef);
+		body.createFixture(fixtureDef);
 	}
 	
 	public Vector2 getPosition() {
