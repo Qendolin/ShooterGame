@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.utils.Collision;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -19,12 +20,14 @@ import com.mygdx.game.entites.Player;
 import com.mygdx.game.entityComponents.ColliderComp;
 import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.RotationComp;
+import com.mygdx.game.entityComponents.TimeoutComp;
 import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.entityComponents.VisualComp;
 import com.mygdx.game.entityComponents.visualComps.AnimationComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteSheetComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteSheetSpriteGroup;
+import com.mygdx.game.items.MachineGun;
 import com.mygdx.game.items.Pistol;
 import com.mygdx.game.items.Shotgun;
 import com.mygdx.game.utils.WorldBorderFactory;
@@ -62,7 +65,7 @@ public class MyGdxGame extends ApplicationAdapter {
 																			   new SpriteSheetSpriteGroup(4, 7, 0.05f, Player.ANIM_RUN_LEFT),
 																			   new SpriteSheetSpriteGroup(8, 11, 0.05f, Player.ANIM_RUN_UP),
 																			   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)), world);
-		player.setItem(new Shotgun());
+		player.setItem(new MachineGun());
 		engine.addEntity(player);
 		
 		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -70,12 +73,12 @@ public class MyGdxGame extends ApplicationAdapter {
 		cam.position.y = Gdx.graphics.getHeight()/2;
 	}
 
-	//TODO: 
+	//TODO: Die update methoden veralgemeineren und Entity Systeme machen
 	@Override
 	public void render () {
 		
 		//Timeouts updated
-//		updateTimouts();
+		updateTimouts();
 		
 		player.update(cam, engine);
 		
@@ -119,6 +122,16 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.end();
 		
 		physicDebugRenderer.render(world, cam.combined);
+		
+		Gdx.graphics.setTitle("FPS: "+Gdx.graphics.getFramesPerSecond());
+	}
+
+	private void updateTimouts() {
+		ImmutableArray<Entity> timeouts = engine.getEntitiesFor(Family.one(TimeoutComp.class).get());
+		for(Entity timeout : timeouts) {
+			TimeoutComp timeoutComp = timeout.getComponent(TimeoutComp.class);
+			timeoutComp.update();
+		}
 	}
 
 	private void fixPositions() {

@@ -15,7 +15,7 @@ import com.mygdx.game.entityComponents.visualComps.SpriteComp;
 public class Shotgun extends Gun {
 
 	public Shotgun() {
-		super("Shotgun", 2, 40, 40, 2, 3, 2000, false, 15);
+		super("Shotgun", 2, 40, 40, 2, 3, 1000, false, 15);
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class Shotgun extends Gun {
 			
 			for(int i = 0; i < 5; i++) {
 				//Das projektiel fliegt zwischen 30 und 70 units
-				Projectile shot = new Projectile(engine, 2, (float) ((Math.random()*40+30)/bulletSpeed));
+				Projectile shot = new Projectile(engine, 2, (float) ((Math.random()*40f+30f)/bulletSpeed));
 				shot.add(new VelocityComp(getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y), true)));
 				Sprite shotSprite = new Sprite(new Texture("badlogic.jpg"));
 				shotSprite.setSize(25f, 25f);

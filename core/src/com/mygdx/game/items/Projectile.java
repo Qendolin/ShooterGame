@@ -13,13 +13,14 @@ public class Projectile extends Entity {
 	
 	public Projectile(Engine engine, float damage, float timeoutInSec) {
 		damageComp = new DamageComp(damage);
-		new TimeoutComp(damage, new EventListener() {
+		add(damageComp);
+		add(new TimeoutComp(timeoutInSec, new EventListener() {
 			
 			@Override
 			public boolean handle(Event e) {
 				engine.removeEntity(Projectile.this);
 				return true;
 			}
-		});
+		}));
 	}
 }
