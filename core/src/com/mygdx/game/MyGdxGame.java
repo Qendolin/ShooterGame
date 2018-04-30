@@ -80,7 +80,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		//Timeouts updated
 		updateTimouts();
 		
-		player.update(cam, engine);
+		player.update(world, cam, engine);
 		
 		//Dieser prozess kann vereinfacht werden
 		//Dinge bewegen

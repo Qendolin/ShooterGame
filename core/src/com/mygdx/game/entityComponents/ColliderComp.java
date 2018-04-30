@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 
 public class ColliderComp implements Component {
 	//TODO: Eine Klasse Impelmentieren die einen 2 collider von "bodx2D" enthält
@@ -31,6 +32,7 @@ public class ColliderComp implements Component {
 		circle.setPosition(pos);
 		
 		setShape(circle);
+		circle.dispose();
 	}
 
 	/**
@@ -47,6 +49,8 @@ public class ColliderComp implements Component {
 		rect.setAsBox(sprite.getWidth()/2f, sprite.getHeight()/2f);
 		
 		setShape(rect);
+		
+		rect.dispose();
 	}
 	
 	private void createBody(BodyType type, Vector2 pos) {

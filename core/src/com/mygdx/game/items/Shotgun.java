@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteComp;
@@ -19,7 +20,7 @@ public class Shotgun extends Gun {
 	}
 
 	@Override
-	protected boolean tryShoot(Engine engine, Camera cam) {
+	protected boolean tryShoot(World world, Engine engine, Camera cam) {
 		if(owner == null)
 			return false;
 		
@@ -27,13 +28,14 @@ public class Shotgun extends Gun {
 			Vector3 mousePos = cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 			
 			for(int i = 0; i < 5; i++) {
-				//Das projektiel fliegt zwischen 30 und 70 units
-				Projectile shot = new Projectile(engine, 2, (float) ((Math.random()*40f+30f)/bulletSpeed));
-				shot.add(new VelocityComp(getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y), true)));
 				Sprite shotSprite = new Sprite(new Texture("badlogic.jpg"));
 				shotSprite.setSize(25f, 25f);
-				shot.add(new PositionComp(getOwnerCenter().sub((shotSprite.getWidth()*shotSprite.getScaleX())/2f, (shotSprite.getHeight()*shotSprite.getScaleY())/2f)));
-				shot.add(new SpriteComp(shotSprite));
+				//Das projektiel fliegt zwischen 30 und 70 units
+				Projectile shot = new Projectile(world, engine,
+						getOwnerCenter().sub((shotSprite.getWidth()*shotSprite.getScaleX())/2f, (shotSprite.getHeight()*shotSprite.getScaleY())/2f),
+						new SpriteComp(shotSprite),
+						getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y), true),
+						2, (float) ((Math.random()*40f+30f)/bulletSpeed));
 				engine.addEntity(shot);
 			}
 			return true;
