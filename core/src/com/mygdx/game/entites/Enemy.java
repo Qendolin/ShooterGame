@@ -54,7 +54,7 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 		add(healthComp);
 		colliderComp = new ColliderComp(world, visualComp.getCenter(), this,
 				((visual.getHeight() + visual.getWidth()) / 4f) * enemyHitCircleRadiusMultiplyer, BodyType.DynamicBody,
-				Const.BIG_ENTITY, (short) (Const.BIG_ENTITY ^ Const.DEFAULT));
+				type.boss ? Const.BIG_ENTITY : Const.ENTITY, (short) (Const.ENTITY ^ Const.ALL));
 		add(colliderComp);
 		updateComp = new UpdateEventComp(new UpdateListener() {
 			@Override

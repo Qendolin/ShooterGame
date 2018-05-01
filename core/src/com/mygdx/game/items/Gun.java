@@ -73,6 +73,9 @@ public abstract class Gun extends Item {
 				miscTimer = currTime;
 			}
 		}
+		
+		if(isEmpty())
+			System.out.println("Waffe ist leer!");
 	}
 	
 	protected abstract boolean tryShoot(World world, Engine engine, Camera cam);

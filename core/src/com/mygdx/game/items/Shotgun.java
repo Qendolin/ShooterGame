@@ -9,8 +9,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.game.entityComponents.PositionComp;
-import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteComp;
 
 public class Shotgun extends Gun {

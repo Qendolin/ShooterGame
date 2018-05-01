@@ -42,7 +42,9 @@ import com.mygdx.game.entityComponents.visualComps.AnimationComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteSheetComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteSheetSpriteGroup;
+import com.mygdx.game.items.MachineGun;
 import com.mygdx.game.items.Pistol;
+import com.mygdx.game.items.Shotgun;
 import com.mygdx.game.utils.BodyFactory;
 
 public class MyGdxGame extends ApplicationAdapter {
@@ -70,7 +72,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		world.setContactListener(new ContactListener() {
 			
 			@Override
-			public void preSolve(Contact arg0, Manifold arg1) {
+			public void preSolve(Contact contact, Manifold arg1) {
 			}
 			
 			@Override
@@ -109,7 +111,7 @@ public class MyGdxGame extends ApplicationAdapter {
 																			   new SpriteSheetSpriteGroup(4, 7, 0.05f, Player.ANIM_RUN_LEFT),
 																			   new SpriteSheetSpriteGroup(8, 11, 0.05f, Player.ANIM_RUN_UP),
 																			   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)));
-		player.setItem(new Pistol());
+		player.setItem(new Shotgun());
 		engine.addEntity(player);
 		boss1 = new Enemy(EnemyType.Boss1, world, new Vector2(), new SpriteSheetComp(enemySpriteSheet, 4, 4, false, new SpriteSheetSpriteGroup(0, 3, 0.1f, Enemy.ANIM_WALK_DOWN), 
 				   new SpriteSheetSpriteGroup(4, 7, 0.1f, Enemy.ANIM_WALK_LEFT),

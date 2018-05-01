@@ -53,17 +53,17 @@ public class BodyFactory {
 	}
 	
 	public static void createBorder(World world, Vector2 center, float width, float height) {
-		createEdge(world, center, new Vector2(center.x-width/2f, center.y-height/2f),
+		createEdge(world, center, Const.ALWAYS, Const.ALL, new Vector2(center.x-width/2f, center.y-height/2f),
 				  new Vector2(center.x+width/2f, center.y-height/2f));
-		createEdge(world, center, new Vector2(center.x+width/2f, center.y-height/2f),
+		createEdge(world, center, Const.ALWAYS, Const.ALL, new Vector2(center.x+width/2f, center.y-height/2f),
 				  new Vector2(center.x+width/2f, center.y+height/2f));
-		createEdge(world, center, new Vector2(center.x+width/2f, center.y+height/2f),
+		createEdge(world, center, Const.ALWAYS, Const.ALL, new Vector2(center.x+width/2f, center.y+height/2f),
 				  new Vector2(center.x-width/2f, center.y+height/2f));
-		createEdge(world, center, new Vector2(center.x-width/2f, center.y+height/2f),
+		createEdge(world, center, Const.ALWAYS, Const.ALL, new Vector2(center.x-width/2f, center.y+height/2f),
 				  new Vector2(center.x-width/2f, center.y-height/2f));
 	}
 	
-	public static Body createEdge(World world, Vector2 center, Vector2 v1, Vector2 v2) {
+	public static Body createEdge(World world, Vector2 center, short collisionLayer, short collisionLayerMask, Vector2 v1, Vector2 v2) {
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(center.x, center.y);

@@ -68,7 +68,7 @@ public class Player extends DefaultEntity<SpriteSheetComp> {
 	private void createColliderComp(World world, SpriteSheetComp visual) {
 		collisionComp = new ColliderComp(world, visualComp.getCenter(), this,
 				((visual.getHeight()+visual.getWidth())/4f)*playerHitCircleRadiusMultiplyer, 
-				BodyType.DynamicBody, Const.ENTITY, (short) (Const.ENTITY ^ Const.DEFAULT));
+				BodyType.DynamicBody, Const.PLAYER, (short) (Const.ENTITY ^ Const.ALL));
 	}
 /*
 	public Player(SpriteSheetComp visual, VelocityComp velocity, PositionComp position, World world) {

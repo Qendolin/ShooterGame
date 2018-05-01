@@ -45,12 +45,12 @@ public class Projectile extends Entity implements Disposable{
 		
 		this.source = source;
 
-		colliderComp = new ColliderComp(world, pos, this, 4f, BodyType.DynamicBody, Const.PROJECTILE, (short) (Const.PROJECTILE ^ Const.DEFAULT));
+		colliderComp = new ColliderComp(world, pos, this, 4f, BodyType.DynamicBody, Const.PROJECTILE, (short) (Const.PROJECTILE ^ Const.ALL));
 		colliderComp.getBody().setBullet(true);
 		colliderComp.setCollisionListener(new CollisionListener() {
 			@Override
 			protected void onCollide(Contact contact, Entity myEntity, Entity otherEntity) {
-				if(otherEntity == source)
+				if(otherEntity == source || otherEntity instanceof Projectile)
 					return;
 				HealthComp enemyHealthComp = otherEntity.getComponent(HealthComp.class);
 				if(enemyHealthComp != null)
