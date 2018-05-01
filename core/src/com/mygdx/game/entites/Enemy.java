@@ -37,6 +37,9 @@ public class Enemy extends Entity {
 	public float attackRadius;
 	public float speed;
 	private int enemyDirection;
+	public long lastAttack;
+	
+	EnemyType type;
 
 	public static final String ANIM_WALK_DOWN = "walkDown";
 	public static final String ANIM_WALK_UP = "walkUp";
@@ -51,6 +54,7 @@ public class Enemy extends Entity {
 	public static float enemyRangeCircleRadiusMultiplyer = 30f; //Ich würde den Spieler "detections" radius nicht als multiplyer festlegen (also von der größe des sprites abhängig machen) sonder als fixen wert festlegen
 
 	public Enemy(EnemyType type, SpriteSheetComp visual, World world, Vector2 position) {
+		this.type=type;
 		speed = type.speed;
 		item = type.item;
 		add(visual);
@@ -87,9 +91,9 @@ public class Enemy extends Entity {
 		nextXY = new Vector2(target.positionComp.pos.x-positionComp.pos.x-target.visualComp.getWidth()/1.3f,
 				target.positionComp.pos.y-positionComp.pos.y-target.visualComp.getHeight()/1.3f);
 		
-		// Teleportaion (Fähigkeit des Enemys
-		if(System.currentTimeMillis()%231==0){
-			DAMPING=0.9f;
+		if(System.currentTimeMillis()-lastAttack>=10000){
+			lastAttack=System.currentTimeMillis();
+			type.action.doAction(this, world, engine, cam);
 		}else{
 			DAMPING=0.02f;
 		}
@@ -97,22 +101,6 @@ public class Enemy extends Entity {
 		positionComp.pos.y +=nextXY.y*DAMPING;
 		}
 		
-		//Andere Spezialattacken 
-		Random rnd = new Random(4);//Anzahl der Spezialattacken
-		if(System.currentTimeMillis()/10000==0){
-			if(rnd.nextInt()==1){
-				// Spezialattacke 1
-			}
-			if(rnd.nextInt()==2){
-				// Spezialattacke 2		
-			}
-			if(rnd.nextInt()==3){
-				// Spezialattacke 3
-			}
-			if(rnd.nextInt()==4){
-				// Spezialattacke 4
-			}
-		}
 		
 		//Quadranten ausrechnen
 		enemyDirection = positionComp.pos.isZero() ? enemyDirection : Math.round(positionComp.pos.angle() / 90f - 0.5f);
