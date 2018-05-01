@@ -55,6 +55,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		batch = new SpriteBatch();
 		Texture playerSpriteSheet = new Texture("george.png");
+		Texture enemySpriteSheet = new Texture("bahamut.png");
 		
 		world = new World(new Vector2(), false);
 //		world.setContactListener(listener); //TODO: Contact listener für collision
@@ -73,10 +74,10 @@ public class MyGdxGame extends ApplicationAdapter {
 																			   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)), world);
 		player.setItem(new Pistol());
 		engine.addEntity(player);
-		boss1 = new Enemy(EnemyType.Boss1, new SpriteSheetComp(playerSpriteSheet, 4, 4, true, new SpriteSheetSpriteGroup(0, 3, 0.1f, Player.ANIM_WALK_DOWN), 
-				   new SpriteSheetSpriteGroup(4, 7, 0.1f, Player.ANIM_WALK_LEFT),
-				   new SpriteSheetSpriteGroup(8, 11, 0.1f, Player.ANIM_WALK_UP),
-				   new SpriteSheetSpriteGroup(12, 15, 0.1f, Player.ANIM_WALK_RIGHT),
+		boss1 = new Enemy(EnemyType.Boss1, new SpriteSheetComp(enemySpriteSheet, 4, 4, false, new SpriteSheetSpriteGroup(0, 3, 0.1f, Enemy.ANIM_WALK_DOWN), 
+				   new SpriteSheetSpriteGroup(4, 7, 0.1f, Enemy.ANIM_WALK_LEFT),
+				   new SpriteSheetSpriteGroup(8, 11, 0.1f, Enemy.ANIM_WALK_UP),
+				   new SpriteSheetSpriteGroup(12, 15, 0.1f, Enemy.ANIM_WALK_RIGHT),
 				   new SpriteSheetSpriteGroup(0, 3, 0.05f, Player.ANIM_RUN_DOWN), 
 				   new SpriteSheetSpriteGroup(4, 7, 0.05f, Player.ANIM_RUN_LEFT),
 				   new SpriteSheetSpriteGroup(8, 11, 0.05f, Player.ANIM_RUN_UP),
