@@ -1,7 +1,11 @@
 package com.mygdx.game.entites;
 
+import java.util.Random;
+
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -22,6 +26,8 @@ public class Enemy extends Entity {
 	public ColliderComp collisionComp;
 	public PositionComp positionComp;
 	public VelocityComp velocityComp;
+	public Player target;
+	public static float DAMPING=0.02f;
 	private UpdateEventComp updateComp = new UpdateEventComp(new UpdateListener() {
 		@Override
 		public void onUpdate(World world, Engine engine, Camera cam) {
@@ -30,7 +36,17 @@ public class Enemy extends Entity {
 	});
 	public float attackRadius;
 	public float speed;
+	private int enemyDirection;
 
+	public static final String ANIM_WALK_DOWN = "walkDown";
+	public static final String ANIM_WALK_UP = "walkUp";
+	public static final String ANIM_WALK_LEFT = "walkLeft";
+	public static final String ANIM_WALK_RIGHT = "walkRight";
+	public static final String ANIM_RUN_DOWN = "runDown";
+	public static final String ANIM_RUN_UP = "runUp";
+	public static final String ANIM_RUN_LEFT = "runLeft";
+	public static final String ANIM_RUN_RIGHT = "runRight";
+	
 	public static float enemyHitCircleRadiusMultiplyer = 0.8f;
 	public static float enemyRangeCircleRadiusMultiplyer = 30f; //Ich würde den Spieler "detections" radius nicht als multiplyer festlegen (also von der größe des sprites abhängig machen) sonder als fixen wert festlegen
 
@@ -62,8 +78,71 @@ public class Enemy extends Entity {
 		for (Player player : Player.getAllPlayers()) {
 			Vector2 v = new Vector2(player.positionComp.pos);
 			if (v.sub(positionComp.pos).len() < attackRadius) {
-				System.out.println("noob");
+				target=player;
+				break;
 			}
 		}
+		Vector2 nextXY;
+		if(target!=null){
+		nextXY = new Vector2(target.positionComp.pos.x-positionComp.pos.x-target.visualComp.getWidth()/1.3f,
+				target.positionComp.pos.y-positionComp.pos.y-target.visualComp.getHeight()/1.3f);
+		
+		// Teleportaion (Fähigkeit des Enemys
+		if(System.currentTimeMillis()%231==0){
+			DAMPING=0.9f;
+		}else{
+			DAMPING=0.02f;
+		}
+		positionComp.pos.x +=nextXY.x*DAMPING;
+		positionComp.pos.y +=nextXY.y*DAMPING;
+		}
+		
+		//Andere Spezialattacken 
+		Random rnd = new Random(4);//Anzahl der Spezialattacken
+		if(System.currentTimeMillis()/10000==0){
+			if(rnd.nextInt()==1){
+				// Spezialattacke 1
+			}
+			if(rnd.nextInt()==2){
+				// Spezialattacke 2		
+			}
+			if(rnd.nextInt()==3){
+				// Spezialattacke 3
+			}
+			if(rnd.nextInt()==4){
+				// Spezialattacke 4
+			}
+		}
+		
+		//Quadranten ausrechnen
+		enemyDirection = positionComp.pos.isZero() ? enemyDirection : Math.round(positionComp.pos.angle() / 90f - 0.5f);
+		switch(enemyDirection) {
+			case(0):
+				visualComp.currentAnimation =    ANIM_WALK_RIGHT;
+				break;
+			case(1):
+				visualComp.currentAnimation =   ANIM_WALK_LEFT;
+				break;
+			case(2):
+				visualComp.currentAnimation =    ANIM_WALK_UP;
+				break;
+			case(3):
+				visualComp.currentAnimation =    ANIM_WALK_DOWN;
+				break;
+		}
+		
+		if(positionComp.pos.isZero()) {
+			visualComp.setCurrentAnimationFrame(0);
+			visualComp.animate = false;
+		} else
+			visualComp.animate = true;
+	}
+	
+	public void setTarget(Player target){
+		this.target=target;
+	}
+	
+	public Player getTarget(){
+		return target;
 	}
 }
