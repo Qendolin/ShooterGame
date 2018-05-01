@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import java.util.Iterator;
+
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -14,8 +16,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.entites.Enemy;
 import com.mygdx.game.entites.EnemyType;
 import com.mygdx.game.entites.Player;
@@ -25,6 +34,10 @@ import com.mygdx.game.entityComponents.RotationComp;
 import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.entityComponents.VisualComp;
+import com.mygdx.game.entityComponents.events.CollisionEvent;
+import com.mygdx.game.entityComponents.events.CollisionListener;
+import com.mygdx.game.entityComponents.misc.BodyDeleteFlag;
+import com.mygdx.game.entityComponents.misc.CollisionEntityConnection;
 import com.mygdx.game.entityComponents.visualComps.AnimationComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteSheetComp;
@@ -54,7 +67,35 @@ public class MyGdxGame extends ApplicationAdapter {
 		Texture enemySpriteSheet = new Texture("bahamut.png");
 		
 		world = new World(new Vector2(), false);
-//		world.setContactListener(listener); //TODO: Contact listener für collision
+		world.setContactListener(new ContactListener() {
+			
+			@Override
+			public void preSolve(Contact arg0, Manifold arg1) {
+			}
+			
+			@Override
+			public void postSolve(Contact arg0, ContactImpulse arg1) {		
+			}
+			
+			@Override
+			public void endContact(Contact contact) {
+			}
+			
+			@Override
+			public void beginContact(Contact contact) {
+				Fixture fixA = contact.getFixtureA();
+				Fixture fixB = contact.getFixtureB();
+				if(fixA == null || fixB == null) return;
+				if(fixA.getUserData() == null && ! (fixA.getUserData() instanceof CollisionEntityConnection)) return;
+				if(fixB.getUserData() == null && ! (fixB.getUserData() instanceof CollisionEntityConnection)) return;
+				CollisionEntityConnection connectionA = (CollisionEntityConnection) fixA.getUserData();
+				CollisionEntityConnection connectionB = (CollisionEntityConnection) fixB.getUserData();
+				if(connectionA.listener != null)
+					connectionA.listener.handle(new CollisionEvent(contact, connectionA.entity, connectionB.entity));
+				if(connectionB.listener != null)
+					connectionB.listener.handle(new CollisionEvent(contact, connectionB.entity, connectionA.entity));
+			}
+		});
 		
 		BodyFactory.createBorder(world, new Vector2(), 1000, 1000);
 		
@@ -93,6 +134,9 @@ public class MyGdxGame extends ApplicationAdapter {
 		//Simulierte physik anwenden
 		fixPositions();
 		
+		//Bodyies mit BodyDeleteFlag als UserData löschen
+		deleteBodies();
+		
 		//Camera bewegen
 		//Die kontrolle der kamera gehört nicht in die spieler klasse!! (Weil man z.b. mehrer spieler haben kann)
 		cam.position.x = player.getPositionComp().pos.x;
@@ -127,6 +171,15 @@ public class MyGdxGame extends ApplicationAdapter {
 		physicDebugRenderer.render(world, cam.combined);
 		
 		Gdx.graphics.setTitle("FPS: "+Gdx.graphics.getFramesPerSecond());
+	}
+
+	private void deleteBodies() {
+		Array<Body> bodies = new Array<Body>(world.getBodyCount());
+		world.getBodies(bodies);
+		for(int i = 0; i < bodies.size; i++) {
+			if(bodies.get(i).getUserData() != null && bodies.get(i).getUserData() instanceof BodyDeleteFlag)
+				world.destroyBody(bodies.get(i));
+		}
 	}
 
 	private void updateUpdateListeners() {

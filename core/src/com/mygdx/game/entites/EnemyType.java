@@ -8,7 +8,7 @@ import com.mygdx.game.items.*;
 public enum EnemyType {
 
 	// Bosse mit HP/Geschwindigkeit/Guns
-	Boss1(150, 1000, new MachineGun(),Actions.BEAM);
+	Boss1(150, 50, new MachineGun(),Actions.BEAM);
 	/* Mehrere Typen von Bossen müssen noch erstellt werden */
 
 	float speed;

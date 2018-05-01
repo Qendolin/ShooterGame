@@ -5,7 +5,7 @@ package com.mygdx.game.utils;
  */
 public class Const {
 
-	public static final short DEFAULT = 0xFFF;
+	public static final short DEFAULT = 0x0;
 	public static final short PROJECTILE = 0b1;
 	public static final short ENTITY = 0b01;
 	public static final short BIG_ENTITY = ENTITY | 0b001;

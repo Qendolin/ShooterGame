@@ -50,9 +50,9 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 		item = type.item;
 		attackRadius = (((visual.getHeight() + visual.getWidth()) / 4f) * enemyRangeCircleRadiusMultiplyer) / 2;
 		
-		healthComp = new HealthComp(type.health);
+		healthComp = new HealthComp(type.health, disposeOnDeath);
 		add(healthComp);
-		colliderComp = new ColliderComp(world, visualComp.getCenter(),
+		colliderComp = new ColliderComp(world, visualComp.getCenter(), this,
 				((visual.getHeight() + visual.getWidth()) / 4f) * enemyHitCircleRadiusMultiplyer, BodyType.DynamicBody,
 				Const.BIG_ENTITY, (short) (Const.BIG_ENTITY ^ Const.DEFAULT));
 		add(colliderComp);

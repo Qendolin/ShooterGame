@@ -27,8 +27,7 @@ public class Pistol extends Gun {
 			
 			Sprite shotSprite = new Sprite(new Texture("badlogic.jpg"));
 			shotSprite.setSize(25f, 25f);
-			System.out.println(shotSprite.getWidth()*shotSprite.getScaleX());
-			Projectile shot = new Projectile(world, engine,
+			Projectile shot = new Projectile(world, engine, owner,
 					getOwnerCenter(),
 					new SpriteComp(shotSprite),
 					getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y), true),

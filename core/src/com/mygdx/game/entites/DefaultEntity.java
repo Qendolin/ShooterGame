@@ -3,6 +3,7 @@ package com.mygdx.game.entites;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.entityComponents.ColliderComp;
 import com.mygdx.game.entityComponents.FixedAccelerationComp;
 import com.mygdx.game.entityComponents.HealthComp;
@@ -10,8 +11,10 @@ import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.entityComponents.VisualComp;
+import com.mygdx.game.entityComponents.events.DeathEvent;
+import com.mygdx.game.entityComponents.events.DeathListener;
 
-public class DefaultEntity<VISUAL extends VisualComp> extends Entity {
+public class DefaultEntity<VISUAL extends VisualComp> extends Entity implements Disposable {
 
 	protected World world;
 	protected PositionComp positionComp;
@@ -27,6 +30,13 @@ public class DefaultEntity<VISUAL extends VisualComp> extends Entity {
 	 * optional
 	 */
 	protected HealthComp healthComp;
+	protected DeathListener disposeOnDeath = new DeathListener() {
+		@Override
+		protected boolean onDeath(DeathEvent event) {
+			dispose();
+			return true;
+		}
+	};
 	
 	/**
 	 * Initialisiert die Visuelle, Positions und Geschwindigkeitskomponente.
@@ -109,6 +119,10 @@ public class DefaultEntity<VISUAL extends VisualComp> extends Entity {
 	public HealthComp getHealthComp() {
 		return healthComp;
 	}
-	
-	
+
+	@Override
+	public void dispose() {
+		removeAll();
+		colliderComp.dispose();
+	}
 }

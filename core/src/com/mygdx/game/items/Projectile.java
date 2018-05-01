@@ -2,6 +2,8 @@ package com.mygdx.game.items;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -10,10 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.entityComponents.ColliderComp;
 import com.mygdx.game.entityComponents.DamageComp;
+import com.mygdx.game.entityComponents.HealthComp;
 import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.TimeoutComp;
 import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.entityComponents.VisualComp;
+import com.mygdx.game.entityComponents.events.CollisionListener;
 import com.mygdx.game.utils.Const;
 
 public class Projectile extends Entity implements Disposable{
@@ -23,24 +27,38 @@ public class Projectile extends Entity implements Disposable{
 	public VisualComp visualComp;
 	public PositionComp positionComp;
 	public VelocityComp velocityComp;
+	public Entity source;
 	
 	private Engine engine;
 	
-	public Projectile(World world, Engine engine, Vector2 pos, VisualComp visual, Vector2 velocity, float damage, float timeoutInSec) {
+	public Projectile(World world, Engine engine, Entity source, Vector2 pos, VisualComp visual, Vector2 velocity, float damage, float timeoutInSec) {
 		this.engine = engine;
 		damageComp = new DamageComp(damage);
 		add(damageComp);
 		add(new TimeoutComp(timeoutInSec, new EventListener() {
-			
 			@Override
 			public boolean handle(Event e) {
 				dispose();
 				return true;
 			}
 		}));
+		
+		this.source = source;
 
-		colliderComp = new ColliderComp(world, pos, 4f, BodyType.DynamicBody, Const.PROJECTILE, (short) (Const.PROJECTILE ^ Const.DEFAULT));
+		colliderComp = new ColliderComp(world, pos, this, 4f, BodyType.DynamicBody, Const.PROJECTILE, (short) (Const.PROJECTILE ^ Const.DEFAULT));
 		colliderComp.getBody().setBullet(true);
+		colliderComp.setCollisionListener(new CollisionListener() {
+			@Override
+			protected void onCollide(Contact contact, Entity myEntity, Entity otherEntity) {
+				if(otherEntity == source)
+					return;
+				HealthComp enemyHealthComp = otherEntity.getComponent(HealthComp.class);
+				if(enemyHealthComp != null)
+					enemyHealthComp.damage(damage);
+				dispose();
+			}
+			
+		});
 		add(colliderComp);
 		visualComp = visual;
 		add(visualComp);
@@ -50,10 +68,14 @@ public class Projectile extends Entity implements Disposable{
 		add(positionComp);
 	}
 
+	public void setCollisionListener(CollisionListener listener) {
+		colliderComp.setCollisionListener(listener);
+	}
+	
 	@Override
 	public void dispose() {
-		engine.removeEntity(Projectile.this);
 		colliderComp.dispose();
 		removeAll();
+		engine.removeEntity(Projectile.this);
 	}
 }

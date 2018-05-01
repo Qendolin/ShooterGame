@@ -32,7 +32,7 @@ public class MachineGun extends Gun {
 			Sprite shotSprite = new Sprite(new Texture("badlogic.jpg"));
 			shotSprite.setSize(25f, 25f);
 			//Das projektil wird 5k units fliegen bevor es despawnt
-			Projectile shot = new Projectile(world, engine,
+			Projectile shot = new Projectile(world, engine, owner,
 					getOwnerCenter(),
 					new SpriteComp(shotSprite),
 					getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y), true),
