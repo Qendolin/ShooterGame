@@ -23,12 +23,12 @@ public class SpriteComp extends VisualComp {
 
 	@Override
 	public float getWidth() {
-		return sprite.getWidth();
+		return sprite.getWidth()*sprite.getScaleX();
 	}
 
 	@Override
 	public float getHeight() {
-		return sprite.getHeight();
+		return sprite.getHeight()*sprite.getScaleY();
 	}
 
 	@Override

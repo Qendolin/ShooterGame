@@ -78,7 +78,7 @@ public abstract class Gun extends Item {
 	protected abstract boolean tryShoot(World world, Engine engine, Camera cam);
 	
 	protected Vector2 getOwnerCenter() {
-		return new Vector2(owner.positionComp.pos).add(new Vector2(owner.visualComp.getWidth()/2, owner.visualComp.getHeight()/2));
+		return new Vector2(owner.positionComp.pos);
 	}
 	
 	protected Vector2 getProjectileVelocityTowards(Vector2 target, boolean applySpread) {

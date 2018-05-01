@@ -32,7 +32,7 @@ public class Shotgun extends Gun {
 				shotSprite.setSize(25f, 25f);
 				//Das projektiel fliegt zwischen 30 und 70 units
 				Projectile shot = new Projectile(world, engine,
-						getOwnerCenter().sub((shotSprite.getWidth()*shotSprite.getScaleX())/2f, (shotSprite.getHeight()*shotSprite.getScaleY())/2f),
+						getOwnerCenter(),
 						new SpriteComp(shotSprite),
 						getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y), true),
 						2, (float) ((Math.random()*40f+30f)/bulletSpeed));

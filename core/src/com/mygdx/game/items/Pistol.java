@@ -1,7 +1,6 @@
 package com.mygdx.game.items;
 
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
@@ -10,8 +9,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.game.entityComponents.PositionComp;
-import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteComp;
 
 public class Pistol extends Gun {
@@ -30,8 +27,9 @@ public class Pistol extends Gun {
 			
 			Sprite shotSprite = new Sprite(new Texture("badlogic.jpg"));
 			shotSprite.setSize(25f, 25f);
+			System.out.println(shotSprite.getWidth()*shotSprite.getScaleX());
 			Projectile shot = new Projectile(world, engine,
-					getOwnerCenter().sub((shotSprite.getWidth()*shotSprite.getScaleX())/2f, (shotSprite.getHeight()*shotSprite.getScaleY())/2f),
+					getOwnerCenter(),
 					new SpriteComp(shotSprite),
 					getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y), true),
 					2, 5000/bulletSpeed);

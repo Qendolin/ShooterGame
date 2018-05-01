@@ -33,7 +33,7 @@ public class MachineGun extends Gun {
 			shotSprite.setSize(25f, 25f);
 			//Das projektil wird 5k units fliegen bevor es despawnt
 			Projectile shot = new Projectile(world, engine,
-					getOwnerCenter().sub((shotSprite.getWidth()*shotSprite.getScaleX())/2f, (shotSprite.getHeight()*shotSprite.getScaleY())/2f),
+					getOwnerCenter(),
 					new SpriteComp(shotSprite),
 					getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y), true),
 					2, 5000/bulletSpeed);

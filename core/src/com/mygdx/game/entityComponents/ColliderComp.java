@@ -13,27 +13,21 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.utils.Disposable;
+import com.mygdx.game.utils.BodyFactory;
 
-public class ColliderComp implements Component {
+public class ColliderComp implements Component, Disposable {
 	//TODO: Eine Klasse Impelmentieren die einen 2 collider von "bodx2D" enthält
 	private Body body;
 	private World world;
-	private Fixture fixture;
 	
 	/**
 	 * Erstellt einen Body mit Circle Shape.
 	 * @param radius
 	 */
-	public ColliderComp(World world, Vector2 pos, float radius, BodyType type) {
+	public ColliderComp(World world, Vector2 pos, float radius, BodyType type, short collisionLayer, short collisionLayerMask) {
 		this.world = world;
-		createBody(type, pos);
-		// Create a circle shape and set its radius to 6
-		CircleShape circle = new CircleShape();
-		circle.setRadius(radius);
-		circle.setPosition(pos);
-		
-		setShape(circle);
-		circle.dispose();
+		body = BodyFactory.createCircle(world, type, false, collisionLayer, collisionLayerMask, pos, radius);
 	}
 
 	/**
@@ -42,37 +36,11 @@ public class ColliderComp implements Component {
 	 * @param sprite
 	 * @param type
 	 */
-	public ColliderComp(World world, Vector2 pos, Sprite sprite, BodyType type) {
+	public ColliderComp(World world, Vector2 pos, Sprite sprite, BodyType type, short collisionLayer, short collisionLayerMask) {
 		this.world = world;
-		createBody(type, pos);
-		// Create a circle shape and set its radius to 6
-		PolygonShape rect = new PolygonShape();
-		rect.setAsBox(sprite.getWidth()/2f, sprite.getHeight()/2f);
-		
-		setShape(rect);
-		
-		rect.dispose();
+		body = BodyFactory.createRectangle(world, type, false, collisionLayer, collisionLayerMask, pos, sprite.getWidth(), sprite.getHeight());
 	}
 	
-	private void createBody(BodyType type, Vector2 pos) {
-		// First we create a body definition
-		BodyDef bodyDef = new BodyDef();
-		//dynamic for moving things, for something like ground which doesn't move we would set it to StaticBody
-		bodyDef.type = type;
-		// Set our body's starting position in the world
-		bodyDef.position.set(pos.x, pos.y);
-		// Create our body in the world using our body definition
-		body = world.createBody(bodyDef);
-	}
-	
-	private void setShape(Shape shape) {
-		// Create a fixture definition to apply our shape to
-		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.shape = shape;
-
-		// Create our fixture and attach it to the body
-		fixture = body.createFixture(fixtureDef);
-	}
 	
 	public Vector2 getPosition() {
 		return body.getTransform().getPosition();
@@ -80,6 +48,11 @@ public class ColliderComp implements Component {
 	
 	public Body getBody() {
 		return body;
+	}
+
+	@Override
+	public void dispose() {
+		world.destroyBody(body);
 	}
 	
 }

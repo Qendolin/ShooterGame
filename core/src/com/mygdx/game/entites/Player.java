@@ -16,10 +16,13 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.mygdx.game.entityComponents.ColliderComp;
 import com.mygdx.game.entityComponents.FixedAccelerationComp;
 import com.mygdx.game.entityComponents.PositionComp;
+import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.VelocityComp;
+import com.mygdx.game.entityComponents.events.UpdateListener;
 import com.mygdx.game.entityComponents.visualComps.SpriteComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteSheetComp;
 import com.mygdx.game.items.Item;
+import com.mygdx.game.utils.Const;
 
 public class Player extends Entity {
 
@@ -46,6 +49,12 @@ public class Player extends Entity {
 	public PositionComp positionComp = new PositionComp();
 	public FixedAccelerationComp accelerationComp = new FixedAccelerationComp(playerBaseSpeed*5f);
 	public ColliderComp collisionComp;
+	private UpdateEventComp updateComp = new UpdateEventComp(new UpdateListener() {
+		@Override
+		public void onUpdate(World world, Engine engine, Camera cam) {
+			update(world, cam, engine);
+		}
+	});
 	
 	private boolean running = false;
 	private int playerDirection;
@@ -56,11 +65,18 @@ public class Player extends Entity {
 		add(velocityComp);
 		add(positionComp);
 		add(accelerationComp);
-		collisionComp = new ColliderComp(world, visualComp.getCenter(), ((visual.getHeight()+visual.getWidth())/4f)*playerHitCircleRadiusMultiplyer, BodyType.DynamicBody);
+		createColliderComp(world, visual);
 		add(collisionComp);
 		playerList.add(this);
+		add(updateComp);
 	}
 	
+	private void createColliderComp(World world, SpriteSheetComp visual) {
+		collisionComp = new ColliderComp(world, visualComp.getCenter(), 
+				((visual.getHeight()+visual.getWidth())/4f)*playerHitCircleRadiusMultiplyer, 
+				BodyType.DynamicBody, Const.ENTITY, (short) (Const.ENTITY ^ Const.DEFAULT));
+	}
+/*
 	public Player(SpriteSheetComp visual, VelocityComp velocity, PositionComp position, World world) {
 		add(visual);
 		visualComp = visual;
@@ -69,7 +85,7 @@ public class Player extends Entity {
 		add(position);
 		positionComp = position;
 		add(accelerationComp);
-		collisionComp = new ColliderComp(world, visualComp.getCenter(), ((visual.getHeight()+visual.getWidth())/4f)*playerHitCircleRadiusMultiplyer, BodyType.DynamicBody);
+		createColliderComp(world, visual);
 		add(collisionComp);
 		playerList.add(this);
 	}
@@ -83,10 +99,10 @@ public class Player extends Entity {
 		positionComp = position;
 		add(acceleration);
 		accelerationComp = acceleration;
-		collisionComp = new ColliderComp(world, visualComp.getCenter(), ((visual.getHeight()+visual.getWidth())/4f)*playerHitCircleRadiusMultiplyer, BodyType.DynamicBody);
+		createColliderComp(world, visual);
 		add(collisionComp);
 		playerList.add(this);
-	}
+	}*/
 	
 	public void setItem(Item item) {
 		this.item = item;

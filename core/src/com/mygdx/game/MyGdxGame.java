@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ai.utils.Collision;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -16,12 +17,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.game.entites.Boss1;
+import com.mygdx.game.entites.Enemy;
+import com.mygdx.game.entites.EnemyType;
 import com.mygdx.game.entites.Player;
 import com.mygdx.game.entityComponents.ColliderComp;
 import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.RotationComp;
 import com.mygdx.game.entityComponents.TimeoutComp;
+import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.entityComponents.VisualComp;
 import com.mygdx.game.entityComponents.visualComps.AnimationComp;
@@ -31,14 +34,14 @@ import com.mygdx.game.entityComponents.visualComps.SpriteSheetSpriteGroup;
 import com.mygdx.game.items.MachineGun;
 import com.mygdx.game.items.Pistol;
 import com.mygdx.game.items.Shotgun;
-import com.mygdx.game.utils.WorldBorderFactory;
+import com.mygdx.game.utils.BodyFactory;
 
 public class MyGdxGame extends ApplicationAdapter {
 	
 	private SpriteBatch batch;
 	private Engine engine;
 	private Player player;
-	private Boss1 boss1;
+	private Enemy boss1;
 	private Camera cam;
 	private World world;
 	private Box2DDebugRenderer physicDebugRenderer;
@@ -54,8 +57,9 @@ public class MyGdxGame extends ApplicationAdapter {
 		Texture playerSpriteSheet = new Texture("george.png");
 		
 		world = new World(new Vector2(), false);
+//		world.setContactListener(listener); //TODO: Contact listener für collision
 		
-		WorldBorderFactory.createBorder(world, new Vector2(), 1000, 1000);
+		BodyFactory.createBorder(world, new Vector2(), 1000, 1000);
 		
 		physicDebugRenderer =  new Box2DDebugRenderer();
 		
@@ -67,35 +71,30 @@ public class MyGdxGame extends ApplicationAdapter {
 																			   new SpriteSheetSpriteGroup(4, 7, 0.05f, Player.ANIM_RUN_LEFT),
 																			   new SpriteSheetSpriteGroup(8, 11, 0.05f, Player.ANIM_RUN_UP),
 																			   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)), world);
-		player.setItem(new MachineGun());
+		player.setItem(new Pistol());
 		engine.addEntity(player);
-		boss1 = new Boss1(new SpriteSheetComp(playerSpriteSheet, 4, 4, true, new SpriteSheetSpriteGroup(0, 3, 0.1f, Player.ANIM_WALK_DOWN), 
+		boss1 = new Enemy(EnemyType.Boss1, new SpriteSheetComp(playerSpriteSheet, 4, 4, true, new SpriteSheetSpriteGroup(0, 3, 0.1f, Player.ANIM_WALK_DOWN), 
 				   new SpriteSheetSpriteGroup(4, 7, 0.1f, Player.ANIM_WALK_LEFT),
 				   new SpriteSheetSpriteGroup(8, 11, 0.1f, Player.ANIM_WALK_UP),
 				   new SpriteSheetSpriteGroup(12, 15, 0.1f, Player.ANIM_WALK_RIGHT),
 				   new SpriteSheetSpriteGroup(0, 3, 0.05f, Player.ANIM_RUN_DOWN), 
 				   new SpriteSheetSpriteGroup(4, 7, 0.05f, Player.ANIM_RUN_LEFT),
 				   new SpriteSheetSpriteGroup(8, 11, 0.05f, Player.ANIM_RUN_UP),
-				   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)), world, new PositionComp(new Vector2()));
+				   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)), world, new Vector2());
 		engine.addEntity(boss1);
-		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam = new OrthographicCamera(Gdx.graphics.getWidth()*2, Gdx.graphics.getHeight()*2);
 		cam.position.x = Gdx.graphics.getWidth()/2; 
 		cam.position.y = Gdx.graphics.getHeight()/2;
 	}
 
-	//TODO: Die update methoden veralgemeineren und Entity Systeme machen
 	@Override
 	public void render () {
-		
-		//Timeouts updated
-		updateTimouts();
-		
-		player.update(world, cam, engine);
-		boss1.update();
+		updateUpdateListeners();
 		
 		//Dieser prozess kann vereinfacht werden
 		//Dinge bewegen
-		updatePositions();
+		if(!Gdx.input.isKeyPressed(Input.Keys.SPACE)) //Space drücken stoppt alle bewegeung
+			updatePositions();
 		//Physik simulieren
 		world.step(Gdx.graphics.getDeltaTime(), 4, 6);
 		//Simulierte physik anwenden
@@ -137,11 +136,11 @@ public class MyGdxGame extends ApplicationAdapter {
 		Gdx.graphics.setTitle("FPS: "+Gdx.graphics.getFramesPerSecond());
 	}
 
-	private void updateTimouts() {
-		ImmutableArray<Entity> timeouts = engine.getEntitiesFor(Family.one(TimeoutComp.class).get());
-		for(Entity timeout : timeouts) {
-			TimeoutComp timeoutComp = timeout.getComponent(TimeoutComp.class);
-			timeoutComp.update();
+	private void updateUpdateListeners() {
+		ImmutableArray<Entity> updateables = engine.getEntitiesFor(Family.one(UpdateEventComp.class).get());
+		for(Entity updateable : updateables) {
+			UpdateEventComp updateEventComp = updateable.getComponent(UpdateEventComp.class);
+			updateEventComp.update(world, engine, cam);
 		}
 	}
 
