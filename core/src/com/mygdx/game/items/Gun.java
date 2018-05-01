@@ -78,7 +78,7 @@ public abstract class Gun extends Item {
 	protected abstract boolean tryShoot(World world, Engine engine, Camera cam);
 	
 	protected Vector2 getOwnerCenter() {
-		return new Vector2(owner.positionComp.pos);
+		return new Vector2(owner.getPositionComp().pos);
 	}
 	
 	protected Vector2 getProjectileVelocityTowards(Vector2 target, boolean applySpread) {
@@ -89,7 +89,7 @@ public abstract class Gun extends Item {
 			vel.setAngle((float) (spread * (Math.random() * 2 - 1)) + vel.angle());
 		}
 		vel.scl(bulletSpeed);
-		vel.add(owner.velocityComp.vel);
+		vel.add(owner.getVelocityComp().vel);
 		return vel;
 	}
 	

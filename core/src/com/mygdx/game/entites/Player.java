@@ -24,7 +24,7 @@ import com.mygdx.game.entityComponents.visualComps.SpriteSheetComp;
 import com.mygdx.game.items.Item;
 import com.mygdx.game.utils.Const;
 
-public class Player extends Entity {
+public class Player extends DefaultEntity<SpriteSheetComp> {
 
 	public static final String ANIM_WALK_DOWN = "walkDown";
 	public static final String ANIM_WALK_UP = "walkUp";
@@ -44,31 +44,25 @@ public class Player extends Entity {
 	
 	private Item item;
 	
-	public SpriteSheetComp visualComp;
-	public VelocityComp velocityComp = new VelocityComp();
-	public PositionComp positionComp = new PositionComp();
-	public FixedAccelerationComp accelerationComp = new FixedAccelerationComp(playerBaseSpeed*5f);
 	public ColliderComp collisionComp;
-	private UpdateEventComp updateComp = new UpdateEventComp(new UpdateListener() {
-		@Override
-		public void onUpdate(World world, Engine engine, Camera cam) {
-			update(world, cam, engine);
-		}
-	});
 	
 	private boolean running = false;
 	private int playerDirection;
 	
-	public Player(SpriteSheetComp visual, World world) {
-		add(visual);
-		visualComp=visual;
-		add(velocityComp);
-		add(positionComp);
+	public Player( World world, Vector2 position, SpriteSheetComp visual) {
+		super(position, visual);
+		accelerationComp = new FixedAccelerationComp(playerBaseSpeed*5f);
 		add(accelerationComp);
 		createColliderComp(world, visual);
 		add(collisionComp);
-		playerList.add(this);
+		updateComp = new UpdateEventComp(new UpdateListener() {
+			@Override
+			public void onUpdate(World world, Engine engine, Camera cam) {
+				update(world, cam, engine);
+			}});
 		add(updateComp);
+		
+		playerList.add(this);
 	}
 	
 	private void createColliderComp(World world, SpriteSheetComp visual) {
@@ -143,8 +137,8 @@ public class Player extends Entity {
 
 		accelerationComp.accelerateTo(newVel, velocityComp.vel);
 		
-		//Quadranten ausrechnen
-		playerDirection = newVel.isZero() ? playerDirection : Math.round(newVel.angle() / 90f - 0.5f);
+		// Quadranten der richtung der bewegung ausrechnen
+		playerDirection = newVel.isZero() ? playerDirection : getVelocityDirectionArea(4, 45);
 		switch(playerDirection) {
 			case(0):
 				visualComp.currentAnimation = running ? ANIM_RUN_RIGHT : ANIM_WALK_RIGHT;

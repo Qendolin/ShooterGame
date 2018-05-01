@@ -1,4 +1,4 @@
-package com.mygdx.game.Action;
+package com.mygdx.game.actions;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.graphics.Camera;
@@ -7,7 +7,7 @@ import com.mygdx.game.entites.Enemy;
 
 public class Actions{
 
-	public static final Action BEAM = new Action() {
+	public static final Action BEAM = new Action(10) {
 		
 		@Override
 		public void doAction(Enemy enemy, World world, Engine engine, Camera cam) {
@@ -16,12 +16,12 @@ public class Actions{
 		}
 	};
 	
-	public static final Action WHIRL = new Action() {
+	public static final Action WHIRL = new Action(5) {
 		
 		@Override
 		public void doAction(Enemy enemy, World world, Engine engine, Camera cam) {
 			// TODO Auto-generated method stub
-			
+			System.out.println("WHIRL!");
 		}
 	};
 	

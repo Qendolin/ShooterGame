@@ -1,7 +1,7 @@
 package com.mygdx.game.entites;
 
-import com.mygdx.game.Action.Action;
-import com.mygdx.game.Action.Actions;
+import com.mygdx.game.actions.Action;
+import com.mygdx.game.actions.Actions;
 import com.mygdx.game.entityComponents.HealthComp;
 import com.mygdx.game.items.*;
 

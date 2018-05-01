@@ -7,7 +7,6 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.ai.utils.Collision;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -23,7 +22,6 @@ import com.mygdx.game.entites.Player;
 import com.mygdx.game.entityComponents.ColliderComp;
 import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.RotationComp;
-import com.mygdx.game.entityComponents.TimeoutComp;
 import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.entityComponents.VisualComp;
@@ -31,9 +29,7 @@ import com.mygdx.game.entityComponents.visualComps.AnimationComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteSheetComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteSheetSpriteGroup;
-import com.mygdx.game.items.MachineGun;
 import com.mygdx.game.items.Pistol;
-import com.mygdx.game.items.Shotgun;
 import com.mygdx.game.utils.BodyFactory;
 
 public class MyGdxGame extends ApplicationAdapter {
@@ -64,26 +60,22 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		physicDebugRenderer =  new Box2DDebugRenderer();
 		
-		player = new Player(new SpriteSheetComp(playerSpriteSheet, 4, 4, true, new SpriteSheetSpriteGroup(0, 3, 0.1f, Player.ANIM_WALK_DOWN), 
+		player = new Player(world, new Vector2(), new SpriteSheetComp(playerSpriteSheet, 4, 4, true, new SpriteSheetSpriteGroup(0, 3, 0.1f, Player.ANIM_WALK_DOWN), 
 																			   new SpriteSheetSpriteGroup(4, 7, 0.1f, Player.ANIM_WALK_LEFT),
 																			   new SpriteSheetSpriteGroup(8, 11, 0.1f, Player.ANIM_WALK_UP),
 																			   new SpriteSheetSpriteGroup(12, 15, 0.1f, Player.ANIM_WALK_RIGHT),
 																			   new SpriteSheetSpriteGroup(0, 3, 0.05f, Player.ANIM_RUN_DOWN), 
 																			   new SpriteSheetSpriteGroup(4, 7, 0.05f, Player.ANIM_RUN_LEFT),
 																			   new SpriteSheetSpriteGroup(8, 11, 0.05f, Player.ANIM_RUN_UP),
-																			   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)), world);
+																			   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)));
 		player.setItem(new Pistol());
 		engine.addEntity(player);
-		boss1 = new Enemy(EnemyType.Boss1, new SpriteSheetComp(enemySpriteSheet, 4, 4, false, new SpriteSheetSpriteGroup(0, 3, 0.1f, Enemy.ANIM_WALK_DOWN), 
+		boss1 = new Enemy(EnemyType.Boss1, world, new Vector2(), new SpriteSheetComp(enemySpriteSheet, 4, 4, false, new SpriteSheetSpriteGroup(0, 3, 0.1f, Enemy.ANIM_WALK_DOWN), 
 				   new SpriteSheetSpriteGroup(4, 7, 0.1f, Enemy.ANIM_WALK_LEFT),
-				   new SpriteSheetSpriteGroup(8, 11, 0.1f, Enemy.ANIM_WALK_UP),
-				   new SpriteSheetSpriteGroup(12, 15, 0.1f, Enemy.ANIM_WALK_RIGHT),
-				   new SpriteSheetSpriteGroup(0, 3, 0.05f, Player.ANIM_RUN_DOWN), 
-				   new SpriteSheetSpriteGroup(4, 7, 0.05f, Player.ANIM_RUN_LEFT),
-				   new SpriteSheetSpriteGroup(8, 11, 0.05f, Player.ANIM_RUN_UP),
-				   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)), world, new Vector2());
+				   new SpriteSheetSpriteGroup(8, 11, 0.1f, Enemy.ANIM_WALK_RIGHT),
+				   new SpriteSheetSpriteGroup(12, 15, 0.1f, Enemy.ANIM_WALK_UP)));
 		engine.addEntity(boss1);
-		cam = new OrthographicCamera(Gdx.graphics.getWidth()*2, Gdx.graphics.getHeight()*2);
+		cam = new OrthographicCamera(Gdx.graphics.getWidth()*1.25f, Gdx.graphics.getHeight()*1.25f);
 		cam.position.x = Gdx.graphics.getWidth()/2; 
 		cam.position.y = Gdx.graphics.getHeight()/2;
 	}
@@ -103,8 +95,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		//Camera bewegen
 		//Die kontrolle der kamera gehört nicht in die spieler klasse!! (Weil man z.b. mehrer spieler haben kann)
-		cam.position.x = player.positionComp.pos.x;
-		cam.position.y = player.positionComp.pos.y;
+		cam.position.x = player.getPositionComp().pos.x;
+		cam.position.y = player.getPositionComp().pos.y;
 		
 		//Sprites rendern
 		cam.update();
