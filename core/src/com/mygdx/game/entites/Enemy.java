@@ -23,7 +23,6 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 	
 	public Item item;
 	public Player target;
-//	public static float DAMPING = 0.02f; //Was soll das machen???
 	public float attackRadius;
 	public float speed;
 	private int enemyDirection;
@@ -95,12 +94,7 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 			if (System.currentTimeMillis() - lastAttack >= type.action.cooldownInSec*1000) {
 				lastAttack = System.currentTimeMillis();
 				type.action.doAction(this, world, engine, cam);
-			} else {
-//				DAMPING = 0.02f;
 			}
-			//Dise berechnung wird in der Main Klasse übernommen. Einfach die velociy von der velocity komponente setzen
-//			positionComp.pos.x += nextXY.x * DAMPING;
-//			positionComp.pos.y += nextXY.y * DAMPING; 
 			velocityComp.vel=nextVel;
 		}
 
