@@ -1,5 +1,5 @@
 # ShooterGame
-Shooter mit LetsCyb und Stin
+Shooter mit LetsCyb
 
 # WICHTIG
 Alles immer kommentieren!!! Auch beim commit ein Kommentar mit den Änderungen hinzufügen!
