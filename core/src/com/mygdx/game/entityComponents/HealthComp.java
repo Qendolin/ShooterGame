@@ -11,6 +11,7 @@ public class HealthComp implements Component{
 	public DeathListener deathListener;
 	public SpriteComp sprite;
 	public float startHealth;
+	private float orgWidth;
 	
 	public HealthComp(float health, DeathListener onDeath){
 		this.health=health;
@@ -23,10 +24,11 @@ public class HealthComp implements Component{
 		startHealth=health;
 		deathListener = onDeath;
 		this.sprite=sprite;
+		orgWidth = sprite.getWidth();
 	}
 
 	public void damage(float amount) {
-		sprite.get().setSize(sprite.getWidth()*(health/startHealth), sprite.getHeight());
+		sprite.get().setSize(orgWidth*(health/startHealth), sprite.getHeight());
 		health -= Math.abs(amount);
 		checkDead();
 	}
