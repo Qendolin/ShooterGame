@@ -7,11 +7,13 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.mygdx.game.entityComponents.*;
 import com.mygdx.game.entityComponents.events.UpdateListener;
+import com.mygdx.game.entityComponents.visualComps.SpriteComp;
 import com.mygdx.game.entityComponents.visualComps.SpriteSheetComp;
 import com.mygdx.game.items.Gun;
 import com.mygdx.game.items.Item;
@@ -26,6 +28,7 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 	public float speed;
 	private int enemyDirection;
 	public long lastAttack;
+	public float fullHealth;
 
 	EnemyType type;
 
@@ -37,6 +40,8 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 	public static final String ANIM_RUN_UP = "runUp";
 	public static final String ANIM_RUN_LEFT = "runLeft";
 	public static final String ANIM_RUN_RIGHT = "runRight";
+	
+	public SpriteComp healthBar = new SpriteComp(new Texture("hfg.png"));
 
 	public static float enemyHitCircleRadiusMultiplyer = 0.8f;
 	public static float enemyRangeCircleRadiusMultiplyer = 30f; // Ich würde den Spieler "detections" radius nicht als
@@ -48,10 +53,12 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 		this.type = type;
 		speed = type.speed;
 		item = type.item;
+		fullHealth=type.health;
 		attackRadius = (((visual.getHeight() + visual.getWidth()) / 4f) * enemyRangeCircleRadiusMultiplyer) / 2;
-		
-		healthComp = new HealthComp(type.health, disposeOnDeath);
+		add(healthBar);
+		healthComp = new HealthComp(type.health, disposeOnDeath,healthBar);
 		add(healthComp);
+		
 		colliderComp = new ColliderComp(world, visualComp.getCenter(), this,
 				((visual.getHeight() + visual.getWidth()) / 4f) * enemyHitCircleRadiusMultiplyer, BodyType.DynamicBody,
 				type.boss ? Const.BIG_ENTITY : Const.ENTITY, (short) (Const.ENTITY ^ Const.ALL));
@@ -119,6 +126,8 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 			visualComp.animate = false;
 		} else
 			visualComp.animate = true;
+		
+		healthBar.get().setPosition(positionComp.pos.x+visualComp.getWidth(), positionComp.pos.y+visualComp.getHeight()+10);
 	}
 
 	public void setTarget(Player target) {
