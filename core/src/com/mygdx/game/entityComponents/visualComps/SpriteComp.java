@@ -31,6 +31,7 @@ public class SpriteComp extends VisualComp {
 		return sprite.getHeight()*sprite.getScaleY();
 	}
 
+
 	@Override
 	public void dispose() {
 		sprite.getTexture().dispose();
