@@ -10,10 +10,10 @@ import com.mygdx.game.entityComponents.HealthComp;
 import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.VelocityComp;
-import com.mygdx.game.entityComponents.Visual;
 import com.mygdx.game.entityComponents.VisualComp;
 import com.mygdx.game.entityComponents.events.DeathEvent;
 import com.mygdx.game.entityComponents.events.DeathListener;
+import com.mygdx.game.entityComponents.visuals.Visual;
 
 public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disposable {
 

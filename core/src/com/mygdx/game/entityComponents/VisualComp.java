@@ -1,6 +1,7 @@
 package com.mygdx.game.entityComponents;
 
 import com.badlogic.ashley.core.Component;
+import com.mygdx.game.entityComponents.visuals.Visual;
 
 public final class VisualComp<V extends Visual> implements Component{
 

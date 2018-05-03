@@ -32,13 +32,13 @@ import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.RotationComp;
 import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.VelocityComp;
-import com.mygdx.game.entityComponents.Visual;
 import com.mygdx.game.entityComponents.VisualComp;
 import com.mygdx.game.entityComponents.events.CollisionEvent;
 import com.mygdx.game.entityComponents.misc.BodyDeleteFlag;
 import com.mygdx.game.entityComponents.misc.CollisionEntityConnection;
 import com.mygdx.game.entityComponents.visuals.SpriteSheetSpriteGroup;
 import com.mygdx.game.entityComponents.visuals.SpriteSheetVis;
+import com.mygdx.game.entityComponents.visuals.Visual;
 import com.mygdx.game.items.Shotgun;
 import com.mygdx.game.utils.BodyFactory;
 import com.mygdx.game.utils.Const;
@@ -109,7 +109,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		player.setItem(new Shotgun());
 		engine.addEntity(player);
 		//boss
-		engine.addEntity(new Enemy(EnemyType.Boss1, world, new Vector2(), new SpriteSheetVis(enemySpriteSheet, 4, 4, false, new SpriteSheetSpriteGroup(0, 3, 0.1f, Enemy.ANIM_WALK_DOWN), 
+		engine.addEntity(new Enemy(EnemyType.Boss1, world, engine, new Vector2(), new SpriteSheetVis(enemySpriteSheet, 4, 4, false, new SpriteSheetSpriteGroup(0, 3, 0.1f, Enemy.ANIM_WALK_DOWN), 
 				   new SpriteSheetSpriteGroup(4, 7, 0.1f, Enemy.ANIM_WALK_LEFT),
 				   new SpriteSheetSpriteGroup(8, 11, 0.1f, Enemy.ANIM_WALK_RIGHT),
 				   new SpriteSheetSpriteGroup(12, 15, 0.1f, Enemy.ANIM_WALK_UP))));
@@ -149,13 +149,15 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.begin();
 		for(Entity renderable : renderables) {
 			VisualComp<?> visualComp = renderable.getComponent(VisualComp.class);
-			Sprite sprite = visualComp.visual.get();
-			if(sprite == null)
-				continue;
-			Vector2 pos = renderable.getComponent(PositionComp.class).pos;
-			//Zentrieren
-			sprite.setPosition(pos.x-sprite.getWidth()/2f, pos.y-sprite.getHeight()/2f);
-			sprite.draw(batch);
+			for(int i = 0; i < visualComp.visual.getNumberOfSprites() || i == 0; i++) {
+				Sprite sprite = visualComp.visual.get(i);
+				if(sprite == null)
+					continue;
+				Vector2 pos = renderable.getComponent(PositionComp.class).pos;
+				//Zentrieren
+				sprite.setPosition(pos.x-sprite.getWidth()/2f, pos.y-sprite.getHeight()/2f);
+				sprite.draw(batch);
+			}
 		}
 		batch.end();
 		
@@ -217,7 +219,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	}*/
 	
 	private void updateVelocities() {
-		Family movableFamily = Family.one(VelocityComp.class, PositionComp.class).get();
+		Family movableFamily = Family.all(VelocityComp.class).one(VelocityComp.class, PositionComp.class).get();
 		ImmutableArray<Entity> movables = engine.getEntitiesFor(movableFamily);
 		for(Entity movable : movables) {
 			Vector2 vel = movable.getComponent(VelocityComp.class).vel;

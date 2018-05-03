@@ -15,9 +15,9 @@ import com.mygdx.game.entityComponents.HealthComp;
 import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.TimeoutComp;
 import com.mygdx.game.entityComponents.VelocityComp;
-import com.mygdx.game.entityComponents.Visual;
 import com.mygdx.game.entityComponents.VisualComp;
 import com.mygdx.game.entityComponents.events.CollisionListener;
+import com.mygdx.game.entityComponents.visuals.Visual;
 import com.mygdx.game.utils.Const;
 
 public class Projectile extends Entity implements Disposable{

@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.mygdx.game.entityComponents.Visual;
 import com.mygdx.game.entityComponents.VisualComp;
 
 public class AnimationVis extends Visual {
@@ -37,12 +36,6 @@ public class AnimationVis extends Visual {
 	public AnimationVis(Animation<Sprite> anim) {
 		this.anim = anim;
 	}
-	
-	@Override
-	public Sprite get() {
-		stateTime+=Gdx.graphics.getDeltaTime();
-		return anim.getKeyFrame(stateTime, true);
-	}
 
 	@Override
 	public float getWidth() {
@@ -58,6 +51,18 @@ public class AnimationVis extends Visual {
 	public void dispose() {
 		if(spriteSheet != null)
 			spriteSheet.dispose();
+	}
+
+	@Override
+	public Sprite get(int index) {
+		stateTime+=Gdx.graphics.getDeltaTime();
+		return anim.getKeyFrame(stateTime, true);
+	}
+
+	@Override
+	public int getNumberOfSprites() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

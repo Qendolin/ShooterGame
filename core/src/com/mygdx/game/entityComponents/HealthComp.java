@@ -3,42 +3,34 @@ package com.mygdx.game.entityComponents;
 import com.badlogic.ashley.core.Component;
 import com.mygdx.game.entityComponents.events.DeathEvent;
 import com.mygdx.game.entityComponents.events.DeathListener;
-import com.mygdx.game.entityComponents.visuals.SpriteVis;
+import com.mygdx.game.entityComponents.visuals.CompositeVis;
+
+import javafx.beans.property.SimpleFloatProperty;
 
 public final class HealthComp implements Component{
 
-	public float health;
+	public SimpleFloatProperty health;
 	public DeathListener deathListener;
-	public SpriteVis sprite;
+	public VisualComp<CompositeVis> visualComp;
 	public float startHealth;
-	private float orgWidth;
 	
 	public HealthComp(float health, DeathListener onDeath){
-		this.health=health;
+		this.health = new SimpleFloatProperty(health);
 		startHealth=health;
 		deathListener = onDeath;
-	}
-	
-	public HealthComp(float health, DeathListener onDeath,SpriteVis sprite){
-		this.health=health;
-		startHealth=health;
-		deathListener = onDeath;
-		this.sprite=sprite;
-		orgWidth = sprite.getWidth();
 	}
 
 	public void damage(float amount) {
-		sprite.get().setSize(orgWidth*(health/startHealth), sprite.getHeight());
-		health -= Math.abs(amount);
+		health.set(health.get() - Math.abs(amount));
 		checkDead();
 	}
 	
 	private void checkDead() {
-		if(health <= 0)
+		if(health.get() <= 0)
 			deathListener.handle(new DeathEvent());
 	}
 
 	public void heal(float amount) {
-		health += Math.abs(amount);
+		health.set(health.get() + Math.abs(amount));
 	}
 }

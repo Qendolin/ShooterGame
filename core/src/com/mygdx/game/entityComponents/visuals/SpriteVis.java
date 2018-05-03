@@ -2,7 +2,6 @@ package com.mygdx.game.entityComponents.visuals;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.mygdx.game.entityComponents.Visual;
 import com.mygdx.game.entityComponents.VisualComp;
 
 public class SpriteVis extends Visual {
@@ -15,11 +14,6 @@ public class SpriteVis extends Visual {
 	
 	public SpriteVis(Sprite sprite) {
 		this.sprite = sprite;
-	}
-	
-	@Override
-	public Sprite get() {
-		return sprite;
 	}
 
 	@Override
@@ -36,6 +30,17 @@ public class SpriteVis extends Visual {
 	@Override
 	public void dispose() {
 		sprite.getTexture().dispose();
+	}
+
+	@Override
+	public Sprite get(int index) {
+		return sprite;
+	}
+
+	@Override
+	public int getNumberOfSprites() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

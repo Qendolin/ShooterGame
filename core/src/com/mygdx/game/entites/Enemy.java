@@ -42,7 +42,7 @@ public class Enemy extends DefaultEntity<SpriteSheetVis> {
 																// multiplyer festlegen (also von der größe des sprites
 																// abhängig machen) sonder als fixen wert festlegen
 
-	public Enemy(EnemyType type,  World world, Vector2 position, SpriteSheetVis visual) {
+	public Enemy(EnemyType type,  World world, Engine engine, Vector2 position, SpriteSheetVis visual) {
 		super(position, visual);
 		this.type = type;
 		speed = type.speed;
@@ -50,7 +50,7 @@ public class Enemy extends DefaultEntity<SpriteSheetVis> {
 		fullHealth=type.health;
 		attackRadius = (((visual.getHeight() + visual.getWidth()) / 4f) * enemyRangeCircleRadiusMultiplyer) / 2;
 		healthComp = new HealthComp(type.health, disposeOnDeath);
-//		wadd(healthComp);
+		add(healthComp);
 		
 		bodyComp = new BodyComp(world, visualComp.visual.getCenter(), this,
 				((visual.getHeight() + visual.getWidth()) / 4f) * enemyHitCircleRadiusMultiplyer, BodyType.DynamicBody,
@@ -65,7 +65,8 @@ public class Enemy extends DefaultEntity<SpriteSheetVis> {
 		add(updateComp);
 		accelerationComp = new FixedAccelerationComp(Float.MAX_VALUE); //Instant
 		add(accelerationComp);
-		healthBar = new HealthBar(positionComp, new Vector2());
+		healthBar = new HealthBar(positionComp, new Vector2(), healthComp);
+		engine.addEntity(healthBar);
 	}
 
 	public void update(World world, Camera cam, Engine engine) {
@@ -83,8 +84,8 @@ public class Enemy extends DefaultEntity<SpriteSheetVis> {
 		}
 		Vector2 nextVel;
 		if (target != null) {
-			nextVel = new Vector2(target.positionComp.pos.x - positionComp.pos.x - target.visualComp.visual.getWidth() / 1.3f,
-					target.positionComp.pos.y - positionComp.pos.y - target.visualComp.visual.getHeight() / 1.3f);
+			nextVel = new Vector2((target.positionComp.pos.x - positionComp.pos.x) / 1.3f,
+					(target.positionComp.pos.y - positionComp.pos.y) / 1.3f);
 
 			if (System.currentTimeMillis() - lastAttack >= type.action.cooldownInSec*1000) {
 				lastAttack = System.currentTimeMillis();

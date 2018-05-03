@@ -5,7 +5,6 @@ import java.util.HashMap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.mygdx.game.entityComponents.Visual;
 import com.mygdx.game.entityComponents.VisualComp;
 
 public class SpriteSheetVis extends Visual {
@@ -63,9 +62,25 @@ public class SpriteSheetVis extends Visual {
 		}
 		currentFrame = anim.start + (frame % (anim.end - anim.start + 1));
 	}
-	
+
 	@Override
-	public Sprite get() {
+	public float getWidth() {
+		return frames[currentFrame].getWidth();
+	}
+
+	@Override
+	public float getHeight() {
+		return frames[currentFrame].getHeight();
+	}
+
+	@Override
+	public void dispose() {
+		if(spriteSheet != null)
+			spriteSheet.dispose();
+	}
+
+	@Override
+	public Sprite get(int index) {
 		SpriteSheetSpriteGroup anim = animationGroups.get(currentAnimation);
 		if(anim == null)
 			return null;
@@ -89,19 +104,9 @@ public class SpriteSheetVis extends Visual {
 	}
 
 	@Override
-	public float getWidth() {
-		return frames[currentFrame].getWidth();
-	}
-
-	@Override
-	public float getHeight() {
-		return frames[currentFrame].getHeight();
-	}
-
-	@Override
-	public void dispose() {
-		if(spriteSheet != null)
-			spriteSheet.dispose();
+	public int getNumberOfSprites() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
