@@ -10,15 +10,19 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.MyGdxGame;
 
 public class BodyFactory {
 	
 	public static Body createCircle(World world, BodyType type, boolean bullet, short collisionLayer, short collisionLayerMask, Vector2 center, float radius) {
+		radius *= Const.PIXEL_TO_METER_RATIO;
+		center = new Vector2(center).scl(Const.PIXEL_TO_METER_RATIO);
 		BodyDef bdef = createBodyDef(type, bullet, center);
 		CircleShape shape = new CircleShape();
 		shape.setRadius(radius);
 		shape.setPosition(new Vector2()); //vec2(0) weil position im body gespeichert wird
 		FixtureDef fdef = createFixtureDef(collisionLayer, collisionLayerMask, shape);
+		fdef.density=0;
 		Body body = world.createBody(bdef);
 		body.createFixture(fdef);
 		shape.dispose();
@@ -26,10 +30,14 @@ public class BodyFactory {
 	}
 	
 	public static Body createRectangle(World world, BodyType type, boolean bullet, short collisionLayer, short collisionLayerMask, Vector2 center, float width, float height) {
+		center = new Vector2(center).scl(Const.PIXEL_TO_METER_RATIO);
+		width *= Const.PIXEL_TO_METER_RATIO;
+		height *= Const.PIXEL_TO_METER_RATIO;
 		BodyDef bdef = createBodyDef(type, bullet, center);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(width/2, height/2, new Vector2(), 0); //vec2(0) weil position im body gespeichert wird
 		FixtureDef fdef = createFixtureDef(collisionLayer, collisionLayerMask, shape);
+		fdef.density=0;
 		Body body = world.createBody(bdef);
 		body.createFixture(fdef);
 		shape.dispose();
@@ -53,6 +61,9 @@ public class BodyFactory {
 	}
 	
 	public static void createBorder(World world, Vector2 center, float width, float height) {
+		center = new Vector2(center).scl(Const.PIXEL_TO_METER_RATIO);
+		width *= Const.PIXEL_TO_METER_RATIO;
+		height *= Const.PIXEL_TO_METER_RATIO;
 		createEdge(world, center, Const.ALWAYS, Const.ALL, new Vector2(center.x-width/2f, center.y-height/2f),
 				  new Vector2(center.x+width/2f, center.y-height/2f));
 		createEdge(world, center, Const.ALWAYS, Const.ALL, new Vector2(center.x+width/2f, center.y-height/2f),

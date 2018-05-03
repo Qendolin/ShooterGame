@@ -14,4 +14,7 @@ public class Const {
 	public static final short PLAYER = ENTITY | 0x20;
 	public static final short ALL = 0xFFF;
 	
+	public static final float METER_TO_PIXEL_RATIO = 1000;
+	public static final float PIXEL_TO_METER_RATIO = 1/METER_TO_PIXEL_RATIO;
+	
 }

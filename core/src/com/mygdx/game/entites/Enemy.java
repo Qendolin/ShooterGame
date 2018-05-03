@@ -29,7 +29,7 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 	public long lastAttack;
 	public float fullHealth;
 
-	EnemyType type;
+	private EnemyType type;
 
 	public static final String ANIM_WALK_DOWN = "walkDown";
 	public static final String ANIM_WALK_UP = "walkUp";
@@ -40,7 +40,7 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 	public static final String ANIM_RUN_LEFT = "runLeft";
 	public static final String ANIM_RUN_RIGHT = "runRight";
 	
-	public SpriteComp healthBar = new SpriteComp(new Texture("hfg.png"));
+	public HealthBar healthBar;
 
 	public static float enemyHitCircleRadiusMultiplyer = 0.8f;
 	public static float enemyRangeCircleRadiusMultiplyer = 30f; // Ich würde den Spieler "detections" radius nicht als
@@ -54,9 +54,8 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 		item = type.item;
 		fullHealth=type.health;
 		attackRadius = (((visual.getHeight() + visual.getWidth()) / 4f) * enemyRangeCircleRadiusMultiplyer) / 2;
-		add(healthBar);
-		healthComp = new HealthComp(type.health, disposeOnDeath,healthBar);
-		add(healthComp);
+		healthComp = new HealthComp(type.health, disposeOnDeath);
+//		wadd(healthComp);
 		
 		colliderComp = new ColliderComp(world, visualComp.getCenter(), this,
 				((visual.getHeight() + visual.getWidth()) / 4f) * enemyHitCircleRadiusMultiplyer, BodyType.DynamicBody,
@@ -71,6 +70,7 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 		add(updateComp);
 		accelerationComp = new FixedAccelerationComp(Float.MAX_VALUE); //Instant
 		add(accelerationComp);
+		healthBar = new HealthBar(positionComp, new Vector2());
 	}
 
 	public void update(World world, Camera cam, Engine engine) {
@@ -121,7 +121,7 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 		} else
 			visualComp.animate = true;
 		
-		healthBar.get().setPosition(positionComp.pos.x+visualComp.getWidth(), positionComp.pos.y+visualComp.getHeight()+10);
+//		healthBar.get().setPosition(positionComp.pos.x+visualComp.getWidth(), positionComp.pos.y+visualComp.getHeight()+10);
 	}
 
 	public void setTarget(Player target) {

@@ -31,13 +31,11 @@ public class Player extends DefaultEntity<SpriteSheetComp> {
 	public static ArrayList<Player> playerList = new ArrayList<>();
 	
 	public static float playerHitCircleRadiusMultiplyer = 0.8f;
-	public static float playerBaseSpeed = 150;
+	public static float playerBaseSpeed = 150f;
 	
 	public float currentPlayerSpeed = playerBaseSpeed;
 	
 	private Item item;
-	
-	public ColliderComp collisionComp;
 	
 	private boolean running = false;
 	private int playerDirection;
@@ -47,7 +45,7 @@ public class Player extends DefaultEntity<SpriteSheetComp> {
 		accelerationComp = new FixedAccelerationComp(playerBaseSpeed*5f);
 		add(accelerationComp);
 		createColliderComp(world, visual);
-		add(collisionComp);
+		add(colliderComp);
 		updateComp = new UpdateEventComp(new UpdateListener() {
 			@Override
 			public void onUpdate(World world, Engine engine, Camera cam) {
@@ -59,7 +57,7 @@ public class Player extends DefaultEntity<SpriteSheetComp> {
 	}
 	
 	private void createColliderComp(World world, SpriteSheetComp visual) {
-		collisionComp = new ColliderComp(world, visualComp.getCenter(), this,
+		colliderComp = new ColliderComp(world, visualComp.getCenter(), this,
 				((visual.getHeight()+visual.getWidth())/4f)*playerHitCircleRadiusMultiplyer, 
 				BodyType.DynamicBody, Const.PLAYER, (short) (Const.ENTITY ^ Const.ALL));
 	}
