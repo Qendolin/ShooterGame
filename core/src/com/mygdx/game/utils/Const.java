@@ -6,6 +6,7 @@ package com.mygdx.game.utils;
 public class Const {
 
 	public static final short NONE = 0x0;
+	public static final short NEVER = 0x0;
 	public static final short PROJECTILE = 0x1;
 	public static final short ENTITY = 0x2;
 	public static final short BIG_ENTITY = ENTITY | 0x4;

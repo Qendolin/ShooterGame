@@ -21,10 +21,11 @@ public final class TimeoutComp extends Entity implements Component, Disposable {
 		}
 	});
 	
-	public TimeoutComp(float inXSconds, EventListener onTimeout) {
+	public TimeoutComp(Engine engine, float inXSconds, EventListener onTimeout) {
 		timeoutTime = System.currentTimeMillis() / 1000d + inXSconds;
 		listener = onTimeout;
 		add(updateComp);
+		engine.addEntity(this);
 	}
 
 	public void update() {

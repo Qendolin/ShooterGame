@@ -35,7 +35,7 @@ public class Projectile extends Entity implements Disposable{
 		this.engine = engine;
 		damageComp = new DamageComp(damage);
 		add(damageComp);
-		add(new TimeoutComp(timeoutInSec, new EventListener() {
+		add(new TimeoutComp(engine, timeoutInSec, new EventListener() {
 			@Override
 			public boolean handle(Event e) {
 				dispose();
