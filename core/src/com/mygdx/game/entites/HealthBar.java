@@ -10,7 +10,7 @@ import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.VisualComp;
 import com.mygdx.game.entityComponents.events.UpdateListener;
-import com.mygdx.game.entityComponents.visualComps.SpriteComp;
+import com.mygdx.game.entityComponents.visuals.SpriteVis;
 
 public class HealthBar extends Entity {
 	
@@ -23,7 +23,7 @@ public class HealthBar extends Entity {
 			barPosition.pos = new Vector2(trackingPosition.pos).add(offset);
 		}
 	});
-	public VisualComp visualComp;
+	public VisualComp<SpriteVis> visualComp;
 	
 	public HealthBar(PositionComp trackingPosition, Vector2 offset) {
 		this.trackingPosition = trackingPosition;
@@ -31,7 +31,7 @@ public class HealthBar extends Entity {
 		add(barPosition);
 		this.offset = offset;
 		add(updateComp);
-		visualComp = new SpriteComp(new Texture("hfg.png"));
+		visualComp = new VisualComp<SpriteVis>(new SpriteVis(new Texture("hfg.png")));
 		add(visualComp);
 	}
 }

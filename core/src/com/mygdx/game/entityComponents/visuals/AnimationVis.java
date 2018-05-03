@@ -1,19 +1,20 @@
-package com.mygdx.game.entityComponents.visualComps;
+package com.mygdx.game.entityComponents.visuals;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.mygdx.game.entityComponents.Visual;
 import com.mygdx.game.entityComponents.VisualComp;
 
-public class AnimationComp extends VisualComp {
+public class AnimationVis extends Visual {
 
 	private Animation<Sprite> anim;
 	private Texture spriteSheet;
 	private float stateTime;
 	
-	public AnimationComp(Texture spriteSheet, int cols, int rows, float frameDuration) {
+	public AnimationVis(Texture spriteSheet, int cols, int rows, float frameDuration) {
 		this.spriteSheet = spriteSheet;
 		TextureRegion[][] temp = TextureRegion.split(spriteSheet, 
 				spriteSheet.getWidth() / cols,
@@ -33,7 +34,7 @@ public class AnimationComp extends VisualComp {
 	 * Remember to dispose!
 	 * @param anim
 	 */
-	public AnimationComp(Animation<Sprite> anim) {
+	public AnimationVis(Animation<Sprite> anim) {
 		this.anim = anim;
 	}
 	

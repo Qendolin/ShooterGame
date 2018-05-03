@@ -1,13 +1,14 @@
-package com.mygdx.game.entityComponents.visualComps;
+package com.mygdx.game.entityComponents.visuals;
 
 import java.util.HashMap;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.mygdx.game.entityComponents.Visual;
 import com.mygdx.game.entityComponents.VisualComp;
 
-public class SpriteSheetComp extends VisualComp {
+public class SpriteSheetVis extends Visual {
 
 	public HashMap<String, SpriteSheetSpriteGroup> animationGroups = new HashMap<String, SpriteSheetSpriteGroup>();
 	public String currentAnimation = "";
@@ -25,7 +26,7 @@ public class SpriteSheetComp extends VisualComp {
 	 * @param swapColsAndRows
 	 * @param groups
 	 */
-	public SpriteSheetComp(Texture spriteSheet, int cols, int rows, boolean swapColsAndRows, SpriteSheetSpriteGroup... groups) {
+	public SpriteSheetVis(Texture spriteSheet, int cols, int rows, boolean swapColsAndRows, SpriteSheetSpriteGroup... groups) {
 		TextureRegion[][] temp = TextureRegion.split(spriteSheet, 
 				spriteSheet.getWidth() / cols,
 				spriteSheet.getHeight() / rows);

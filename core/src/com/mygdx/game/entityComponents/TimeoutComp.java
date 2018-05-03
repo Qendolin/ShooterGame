@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.entityComponents.events.TimeoutEvent;
 import com.mygdx.game.entityComponents.events.UpdateListener;
 
-public class TimeoutComp extends Entity implements Component, Disposable {
+public final class TimeoutComp extends Entity implements Component, Disposable {
 	
 	private double timeoutTime;
 	private EventListener listener;

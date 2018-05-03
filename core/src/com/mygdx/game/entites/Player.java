@@ -7,17 +7,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.mygdx.game.entityComponents.ColliderComp;
+import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.entityComponents.BodyComp;
 import com.mygdx.game.entityComponents.FixedAccelerationComp;
 import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.events.UpdateListener;
-import com.mygdx.game.entityComponents.visualComps.SpriteSheetComp;
+import com.mygdx.game.entityComponents.visuals.SpriteSheetVis;
 import com.mygdx.game.items.Item;
 import com.mygdx.game.utils.Const;
 
-public class Player extends DefaultEntity<SpriteSheetComp> {
+public class Player extends DefaultEntity<SpriteSheetVis> {
 
 	public static final String ANIM_WALK_DOWN = "walkDown";
 	public static final String ANIM_WALK_UP = "walkUp";
@@ -40,12 +40,12 @@ public class Player extends DefaultEntity<SpriteSheetComp> {
 	private boolean running = false;
 	private int playerDirection;
 	
-	public Player( World world, Vector2 position, SpriteSheetComp visual) {
+	public Player( World world, Vector2 position, SpriteSheetVis visual) {
 		super(position, visual);
 		accelerationComp = new FixedAccelerationComp(playerBaseSpeed*5f);
 		add(accelerationComp);
 		createColliderComp(world, visual);
-		add(colliderComp);
+		add(bodyComp);
 		updateComp = new UpdateEventComp(new UpdateListener() {
 			@Override
 			public void onUpdate(World world, Engine engine, Camera cam) {
@@ -56,10 +56,10 @@ public class Player extends DefaultEntity<SpriteSheetComp> {
 		playerList.add(this);
 	}
 	
-	private void createColliderComp(World world, SpriteSheetComp visual) {
-		colliderComp = new ColliderComp(world, visualComp.getCenter(), this,
+	private void createColliderComp(World world, SpriteSheetVis visual) {
+		bodyComp = new BodyComp(world, visualComp.visual.getCenter(), this,
 				((visual.getHeight()+visual.getWidth())/4f)*playerHitCircleRadiusMultiplyer, 
-				BodyType.DynamicBody, Const.PLAYER, (short) (Const.ENTITY ^ Const.ALL));
+				BodyType.DynamicBody, Const.PLAYER, (short) (Const.PROJECTILE ^ Const.ENTITY ^ Const.ALL));
 	}
 /*
 	public Player(SpriteSheetComp visual, VelocityComp velocity, PositionComp position, World world) {
@@ -132,24 +132,24 @@ public class Player extends DefaultEntity<SpriteSheetComp> {
 		playerDirection = newVel.isZero() ? playerDirection : getVelocityDirectionArea(4, 45);
 		switch(playerDirection) {
 			case(0):
-				visualComp.currentAnimation = running ? ANIM_RUN_RIGHT : ANIM_WALK_RIGHT;
+				visualComp.visual.currentAnimation = running ? ANIM_RUN_RIGHT : ANIM_WALK_RIGHT;
 				break;
 			case(1):
-				visualComp.currentAnimation = running ? ANIM_RUN_UP : ANIM_WALK_UP;
+				visualComp.visual.currentAnimation = running ? ANIM_RUN_UP : ANIM_WALK_UP;
 				break;
 			case(2):
-				visualComp.currentAnimation = running ? ANIM_RUN_LEFT : ANIM_WALK_LEFT;
+				visualComp.visual.currentAnimation = running ? ANIM_RUN_LEFT : ANIM_WALK_LEFT;
 				break;
 			case(3):
-				visualComp.currentAnimation = running ? ANIM_RUN_DOWN : ANIM_WALK_DOWN;
+				visualComp.visual.currentAnimation = running ? ANIM_RUN_DOWN : ANIM_WALK_DOWN;
 				break;
 		}
 		
 		if(newVel.isZero()) {
-			visualComp.setCurrentAnimationFrame(0);
-			visualComp.animate = false;
+			visualComp.visual.setCurrentAnimationFrame(0);
+			visualComp.visual.animate = false;
 		} else
-			visualComp.animate = true;
+			visualComp.visual.animate = true;
 		
 		//Item
 		if(item != null)

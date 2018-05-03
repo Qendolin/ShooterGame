@@ -1,22 +1,17 @@
 package com.mygdx.game.entityComponents;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Disposable;
 
-public abstract class VisualComp implements Component, Disposable {
+public final class VisualComp<V extends Visual> implements Component{
 
-	public abstract Sprite get();
+	public V visual;
 	
-	public abstract float getWidth();
-	public abstract float getHeight();
+	public VisualComp (V visual) {
+		this.visual = visual;
+	}
 
-	public abstract void dispose();
-	
-	public Vector2 getCenter() {
-		if(get() == null)
-			return new Vector2();
-		return new Vector2(get().getX()+getWidth()/2f,get().getY()+getHeight()/2f);
+	public V getVisual() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

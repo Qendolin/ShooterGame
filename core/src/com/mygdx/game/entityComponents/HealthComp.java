@@ -3,13 +3,13 @@ package com.mygdx.game.entityComponents;
 import com.badlogic.ashley.core.Component;
 import com.mygdx.game.entityComponents.events.DeathEvent;
 import com.mygdx.game.entityComponents.events.DeathListener;
-import com.mygdx.game.entityComponents.visualComps.SpriteComp;
+import com.mygdx.game.entityComponents.visuals.SpriteVis;
 
-public class HealthComp implements Component{
+public final class HealthComp implements Component{
 
 	public float health;
 	public DeathListener deathListener;
-	public SpriteComp sprite;
+	public SpriteVis sprite;
 	public float startHealth;
 	private float orgWidth;
 	
@@ -19,7 +19,7 @@ public class HealthComp implements Component{
 		deathListener = onDeath;
 	}
 	
-	public HealthComp(float health, DeathListener onDeath,SpriteComp sprite){
+	public HealthComp(float health, DeathListener onDeath,SpriteVis sprite){
 		this.health=health;
 		startHealth=health;
 		deathListener = onDeath;

@@ -1,25 +1,20 @@
 package com.mygdx.game.entites;
 
-import java.util.Random;
-
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.mygdx.game.entityComponents.*;
+import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.entityComponents.BodyComp;
+import com.mygdx.game.entityComponents.FixedAccelerationComp;
+import com.mygdx.game.entityComponents.HealthComp;
+import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.events.UpdateListener;
-import com.mygdx.game.entityComponents.visualComps.SpriteComp;
-import com.mygdx.game.entityComponents.visualComps.SpriteSheetComp;
-import com.mygdx.game.items.Gun;
+import com.mygdx.game.entityComponents.visuals.SpriteSheetVis;
 import com.mygdx.game.items.Item;
 import com.mygdx.game.utils.Const;
 
-public class Enemy extends DefaultEntity<SpriteSheetComp> {
+public class Enemy extends DefaultEntity<SpriteSheetVis> {
 	
 	public Item item;
 	public Player target;
@@ -47,7 +42,7 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 																// multiplyer festlegen (also von der größe des sprites
 																// abhängig machen) sonder als fixen wert festlegen
 
-	public Enemy(EnemyType type,  World world, Vector2 position, SpriteSheetComp visual) {
+	public Enemy(EnemyType type,  World world, Vector2 position, SpriteSheetVis visual) {
 		super(position, visual);
 		this.type = type;
 		speed = type.speed;
@@ -57,10 +52,10 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 		healthComp = new HealthComp(type.health, disposeOnDeath);
 //		wadd(healthComp);
 		
-		colliderComp = new ColliderComp(world, visualComp.getCenter(), this,
+		bodyComp = new BodyComp(world, visualComp.visual.getCenter(), this,
 				((visual.getHeight() + visual.getWidth()) / 4f) * enemyHitCircleRadiusMultiplyer, BodyType.DynamicBody,
 				type.boss ? Const.BIG_ENTITY : Const.ENTITY, (short) (Const.ENTITY ^ Const.ALL));
-		add(colliderComp);
+		add(bodyComp);
 		updateComp = new UpdateEventComp(new UpdateListener() {
 			@Override
 			public void onUpdate(World world, Engine engine, Camera cam) {
@@ -88,8 +83,8 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 		}
 		Vector2 nextVel;
 		if (target != null) {
-			nextVel = new Vector2(target.positionComp.pos.x - positionComp.pos.x - target.visualComp.getWidth() / 1.3f,
-					target.positionComp.pos.y - positionComp.pos.y - target.visualComp.getHeight() / 1.3f);
+			nextVel = new Vector2(target.positionComp.pos.x - positionComp.pos.x - target.visualComp.visual.getWidth() / 1.3f,
+					target.positionComp.pos.y - positionComp.pos.y - target.visualComp.visual.getHeight() / 1.3f);
 
 			if (System.currentTimeMillis() - lastAttack >= type.action.cooldownInSec*1000) {
 				lastAttack = System.currentTimeMillis();
@@ -102,26 +97,26 @@ public class Enemy extends DefaultEntity<SpriteSheetComp> {
 		enemyDirection = velocityComp.vel.isZero() ? enemyDirection : getVelocityDirectionArea(4, 45);
 		switch (enemyDirection) {
 		case (0):
-			visualComp.currentAnimation = ANIM_WALK_RIGHT;
+			visualComp.visual.currentAnimation = ANIM_WALK_RIGHT;
 			break;
 		case (1):
-			visualComp.currentAnimation = ANIM_WALK_UP;
+			visualComp.visual.currentAnimation = ANIM_WALK_UP;
 			break;
 		case (2):
-			visualComp.currentAnimation = ANIM_WALK_LEFT;
+			visualComp.visual.currentAnimation = ANIM_WALK_LEFT;
 			break;
 		case (3):
-			visualComp.currentAnimation = ANIM_WALK_DOWN;
+			visualComp.visual.currentAnimation = ANIM_WALK_DOWN;
 			break;
 		}
 
 		if (positionComp.pos.isZero()) {
-			visualComp.setCurrentAnimationFrame(0);
-			visualComp.animate = false;
+			visualComp.visual.setCurrentAnimationFrame(0);
+			visualComp.visual.animate = false;
 		} else
-			visualComp.animate = true;
+			visualComp.visual.animate = true;
 		
-//		healthBar.get().setPosition(positionComp.pos.x+visualComp.getWidth(), positionComp.pos.y+visualComp.getHeight()+10);
+//		healthBar.get().setPosition(positionComp.pos.x+visualComp.visual.getWidth(), positionComp.pos.y+visualComp.visual.getHeight()+10);
 	}
 
 	public void setTarget(Player target) {

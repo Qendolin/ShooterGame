@@ -1,4 +1,4 @@
-package com.mygdx.game.entityComponents.visualComps;
+package com.mygdx.game.entityComponents.visuals;
 
 public class SpriteSheetSpriteGroup {
 	public int start;

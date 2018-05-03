@@ -3,7 +3,7 @@ package com.mygdx.game.entityComponents;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Vector2;
 
-public class VelocityComp implements Component {
+public final class VelocityComp implements Component {
 	public Vector2 vel = new Vector2();
 	
 	public VelocityComp() {

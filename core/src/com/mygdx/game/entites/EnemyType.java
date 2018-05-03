@@ -2,8 +2,8 @@ package com.mygdx.game.entites;
 
 import com.mygdx.game.actions.Action;
 import com.mygdx.game.actions.Actions;
-import com.mygdx.game.entityComponents.HealthComp;
-import com.mygdx.game.items.*;
+import com.mygdx.game.items.Item;
+import com.mygdx.game.items.MachineGun;
 
 public enum EnemyType {
 

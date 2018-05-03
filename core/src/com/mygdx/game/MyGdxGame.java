@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -28,19 +27,18 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.entites.Enemy;
 import com.mygdx.game.entites.EnemyType;
 import com.mygdx.game.entites.Player;
-import com.mygdx.game.entityComponents.ColliderComp;
+import com.mygdx.game.entityComponents.BodyComp;
 import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.RotationComp;
 import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.VelocityComp;
+import com.mygdx.game.entityComponents.Visual;
 import com.mygdx.game.entityComponents.VisualComp;
 import com.mygdx.game.entityComponents.events.CollisionEvent;
 import com.mygdx.game.entityComponents.misc.BodyDeleteFlag;
 import com.mygdx.game.entityComponents.misc.CollisionEntityConnection;
-import com.mygdx.game.entityComponents.visualComps.AnimationComp;
-import com.mygdx.game.entityComponents.visualComps.SpriteComp;
-import com.mygdx.game.entityComponents.visualComps.SpriteSheetComp;
-import com.mygdx.game.entityComponents.visualComps.SpriteSheetSpriteGroup;
+import com.mygdx.game.entityComponents.visuals.SpriteSheetSpriteGroup;
+import com.mygdx.game.entityComponents.visuals.SpriteSheetVis;
 import com.mygdx.game.items.Shotgun;
 import com.mygdx.game.utils.BodyFactory;
 import com.mygdx.game.utils.Const;
@@ -50,7 +48,6 @@ public class MyGdxGame extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private Engine engine;
 	private Player player;
-	private Enemy boss1;
 	private Camera cam;
 	private World world;
 	private Box2DDebugRenderer physicDebugRenderer;
@@ -101,7 +98,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		physicDebugRenderer = new Box2DDebugRenderer();
 		
-		player = new Player(world, new Vector2(), new SpriteSheetComp(playerSpriteSheet, 4, 4, true, new SpriteSheetSpriteGroup(0, 3, 0.1f, Player.ANIM_WALK_DOWN), 
+		player = new Player(world, new Vector2(), new SpriteSheetVis(playerSpriteSheet, 4, 4, true, new SpriteSheetSpriteGroup(0, 3, 0.1f, Player.ANIM_WALK_DOWN), 
 																			   new SpriteSheetSpriteGroup(4, 7, 0.1f, Player.ANIM_WALK_LEFT),
 																			   new SpriteSheetSpriteGroup(8, 11, 0.1f, Player.ANIM_WALK_UP),
 																			   new SpriteSheetSpriteGroup(12, 15, 0.1f, Player.ANIM_WALK_RIGHT),
@@ -111,11 +108,11 @@ public class MyGdxGame extends ApplicationAdapter {
 																			   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)));
 		player.setItem(new Shotgun());
 		engine.addEntity(player);
-		/*boss1 = new Enemy(EnemyType.Boss1, world, new Vector2(), new SpriteSheetComp(enemySpriteSheet, 4, 4, false, new SpriteSheetSpriteGroup(0, 3, 0.1f, Enemy.ANIM_WALK_DOWN), 
+		//boss
+		engine.addEntity(new Enemy(EnemyType.Boss1, world, new Vector2(), new SpriteSheetVis(enemySpriteSheet, 4, 4, false, new SpriteSheetSpriteGroup(0, 3, 0.1f, Enemy.ANIM_WALK_DOWN), 
 				   new SpriteSheetSpriteGroup(4, 7, 0.1f, Enemy.ANIM_WALK_LEFT),
 				   new SpriteSheetSpriteGroup(8, 11, 0.1f, Enemy.ANIM_WALK_RIGHT),
-				   new SpriteSheetSpriteGroup(12, 15, 0.1f, Enemy.ANIM_WALK_UP)));
-		engine.addEntity(boss1);*/
+				   new SpriteSheetSpriteGroup(12, 15, 0.1f, Enemy.ANIM_WALK_UP))));
 		cam = new OrthographicCamera(Gdx.graphics.getWidth()*1.25f, Gdx.graphics.getHeight()*1.25f);
 		cam.position.x = Gdx.graphics.getWidth()/2; 
 		cam.position.y = Gdx.graphics.getHeight()/2;
@@ -144,21 +141,15 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		//Sprites rendern
 		cam.update();
-		Family renderableFamily = Family.one(VisualComp.class, PositionComp.class).get();
+		Family renderableFamily = Family.all(VisualComp.class, PositionComp.class).get();
 		ImmutableArray<Entity> renderables = engine.getEntitiesFor(renderableFamily);
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();
 		for(Entity renderable : renderables) {
-			VisualComp visualComp = renderable.getComponent(AnimationComp.class);
-			if(visualComp == null)
-				visualComp = renderable.getComponent(SpriteComp.class);
-			if(visualComp == null)
-				visualComp = renderable.getComponent(SpriteSheetComp.class);
-			if(visualComp == null)
-				continue;
-			Sprite sprite = visualComp.get();
+			VisualComp<?> visualComp = renderable.getComponent(VisualComp.class);
+			Sprite sprite = visualComp.visual.get();
 			if(sprite == null)
 				continue;
 			Vector2 pos = renderable.getComponent(PositionComp.class).pos;
@@ -186,7 +177,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 
 	private void updateUpdateListeners() {
-		ImmutableArray<Entity> updateables = engine.getEntitiesFor(Family.one(UpdateEventComp.class).get());
+		ImmutableArray<Entity> updateables = engine.getEntitiesFor(Family.all(UpdateEventComp.class).get());
 		for(Entity updateable : updateables) {
 			UpdateEventComp updateEventComp = updateable.getComponent(UpdateEventComp.class);
 			updateEventComp.update(world, engine, cam);
@@ -194,10 +185,10 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 
 	private void fixPositions() {
-		Family colliderFamily = Family.one(ColliderComp.class, PositionComp.class).get();
+		Family colliderFamily = Family.one(BodyComp.class, PositionComp.class).get();
 		ImmutableArray<Entity> colliders = engine.getEntitiesFor(colliderFamily);
 		for(Entity collider : colliders) {
-			ColliderComp colliderComp = collider.getComponent(ColliderComp.class);
+			BodyComp colliderComp = collider.getComponent(BodyComp.class);
 			PositionComp positionComp = collider.getComponent(PositionComp.class);
 			if(colliderComp != null && positionComp != null)
 				positionComp.pos = new Vector2(colliderComp.getPosition()).scl(Const.METER_TO_PIXEL_RATIO);
@@ -205,7 +196,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 
 	/*private void updatePositions() {
-		Family movableFamily = Family.one(VelocityComp.class, PositionComp.class).get();
+		Family movableFamily = Family.all(VelocityComp.class, PositionComp.class).get();
 		ImmutableArray<Entity> movables = engine.getEntitiesFor(movableFamily);
 		for(Entity movable : movables) {
 			Vector2 vel = movable.getComponent(VelocityComp.class).vel;
@@ -233,7 +224,7 @@ public class MyGdxGame extends ApplicationAdapter {
 			Vector2 pos = movable.getComponent(PositionComp.class).pos;
 			if(vel == null)
 				continue;
-			ColliderComp colliderComp = movable.getComponent(ColliderComp.class);
+			BodyComp colliderComp = movable.getComponent(BodyComp.class);
 			if(colliderComp != null) {
 				RotationComp rotation = movable.getComponent(RotationComp.class);
 				if(rotation != null)
@@ -253,10 +244,10 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		Family spriteFamily = Family.one(SpriteComp.class).get();
+		Family spriteFamily = Family.all(VisualComp.class).get();
 		ImmutableArray<Entity> sprites = engine.getEntitiesFor(spriteFamily);
 		for(Entity spriteEntity : sprites) {
-			VisualComp sprite = spriteEntity.getComponent(SpriteComp.class);
+			Visual sprite = spriteEntity.getComponent(VisualComp.class).visual;
 			if(sprite != null)
 				sprite.dispose();
 		}

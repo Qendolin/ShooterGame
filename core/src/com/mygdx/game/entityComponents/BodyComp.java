@@ -14,10 +14,9 @@ import com.mygdx.game.entityComponents.misc.BodyDeleteFlag;
 import com.mygdx.game.entityComponents.misc.CollisionEntityConnection;
 import com.mygdx.game.utils.BodyFactory;
 
-public class ColliderComp implements Component, Disposable {
-
+public final class BodyComp implements Component, Disposable {
+	
 	private Body body;
-	private World world;
 	private Fixture fixture;
 	private CollisionEntityConnection connection;
 	
@@ -25,26 +24,33 @@ public class ColliderComp implements Component, Disposable {
 	 * Erstellt einen Body mit Circle Shape.
 	 * @param radius
 	 */
-	public ColliderComp(World world, Vector2 pos, Entity entity, float radius, BodyType type, short collisionLayer, short collisionLayerMask) {
-		this.world = world;
-		body = BodyFactory.createCircle(world, type, false, collisionLayer, collisionLayerMask, pos, radius);
+	public BodyComp(World world, Vector2 pos, Entity entity, float radius, BodyType type, short collisionLayer, short collisionLayerMask) {
+		body = BodyFactory.createCircle(world, type, false, collisionLayer, collisionLayerMask, pos, radius, false);
 		fixture = body.getFixtureList().get(0);
 		connection = new CollisionEntityConnection(entity);
 		fixture.setUserData(connection);
 	}
 
 	/**
-	 * Erstellt einen Body mit einem rechteckigen PolygonShape.
+	 * Erstellt einen Body mit einem rechteckigen PolygonShape dass so groß wie der sprite ist.
 	 * @param world
 	 * @param sprite
 	 * @param type
 	 */
-	public ColliderComp(World world, Vector2 pos, Entity entity, Sprite sprite, BodyType type, short collisionLayer, short collisionLayerMask) {
-		this.world = world;
-		body = BodyFactory.createRectangle(world, type, false, collisionLayer, collisionLayerMask, pos, sprite.getWidth(), sprite.getHeight());
+	public BodyComp(World world, Vector2 pos, Entity entity, Sprite sprite, BodyType type, short collisionLayer, short collisionLayerMask) {
+		body = BodyFactory.createRectangle(world, type, false, collisionLayer, collisionLayerMask, pos, sprite.getWidth(), sprite.getHeight(), false);
 		fixture = body.getFixtureList().get(0);
 		connection = new CollisionEntityConnection(entity);
 		fixture.setUserData(connection);
+	}
+	
+	public BodyComp asSensor() {
+		setSensor(true);
+		return this;
+	}
+	
+	public void setSensor(boolean sensor) {
+		fixture.setSensor(sensor);
 	}
 	
 	public void setCollisionListener(CollisionListener listener) {
@@ -67,5 +73,4 @@ public class ColliderComp implements Component, Disposable {
 	public void dispose() {
 		body.setUserData(new BodyDeleteFlag());
 	}
-	
 }

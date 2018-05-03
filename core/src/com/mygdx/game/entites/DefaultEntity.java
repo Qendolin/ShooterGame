@@ -4,17 +4,18 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
-import com.mygdx.game.entityComponents.ColliderComp;
+import com.mygdx.game.entityComponents.BodyComp;
 import com.mygdx.game.entityComponents.FixedAccelerationComp;
 import com.mygdx.game.entityComponents.HealthComp;
 import com.mygdx.game.entityComponents.PositionComp;
 import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.VelocityComp;
+import com.mygdx.game.entityComponents.Visual;
 import com.mygdx.game.entityComponents.VisualComp;
 import com.mygdx.game.entityComponents.events.DeathEvent;
 import com.mygdx.game.entityComponents.events.DeathListener;
 
-public class DefaultEntity<VISUAL extends VisualComp> extends Entity implements Disposable {
+public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disposable {
 
 	protected World world;
 	protected PositionComp positionComp;
@@ -23,8 +24,8 @@ public class DefaultEntity<VISUAL extends VisualComp> extends Entity implements 
 	 * Optional
 	 */
 	protected FixedAccelerationComp accelerationComp;
-	protected VISUAL visualComp;
-	protected ColliderComp colliderComp;
+	protected VisualComp<VISUAL> visualComp;
+	protected BodyComp bodyComp;
 	protected UpdateEventComp updateComp;
 	/**
 	 * optional
@@ -45,7 +46,7 @@ public class DefaultEntity<VISUAL extends VisualComp> extends Entity implements 
 	 * @param visual
 	 */
 	public DefaultEntity(Vector2 position, VISUAL visual) {
-		visualComp=visual;
+		visualComp=new VisualComp<VISUAL>(visual);
 		add(visualComp);
 		positionComp = new PositionComp(position);
 		add(positionComp);
@@ -104,12 +105,12 @@ public class DefaultEntity<VISUAL extends VisualComp> extends Entity implements 
 		return accelerationComp;
 	}
 
-	public VISUAL getVisualComp() {
-		return visualComp;
+	public VISUAL getVisual() {
+		return (VISUAL) visualComp.getVisual();
 	}
 
-	public ColliderComp getColliderComp() {
-		return colliderComp;
+	public BodyComp getBodyComp() {
+		return bodyComp;
 	}
 
 	public UpdateEventComp getUpdateComp() {
@@ -123,6 +124,6 @@ public class DefaultEntity<VISUAL extends VisualComp> extends Entity implements 
 	@Override
 	public void dispose() {
 		removeAll();
-		colliderComp.dispose();
+		bodyComp.dispose();
 	}
 }

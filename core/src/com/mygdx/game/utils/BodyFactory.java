@@ -14,14 +14,14 @@ import com.mygdx.game.MyGdxGame;
 
 public class BodyFactory {
 	
-	public static Body createCircle(World world, BodyType type, boolean bullet, short collisionLayer, short collisionLayerMask, Vector2 center, float radius) {
+	public static Body createCircle(World world, BodyType type, boolean bullet, short collisionLayer, short collisionLayerMask, Vector2 center, float radius, boolean sensor) {
 		radius *= Const.PIXEL_TO_METER_RATIO;
 		center = new Vector2(center).scl(Const.PIXEL_TO_METER_RATIO);
 		BodyDef bdef = createBodyDef(type, bullet, center);
 		CircleShape shape = new CircleShape();
 		shape.setRadius(radius);
 		shape.setPosition(new Vector2()); //vec2(0) weil position im body gespeichert wird
-		FixtureDef fdef = createFixtureDef(collisionLayer, collisionLayerMask, shape);
+		FixtureDef fdef = createFixtureDef(collisionLayer, collisionLayerMask, shape, sensor);
 		fdef.density=0;
 		Body body = world.createBody(bdef);
 		body.createFixture(fdef);
@@ -29,14 +29,14 @@ public class BodyFactory {
 		return body;
 	}
 	
-	public static Body createRectangle(World world, BodyType type, boolean bullet, short collisionLayer, short collisionLayerMask, Vector2 center, float width, float height) {
+	public static Body createRectangle(World world, BodyType type, boolean bullet, short collisionLayer, short collisionLayerMask, Vector2 center, float width, float height, boolean sensor) {
 		center = new Vector2(center).scl(Const.PIXEL_TO_METER_RATIO);
 		width *= Const.PIXEL_TO_METER_RATIO;
 		height *= Const.PIXEL_TO_METER_RATIO;
 		BodyDef bdef = createBodyDef(type, bullet, center);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(width/2, height/2, new Vector2(), 0); //vec2(0) weil position im body gespeichert wird
-		FixtureDef fdef = createFixtureDef(collisionLayer, collisionLayerMask, shape);
+		FixtureDef fdef = createFixtureDef(collisionLayer, collisionLayerMask, shape, sensor);
 		fdef.density=0;
 		Body body = world.createBody(bdef);
 		body.createFixture(fdef);
@@ -52,11 +52,12 @@ public class BodyFactory {
 		return def;
 	}
 	
-	public static FixtureDef createFixtureDef(short collisionLayer, short collisionLayerMask, Shape shape) {
+	public static FixtureDef createFixtureDef(short collisionLayer, short collisionLayerMask, Shape shape, boolean sensor) {
 		FixtureDef def = new FixtureDef();
 		def.filter.categoryBits = collisionLayer;
 		def.filter.maskBits = collisionLayerMask;
 		def.shape = shape;
+		def.isSensor = sensor;
 		return def;
 	}
 	

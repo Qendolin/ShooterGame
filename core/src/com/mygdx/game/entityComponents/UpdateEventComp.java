@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.entityComponents.events.UpdateEvent;
 import com.mygdx.game.entityComponents.events.UpdateListener;
 
-public class UpdateEventComp implements Component {
+public final class UpdateEventComp implements Component {
 
 	public UpdateListener updateEventListener;
 	

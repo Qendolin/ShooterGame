@@ -1,7 +1,6 @@
 package com.mygdx.game.items;
 
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
@@ -10,9 +9,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.game.entityComponents.PositionComp;
-import com.mygdx.game.entityComponents.VelocityComp;
-import com.mygdx.game.entityComponents.visualComps.SpriteComp;
+import com.mygdx.game.entites.Projectile;
+import com.mygdx.game.entityComponents.visuals.SpriteVis;
 
 public class MachineGun extends Gun {
 
@@ -34,7 +32,7 @@ public class MachineGun extends Gun {
 			//Das projektil wird 5k units fliegen bevor es despawnt
 			Projectile shot = new Projectile(world, engine, owner,
 					getOwnerCenter(),
-					new SpriteComp(shotSprite),
+					new SpriteVis(shotSprite),
 					getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y), true),
 					2, 5000/bulletSpeed);
 			engine.addEntity(shot);

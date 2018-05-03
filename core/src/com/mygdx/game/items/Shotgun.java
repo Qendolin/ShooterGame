@@ -9,7 +9,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.game.entityComponents.visualComps.SpriteComp;
+import com.mygdx.game.entites.Projectile;
+import com.mygdx.game.entityComponents.visuals.SpriteVis;
 
 public class Shotgun extends Gun {
 
@@ -31,7 +32,7 @@ public class Shotgun extends Gun {
 				//Das projektiel fliegt zwischen 30 und 70 units
 				Projectile shot = new Projectile(world, engine, owner,
 						getOwnerCenter(),
-						new SpriteComp(shotSprite),
+						new SpriteVis(shotSprite),
 						getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y), true),
 						2, (float) ((Math.random()*40f+30f)/bulletSpeed));
 				engine.addEntity(shot);

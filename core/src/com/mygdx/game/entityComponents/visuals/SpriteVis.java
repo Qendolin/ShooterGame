@@ -1,18 +1,19 @@
-package com.mygdx.game.entityComponents.visualComps;
+package com.mygdx.game.entityComponents.visuals;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.mygdx.game.entityComponents.Visual;
 import com.mygdx.game.entityComponents.VisualComp;
 
-public class SpriteComp extends VisualComp {
+public class SpriteVis extends Visual {
 
 	private Sprite sprite;
 	
-	public SpriteComp(Texture tex) {
+	public SpriteVis(Texture tex) {
 		sprite = new Sprite(tex);
 	}
 	
-	public SpriteComp(Sprite sprite) {
+	public SpriteVis(Sprite sprite) {
 		this.sprite = sprite;
 	}
 	
