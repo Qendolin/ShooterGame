@@ -39,6 +39,7 @@ import com.mygdx.game.entityComponents.misc.CollisionEntityConnection;
 import com.mygdx.game.entityComponents.visuals.SpriteSheetSpriteGroup;
 import com.mygdx.game.entityComponents.visuals.SpriteSheetVis;
 import com.mygdx.game.entityComponents.visuals.Visual;
+import com.mygdx.game.items.Pistol;
 import com.mygdx.game.items.Shotgun;
 import com.mygdx.game.utils.BodyFactory;
 import com.mygdx.game.utils.Const;
@@ -54,6 +55,12 @@ public class MyGdxGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		
+		System.out.println(Integer.toBinaryString((Const.PROJECTILE ^ Const.ENTITY ^ Const.ALL) & (Const.ALWAYS))); //player
+		System.out.println(Integer.toBinaryString((Const.ALL) & (Const.PLAYER))); //border
+		
+		System.out.println(Integer.toBinaryString((Const.ENTITY ^ Const.ALL) & (Const.ALWAYS))); //player
+		System.out.println(Integer.toBinaryString((Const.ALL) & (Const.BIG_ENTITY))); //border
 		
 		Gdx.graphics.setWindowedMode(1600/2, 900/2);
 		
@@ -106,7 +113,7 @@ public class MyGdxGame extends ApplicationAdapter {
 																			   new SpriteSheetSpriteGroup(4, 7, 0.05f, Player.ANIM_RUN_LEFT),
 																			   new SpriteSheetSpriteGroup(8, 11, 0.05f, Player.ANIM_RUN_UP),
 																			   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)));
-		player.setItem(new Shotgun());
+		player.setItem(new Pistol());
 		engine.addEntity(player);
 		//boss
 		engine.addEntity(new Enemy(EnemyType.Boss1, world, engine, new Vector2(), new SpriteSheetVis(enemySpriteSheet, 4, 4, false, new SpriteSheetSpriteGroup(0, 3, 0.1f, Enemy.ANIM_WALK_DOWN), 
@@ -175,6 +182,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		for(int i = 0; i < bodies.size; i++) {
 			if(bodies.get(i).getUserData() != null && bodies.get(i).getUserData() instanceof BodyDeleteFlag)
 				world.destroyBody(bodies.get(i));
+			
 		}
 	}
 

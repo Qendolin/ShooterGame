@@ -71,6 +71,10 @@ public final class BodyComp implements Component, Disposable {
 
 	@Override
 	public void dispose() {
+		if(body == null) {
+			return;
+		}
 		body.setUserData(new BodyDeleteFlag());
+		body = null;
 	}
 }

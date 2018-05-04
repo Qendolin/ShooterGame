@@ -12,7 +12,7 @@ public abstract class Item {
 	protected DefaultEntity<?> owner;
 	
 	public Item(String name) {
-		
+		this.name = name;
 	}
 	
 	public void setOwner(Player owner) {

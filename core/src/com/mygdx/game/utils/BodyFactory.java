@@ -15,6 +15,8 @@ import com.mygdx.game.MyGdxGame;
 public class BodyFactory {
 	
 	public static Body createCircle(World world, BodyType type, boolean bullet, short collisionLayer, short collisionLayerMask, Vector2 center, float radius, boolean sensor) {
+		if(world == null || type == null || center == null)
+			return null;
 		radius *= Const.PIXEL_TO_METER_RATIO;
 		center = new Vector2(center).scl(Const.PIXEL_TO_METER_RATIO);
 		BodyDef bdef = createBodyDef(type, bullet, center);
@@ -30,6 +32,8 @@ public class BodyFactory {
 	}
 	
 	public static Body createRectangle(World world, BodyType type, boolean bullet, short collisionLayer, short collisionLayerMask, Vector2 center, float width, float height, boolean sensor) {
+		if(world == null || type == null || center == null)
+			return null;
 		center = new Vector2(center).scl(Const.PIXEL_TO_METER_RATIO);
 		width *= Const.PIXEL_TO_METER_RATIO;
 		height *= Const.PIXEL_TO_METER_RATIO;
@@ -85,6 +89,8 @@ public class BodyFactory {
         
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = edgeShape;
+        fixtureDef.filter.categoryBits = collisionLayer;
+        fixtureDef.filter.maskBits = collisionLayerMask;
 
         Body bodyEdge = world.createBody(bodyDef);
         bodyEdge.createFixture(fixtureDef);

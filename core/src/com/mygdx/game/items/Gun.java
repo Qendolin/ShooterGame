@@ -73,9 +73,18 @@ public abstract class Gun extends Item {
 				miscTimer = currTime;
 			}
 		}
-		
-		if(isEmpty())
-			System.out.println("Waffe ist leer!");
+		printStatus();
+	}
+	
+	protected void printStatus() {
+		String status = "";
+		double currTime = System.currentTimeMillis()/1000d;
+		if(isReloading()) {
+			status = "Reloading... ("+Math.round((reloadTime-(currTime-miscTimer))*100)/100f+")";
+		} else if (isOnCooldown()) {
+			status = "Chambering... ("+Math.round((1./fireRate-(currTime-miscTimer))*100)/100f+")";
+		}
+		System.out.println(name + ": " + magAmmo+"/"+magSize + " ("+ammo+"/"+maxAmmo+") "+status);
 	}
 	
 	protected abstract boolean tryShoot(World world, Engine engine, Camera cam);

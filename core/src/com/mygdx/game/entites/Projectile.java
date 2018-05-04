@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.utils.Disposable;
+import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.entityComponents.BodyComp;
 import com.mygdx.game.entityComponents.DamageComp;
 import com.mygdx.game.entityComponents.HealthComp;
@@ -23,7 +24,7 @@ import com.mygdx.game.utils.Const;
 public class Projectile extends Entity implements Disposable{
 	
 	public DamageComp damageComp;
-	public BodyComp sensorComp;
+	public BodyComp bodyComp;
 	public VisualComp<?> visualComp;
 	public PositionComp positionComp;
 	public VelocityComp velocityComp;
@@ -45,9 +46,9 @@ public class Projectile extends Entity implements Disposable{
 		
 		this.source = source;
 
-		sensorComp = new BodyComp(world, pos, this, 4f, BodyType.DynamicBody, Const.PROJECTILE, (short) (Const.PROJECTILE ^ Const.ALL)).asSensor();
-		sensorComp.getBody().setBullet(true);
-		sensorComp.setCollisionListener(new CollisionListener() {
+		bodyComp = new BodyComp(world, pos, this, 4f, BodyType.DynamicBody, Const.PROJECTILE, (short) (Const.PROJECTILE ^ Const.ALL)).asSensor();
+		bodyComp.getBody().setBullet(true);
+		bodyComp.setCollisionListener(new CollisionListener() {
 			@Override
 			protected void onCollide(Contact contact, Entity myEntity, Entity otherEntity) {
 				if(otherEntity == source || otherEntity instanceof Projectile)
@@ -59,7 +60,7 @@ public class Projectile extends Entity implements Disposable{
 			}
 			
 		});
-		add(sensorComp);
+		add(bodyComp);
 		visualComp = new VisualComp<Visual>(visual);
 		add(visualComp);
 		velocityComp = new VelocityComp(velocity);
@@ -69,13 +70,12 @@ public class Projectile extends Entity implements Disposable{
 	}
 
 	public void setCollisionListener(CollisionListener listener) {
-		sensorComp.setCollisionListener(listener);
+		bodyComp.setCollisionListener(listener);
 	}
 	
 	@Override
 	public void dispose() {
-		sensorComp.dispose();
+		bodyComp.dispose();
 		removeAll();
-		engine.removeEntity(Projectile.this);
 	}
 }
