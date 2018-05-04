@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Vector2;
 
 public final class VelocityComp implements Component {
-	public Vector2 vel = new Vector2();
+	public final Vector2 vel = new Vector2();
 	
 	public VelocityComp() {
 		

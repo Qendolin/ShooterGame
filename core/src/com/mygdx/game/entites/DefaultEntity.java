@@ -1,9 +1,15 @@
 package com.mygdx.game.entites;
 
+import java.util.HashMap;
+
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
+import com.badlogic.gdx.ai.fsm.State;
+import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
+import com.mygdx.game.actions.Action;
 import com.mygdx.game.entityComponents.BodyComp;
 import com.mygdx.game.entityComponents.FixedAccelerationComp;
 import com.mygdx.game.entityComponents.HealthComp;
@@ -27,6 +33,7 @@ public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disp
 	protected VisualComp<VISUAL> visualComp;
 	protected BodyComp bodyComp;
 	protected UpdateEventComp updateComp;
+	protected float speed;
 	/**
 	 * optional
 	 */
@@ -38,6 +45,7 @@ public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disp
 			return true;
 		}
 	};
+	protected HashMap<String, Action> actions = new HashMap<>();
 	
 	/**
 	 * Initialisiert die Visuelle, Positions und Geschwindigkeitskomponente.
@@ -119,6 +127,14 @@ public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disp
 
 	public HealthComp getHealthComp() {
 		return healthComp;
+	}
+	
+	public void moveTowards(Vector2 pos) {
+		Vector2 myPos = positionComp.pos;
+		Vector2 nextVel = new Vector2(pos).sub(myPos);
+		nextVel.nor();
+		nextVel.scl(speed);
+		velocityComp.vel.set(nextVel);
 	}
 
 	@Override

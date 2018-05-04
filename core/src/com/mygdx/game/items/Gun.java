@@ -73,7 +73,7 @@ public abstract class Gun extends Item {
 				miscTimer = currTime;
 			}
 		}
-		printStatus();
+//		printStatus();
 	}
 	
 	protected void printStatus() {

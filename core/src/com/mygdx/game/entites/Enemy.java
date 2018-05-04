@@ -1,10 +1,15 @@
 package com.mygdx.game.entites;
 
+import java.util.Collection;
+import java.util.Set;
+
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.actions.Action;
 import com.mygdx.game.entityComponents.BodyComp;
 import com.mygdx.game.entityComponents.FixedAccelerationComp;
 import com.mygdx.game.entityComponents.HealthComp;
@@ -14,15 +19,11 @@ import com.mygdx.game.entityComponents.visuals.SpriteSheetVis;
 import com.mygdx.game.items.Item;
 import com.mygdx.game.utils.Const;
 
-public class Enemy extends DefaultEntity<SpriteSheetVis> {
+public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 	
 	public Item item;
-	public Player target;
-	public float attackRadius;
-	public float speed;
-	private int enemyDirection;
-	public long lastAttack;
-	public float fullHealth;
+	private int spriteDirection;
+//	public float fullHealth;
 
 	private EnemyType type;
 
@@ -47,8 +48,8 @@ public class Enemy extends DefaultEntity<SpriteSheetVis> {
 		this.type = type;
 		speed = type.speed;
 		item = type.item;
-		fullHealth=type.health;
-		attackRadius = (((visual.getHeight() + visual.getWidth()) / 4f) * enemyRangeCircleRadiusMultiplyer) / 2;
+//		fullHealth=type.health;
+		//attackRadius = (((visual.getHeight() + visual.getWidth()) / 4f) * enemyRangeCircleRadiusMultiplyer) / 2;
 		healthComp = new HealthComp(type.health, disposeOnDeath);
 		add(healthComp);
 		
@@ -68,13 +69,20 @@ public class Enemy extends DefaultEntity<SpriteSheetVis> {
 		healthBar = new HealthBar(positionComp, new Vector2(), healthComp);
 		engine.addEntity(healthBar);
 	}
+	
+	//Experientell, mach ich vllt wieder weg
+	public void performAction(Action acrion) {
+		
+	}
 
 	public void update(World world, Camera cam, Engine engine) {
 		/*
-		 * Enemy Movement,Angriffsmuster und Rendering ist noch zu machen
+		 * Das wird alles duch die state machine gesteuert werden
 		 */
+		stateMachine.update();
+		updateSprite();
 		//
-
+/*
 		for (Player player : Player.getAllPlayers()) {
 			Vector2 v = new Vector2(player.positionComp.pos);
 			if (v.sub(positionComp.pos).len() < attackRadius) {
@@ -87,8 +95,8 @@ public class Enemy extends DefaultEntity<SpriteSheetVis> {
 			nextVel = new Vector2((target.positionComp.pos.x - positionComp.pos.x) / 1.3f,
 					(target.positionComp.pos.y - positionComp.pos.y) / 1.3f);
 
-			if (System.currentTimeMillis() - lastAttack >= type.action.cooldownInSec*1000) {
-				lastAttack = System.currentTimeMillis();
+			if (System.currentTimeMillis() - lastAction >= type.action.cooldownInSec*1000) {
+				lastAction = System.currentTimeMillis();
 				type.action.doAction(this, world, engine, cam);
 			}
 			velocityComp.vel=nextVel;
@@ -117,14 +125,92 @@ public class Enemy extends DefaultEntity<SpriteSheetVis> {
 		} else
 			visualComp.visual.animate = true;
 		
-//		healthBar.get().setPosition(positionComp.pos.x+visualComp.visual.getWidth(), positionComp.pos.y+visualComp.visual.getHeight()+10);
+//		healthBar.get().setPosition(positionComp.pos.x+visualComp.visual.getWidth(), positionComp.pos.y+visualComp.visual.getHeight()+10);*/
 	}
 
+	private void updateSprite() {
+		spriteDirection = velocityComp.vel.isZero() ? spriteDirection : getVelocityDirectionArea(4, 45);
+		switch (spriteDirection) {
+		case (0):
+			visualComp.visual.currentAnimation = ANIM_WALK_RIGHT;
+			break;
+		case (1):
+			visualComp.visual.currentAnimation = ANIM_WALK_UP;
+			break;
+		case (2):
+			visualComp.visual.currentAnimation = ANIM_WALK_LEFT;
+			break;
+		case (3):
+			visualComp.visual.currentAnimation = ANIM_WALK_DOWN;
+			break;
+		}
+		//Bewegt sich nicht => keine animation
+		if (velocityComp.vel.isZero()) {
+			visualComp.visual.setCurrentAnimationFrame(0);
+//			visualComp.visual.animate = false;
+			visualComp.visual.speedFactor = 0.1f;
+		} else {
+			visualComp.visual.animate = true;
+			visualComp.visual.speedFactor = 1f;
+		}
+	}
+	
 	public void setTarget(Player target) {
-		this.target = target;
+		this.target.set(target);
 	}
 
-	public Player getTarget() {
-		return target;
+	public DefaultEntity<?> getTarget() {
+		
+		if(target.get() == null) {
+			for (Player player : Player.getAllPlayers()) {
+				Vector2 v = new Vector2(player.positionComp.pos);
+				//Das 500 muss noch geändert werden
+				if (v.sub(positionComp.pos).len() < 250) {
+					target.set(player);
+					return target.get();
+				}
+			}
+			return null;
+		}
+		
+		DefaultEntity<?> targetEntity = target.get();
+		
+		Vector2 toTargetVector = new Vector2(targetEntity.positionComp.pos).sub(positionComp.pos);
+		//500 muss noch geändert werden
+		if(toTargetVector.len() > 250) {
+			target.set(null);
+			return null;
+		}
+		
+		return targetEntity;
+	}
+
+	@Override
+	public void attack() {
+		System.out.println("Please implement attack");
+	}
+
+	@Override
+	public void moveTowards(Vector2 targetPos) {
+		Vector2 nextVel = new Vector2((targetPos.x - positionComp.pos.x), (targetPos.y - positionComp.pos.y));
+		nextVel.nor();
+		nextVel.scl(speed);
+		velocityComp.vel.set(nextVel);
+	}
+
+	@Override
+	public void idle() {
+		velocityComp.vel.setZero();
+		return;
+	}
+
+	@Override
+	public Collection<Action> getActions() {
+		return actions.values();
+	}
+
+	@Override
+	public void wake() {
+		return;
 	}
 }

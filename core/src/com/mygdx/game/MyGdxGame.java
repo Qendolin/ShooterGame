@@ -55,13 +55,6 @@ public class MyGdxGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
-		
-		System.out.println(Integer.toBinaryString((Const.PROJECTILE ^ Const.ENTITY ^ Const.ALL) & (Const.ALWAYS))); //player
-		System.out.println(Integer.toBinaryString((Const.ALL) & (Const.PLAYER))); //border
-		
-		System.out.println(Integer.toBinaryString((Const.ENTITY ^ Const.ALL) & (Const.ALWAYS))); //player
-		System.out.println(Integer.toBinaryString((Const.ALL) & (Const.BIG_ENTITY))); //border
-		
 		Gdx.graphics.setWindowedMode(1600/2, 900/2);
 		
 		engine = new Engine();

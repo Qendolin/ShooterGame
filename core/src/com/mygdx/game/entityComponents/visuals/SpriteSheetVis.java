@@ -5,13 +5,13 @@ import java.util.HashMap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.mygdx.game.entityComponents.VisualComp;
 
 public class SpriteSheetVis extends Visual {
 
 	public HashMap<String, SpriteSheetSpriteGroup> animationGroups = new HashMap<String, SpriteSheetSpriteGroup>();
 	public String currentAnimation = "";
 	public boolean animate = true;
+	public float speedFactor = 1;
 	private Sprite[] frames;
 	private double lastLoopTime = System.currentTimeMillis() / 1000d;
 	private Texture spriteSheet;
@@ -92,9 +92,10 @@ public class SpriteSheetVis extends Visual {
 		currentFrame = anim.start;
 		if(anim.frameDuration != 0 && anim.end != anim.start) {
 			double currTime = System.currentTimeMillis() / 1000d;
-			currentFrame += (int)((anim.end-anim.start + 1) * ((currTime-lastLoopTime) / anim.getTotalDuration()));
+			currentFrame = (int)((anim.end-anim.start + 1) * ((currTime-lastLoopTime) / (anim.getTotalDuration()/speedFactor)));
 			if(currentFrame >= anim.end)
 				lastLoopTime = currTime;
+			currentFrame = currentFrame % (anim.end-anim.start + 1) + anim.start;
 		}
 		if(currentFrame < 0 || currentFrame >= frames.length) {
 			currentFrame = lastFrame;
