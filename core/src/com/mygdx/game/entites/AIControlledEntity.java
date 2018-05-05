@@ -59,4 +59,8 @@ public abstract class AIControlledEntity<VISUAL extends Visual> extends DefaultE
 	public abstract void wake();
 	
 	public abstract Collection<Action> getActions();
+
+	public void stopMoving() {
+		velocityComp.vel.setZero();
+	}
 }

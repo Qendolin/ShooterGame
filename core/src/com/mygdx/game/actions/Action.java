@@ -13,14 +13,15 @@ public abstract class Action {
 	/**
 	 * In seconds
 	 */
-	public float duration;
+	public float duration; //TODO: Duration is glaube ich keine so gute lösung
 	protected boolean onCooldown;
 	protected boolean isActing;
 	protected long lastAct;
 	private long lastActBegin = -1;
 	
-	public Action(float cooldownInSec) {
-		this.cooldown = cooldownInSec;
+	public Action(float cooldownInSec, float durationInSec) {
+		cooldown = cooldownInSec;
+		duration = durationInSec;
 	}
 	
 	/**
@@ -32,9 +33,8 @@ public abstract class Action {
 	 */
 	public boolean act(Enemy enemy, World world, Engine engine) {
 		if(!isOnCooldown()) {
-			onCooldown = false;
 			if(isActing() || lastActBegin == -1) {
-				if(doAction(enemy, world, engine)) {
+				if(doAction(enemy, world, engine, lastActBegin==-1)) {
 					if(lastActBegin == -1)
 						lastActBegin = System.currentTimeMillis();
 					return true;
@@ -45,16 +45,20 @@ public abstract class Action {
 				lastActBegin = -1;
 			}
 		}
+		else {
+			lastActBegin = -1;
+		}
 		return false;
 	}
 	
 	public boolean isOnCooldown() {
-		onCooldown = (System.currentTimeMillis() - lastAct < cooldown*1000);
+		onCooldown = ((System.currentTimeMillis() - lastAct < cooldown*1000)) && (!isActing());
 		return onCooldown;
 	}
 	
 	public boolean isActing() {
-		isActing = lastActBegin != -1 & System.currentTimeMillis() - lastActBegin <= duration*1000;
+		long currTime = System.currentTimeMillis();
+		isActing = (lastActBegin != -1) && (currTime - lastActBegin <= duration*1000);
 		return isActing;
 	}
 	
@@ -64,7 +68,8 @@ public abstract class Action {
 	 * @param world
 	 * @param engine
 	 * @param cam
+	 * @param begin Is beginning of action
 	 * @return success
 	 */
-	protected abstract boolean doAction(Enemy enemy, World world, Engine engine);
+	protected abstract boolean doAction(Enemy enemy, World world, Engine engine, boolean begin);
 }

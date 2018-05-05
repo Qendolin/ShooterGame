@@ -87,6 +87,7 @@ public enum TestState implements State<AIControlledEntity<?>> {
 		@Override
 		public void update(AIControlledEntity<?> entity) {
 			if(entity.canAttack()) {
+				entity.stopMoving();
 				if(!entity.attack()) {
 					//Konnte nicht angreifen
 					entity.stateMachine.changeState(PURSUE);

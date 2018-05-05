@@ -213,7 +213,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 		for(Action act : actions) {
 			if(act instanceof Attack) {
 				Attack attack = (Attack) act;
-				if(attack.range >= vecToTarget.len() && !attack.isActing() && !attack.isOnCooldown())
+				if(attack.range >= vecToTarget.len() && !attack.isOnCooldown())
 					return true;
 			}
 		}
@@ -226,7 +226,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 		float minRange = Float.MAX_VALUE;
 		Attack attack = null;
 		for(Action act : actions) {
-			if(act instanceof Attack && ((Attack)act).range < minRange) {
+			if(act instanceof Attack && !act.isOnCooldown() && ((Attack)act).range < minRange) {
 				attack = (Attack) act;
 				minRange = attack.range;
 			}
@@ -246,8 +246,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 
 	@Override
 	public void idle() {
-		velocityComp.vel.setZero();
-		return;
+		stopMoving();
 	}
 
 	@Override

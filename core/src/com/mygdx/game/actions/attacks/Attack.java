@@ -6,8 +6,8 @@ public abstract class Attack extends Action {
 
 	public float range;
 	
-	public Attack(float cooldownInSec, float range) {
-		super(cooldownInSec);
+	public Attack(float cooldownInSec, float durationInSec, float range) {
+		super(cooldownInSec, durationInSec);
 		this.range = range;
 	}
 
