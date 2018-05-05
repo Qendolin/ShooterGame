@@ -15,21 +15,28 @@ public abstract class AIControlledEntity<VISUAL extends Visual> extends DefaultE
 
 	public SimpleObjectProperty<DefaultEntity<?>> target = new SimpleObjectProperty<DefaultEntity<?>>();
 	private DefaultEntity<?> lastTarget;
+	private Vector2 lastTargetLastPosition;
 	public StateMachine<AIControlledEntity<?>, State<AIControlledEntity<?>>> stateMachine;;
 	
 	public AIControlledEntity(Vector2 position, VISUAL visual) {
 		super(position, visual);
 		target.addListener((value, oldVal, newVal) -> {
 			lastTarget = oldVal;
+			if(lastTarget != null)
+				lastTargetLastPosition = new Vector2(lastTarget.positionComp.pos);
 		});
 		stateMachine = new DefaultStateMachine<AIControlledEntity<?>, State<AIControlledEntity<?>>>(this);
-		stateMachine.setInitialState(TestState.SLEEP);
+		stateMachine.setInitialState(TestState.IDLE);
 	}
 
 	public abstract DefaultEntity<?> getTarget();
 	
 	public DefaultEntity<?> getLastTarget() {
 		return lastTarget;
+	}
+	
+	public Vector2 getLastTargetLastPosition() {
+		return lastTargetLastPosition;
 	}
 	
 	public abstract void attack();

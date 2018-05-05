@@ -10,7 +10,10 @@ import com.mygdx.game.entites.DefaultEntity;
 
 public enum TestState implements State<AIControlledEntity<?>> {
 
-	SLEEP() {
+	/**
+	 * Wenn sonst nichts zu tun ist
+	 */
+	IDLE() {
 		@Override
 		public void update(AIControlledEntity<?> entity) {
 			DefaultEntity<?> target = entity.getTarget();
@@ -25,7 +28,7 @@ public enum TestState implements State<AIControlledEntity<?>> {
 				}
 				
 				 //Kann nicht attackieren 
-				if(entity.stateMachine.getCurrentState() == SLEEP) {
+				if(entity.stateMachine.getCurrentState() == IDLE) {
 					entity.stateMachine.changeState(PURSUE);
 				}
 			} else {
@@ -34,6 +37,26 @@ public enum TestState implements State<AIControlledEntity<?>> {
 		}
 	},
 	
+	/*
+	 * Wenn ein Enemy den Player nicht mehr sieht dann sucht er wo er ihn zuletzt gesehen hat
+	 */
+	SEARCH() {
+
+		@Override
+		public void update(AIControlledEntity<?> entity) {
+			//epsilon ist der fehlerabstand. Also wenn sie nicht genau gleich sind z.B.: (0.99998,0,0) und (1,0,0),  dann sind sie trotzdem gleich
+			if(entity.getLastTargetLastPosition().epsilonEquals(entity.getPositionComp().pos, 1)) {
+				entity.stateMachine.changeState(IDLE);
+			}
+			else
+				entity.moveTowards(entity.getLastTargetLastPosition());
+		}
+		
+	},
+	
+	/*
+	 * Fliehen
+	 */
 	FLEE() {
 		@Override
 		public void update(AIControlledEntity<?> entity) {
@@ -46,12 +69,15 @@ public enum TestState implements State<AIControlledEntity<?>> {
 		}
 	},
 
+	/**
+	 * Verfolgen
+	 */
 	PURSUE() {
 		@Override
 		public void update(AIControlledEntity<?> entity) {
 			DefaultEntity<?> target = entity.getTarget();
 			if(target == null) {
-				entity.stateMachine.changeState(SLEEP);
+				entity.stateMachine.changeState(SEARCH);
 				return;
 			}
 			entity.moveTowards(target.getPositionComp().pos);
@@ -59,13 +85,16 @@ public enum TestState implements State<AIControlledEntity<?>> {
 		
 	},
 	
+	/**
+	 * Angreifen
+	 */
 	ATTACK() {
 		@Override
 		public void update(AIControlledEntity<?> entity) {
 			if(entity.getTarget() != null)
 				entity.attack();
 			else
-				entity.stateMachine.changeState(SLEEP);
+				entity.stateMachine.changeState(IDLE);
 		}
 		
 	};
@@ -74,7 +103,7 @@ public enum TestState implements State<AIControlledEntity<?>> {
 	public void enter(AIControlledEntity<?> entity) {
 		System.out.println("Exited State: " + entity.stateMachine.getPreviousState());
 		System.out.println("Entered State: " + entity.stateMachine.getCurrentState());
-		if(entity.stateMachine.getCurrentState() != SLEEP && entity.stateMachine.getPreviousState() == SLEEP)
+		if(entity.stateMachine.getCurrentState() != IDLE && entity.stateMachine.getPreviousState() == IDLE)
 			entity.wake();
 	}
 
