@@ -16,6 +16,7 @@ import com.mygdx.game.entityComponents.visuals.CompositeVis;
 import com.mygdx.game.entityComponents.visuals.SpriteVis;
 import com.mygdx.game.entityComponents.visuals.Visual;
 import com.mygdx.game.entityComponents.visuals.VisualNameGroup;
+import com.mygdx.game.utils.Const.RenderLayer;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -33,7 +34,6 @@ public class HealthBar extends Entity implements Disposable {
 		}
 	});
 	private VisualComp<CompositeVis> visualComp;
-	private float orgWidth;
 	private Visual bar;
 		
 	public HealthBar(PositionComp trackingPosition, Vector2 offset, HealthComp trackingHealth) {
@@ -45,6 +45,7 @@ public class HealthBar extends Entity implements Disposable {
 		visualComp = new VisualComp<CompositeVis>(new CompositeVis(new VisualNameGroup("hpBack", new SpriteVis(new Texture("HBBackground.png"))), 
 				new VisualNameGroup("hpMid", new SpriteVis(new Texture("HBMidground.png"))),
 				new VisualNameGroup("hpFront", new SpriteVis(new Texture("HBForeground.png")))));
+		visualComp.visual.renderLayer = RenderLayer.WINDOW_UI;
 		add(visualComp);
 		trackingHealth.health.addListener(new ChangeListener<Number>() {
 			@Override
@@ -53,11 +54,11 @@ public class HealthBar extends Entity implements Disposable {
 			}
 		});
 		bar = visualComp.visual.visuals.get("hpMid");
-		orgWidth = bar.getWidth();
+		bar.get().setOrigin(bar.get().getOriginX()-bar.getWidth()/2, bar.get().getOriginY());
 	}
 	
 	public void setBarPrecent(float precent) {
-		bar.get().setSize(orgWidth*precent, bar.getHeight());
+		bar.get().setScale(precent, bar.get().getScaleY());
 	}
 
 	@Override

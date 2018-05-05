@@ -20,8 +20,9 @@ import com.mygdx.game.entityComponents.VisualComp;
 import com.mygdx.game.entityComponents.events.CollisionListener;
 import com.mygdx.game.entityComponents.visuals.Visual;
 import com.mygdx.game.utils.Const;
+import com.mygdx.game.utils.Const.RenderLayer;
 
-public class Projectile extends Entity implements Disposable{
+public class Projectile extends Entity implements Disposable {
 	
 	public DamageComp damageComp;
 	public BodyComp bodyComp;
@@ -30,10 +31,7 @@ public class Projectile extends Entity implements Disposable{
 	public VelocityComp velocityComp;
 	public Entity source;
 	
-	private Engine engine;
-	
 	public Projectile(World world, Engine engine, Entity source, Vector2 pos, Visual visual, Vector2 velocity, float damage, float timeoutInSec) {
-		this.engine = engine;
 		damageComp = new DamageComp(damage);
 		add(damageComp);
 		add(new TimeoutComp(engine, timeoutInSec, new EventListener() {
@@ -46,7 +44,7 @@ public class Projectile extends Entity implements Disposable{
 		
 		this.source = source;
 
-		bodyComp = new BodyComp(world, pos, this, 4f, BodyType.DynamicBody, Const.PROJECTILE, (short) (Const.PROJECTILE ^ Const.ALL)).asSensor();
+		bodyComp = new BodyComp(world, pos, this, 4f, BodyType.DynamicBody, Const.Collision.PROJECTILE, (short) (Const.Collision.PROJECTILE ^ Const.Collision.ALL)).asSensor();
 		bodyComp.getBody().setBullet(true);
 		bodyComp.setCollisionListener(new CollisionListener() {
 			@Override
@@ -62,6 +60,7 @@ public class Projectile extends Entity implements Disposable{
 		});
 		add(bodyComp);
 		visualComp = new VisualComp<Visual>(visual);
+		visualComp.visual.renderLayer = RenderLayer.FOREGROUND;
 		add(visualComp);
 		velocityComp = new VelocityComp(velocity);
 		add(velocityComp);

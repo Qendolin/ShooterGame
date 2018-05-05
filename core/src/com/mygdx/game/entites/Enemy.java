@@ -14,6 +14,8 @@ import com.mygdx.game.entityComponents.BodyComp;
 import com.mygdx.game.entityComponents.FixedAccelerationComp;
 import com.mygdx.game.entityComponents.HealthComp;
 import com.mygdx.game.entityComponents.UpdateEventComp;
+import com.mygdx.game.entityComponents.events.DeathEvent;
+import com.mygdx.game.entityComponents.events.DeathListener;
 import com.mygdx.game.entityComponents.events.UpdateListener;
 import com.mygdx.game.entityComponents.visuals.SpriteSheetVis;
 import com.mygdx.game.items.Item;
@@ -25,7 +27,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 	private int spriteDirection;
 //	public float fullHealth;
 
-	private EnemyType type;
+//	private EnemyType type;
 
 	public static final String ANIM_WALK_DOWN = "walkDown";
 	public static final String ANIM_WALK_UP = "walkUp";
@@ -45,7 +47,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 
 	public Enemy(EnemyType type,  World world, Engine engine, Vector2 position, SpriteSheetVis visual) {
 		super(position, visual);
-		this.type = type;
+//		this.type = type;
 		speed = type.speed;
 		item = type.item;
 //		fullHealth=type.health;
@@ -55,7 +57,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 		
 		bodyComp = new BodyComp(world, visualComp.visual.getCenter(), this,
 				((visual.getHeight() + visual.getWidth()) / 4f) * enemyHitCircleRadiusMultiplyer, BodyType.DynamicBody,
-				type.boss ? Const.BIG_ENTITY : Const.ENTITY, (short) (Const.ENTITY ^ Const.ALL));
+				type.boss ? Const.Collision.BIG_ENTITY : Const.Collision.ENTITY, (short) (Const.Collision.ENTITY ^ Const.Collision.ALL));
 		add(bodyComp);
 		updateComp = new UpdateEventComp(new UpdateListener() {
 			@Override
@@ -68,6 +70,17 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 		add(accelerationComp);
 		healthBar = new HealthBar(positionComp, new Vector2(), healthComp);
 		engine.addEntity(healthBar);
+		
+		healthComp.deathListener = new DeathListener() {
+			
+			@Override
+			protected boolean onDeath(DeathEvent event) {
+				healthBar.dispose();
+				engine.removeEntity(healthBar);
+				dispose();
+				return true;
+			}
+		};
 	}
 	
 	//Experientell, mach ich vllt wieder weg

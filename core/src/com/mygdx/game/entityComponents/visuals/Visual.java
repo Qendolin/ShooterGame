@@ -3,9 +3,12 @@ package com.mygdx.game.entityComponents.visuals;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
+import com.mygdx.game.utils.Const;
 
 public abstract class Visual implements Disposable {
 
+	public short renderLayer = Const.RenderLayer.DEFAULT;
+	
 	/**
 	 * Wenns mehrere Sprites gibt dann kann man damit jeden abfragen
 	 * @param index

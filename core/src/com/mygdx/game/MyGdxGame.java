@@ -1,9 +1,13 @@
 package com.mygdx.game;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -43,6 +47,7 @@ import com.mygdx.game.items.Pistol;
 import com.mygdx.game.items.Shotgun;
 import com.mygdx.game.utils.BodyFactory;
 import com.mygdx.game.utils.Const;
+import com.mygdx.game.utils.Const.RenderLayer;
 
 public class MyGdxGame extends ApplicationAdapter {
 	
@@ -55,6 +60,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		Gdx.graphics.setWindowedMode(1600/2, 900/2);
 		
 		engine = new Engine();
@@ -143,10 +149,14 @@ public class MyGdxGame extends ApplicationAdapter {
 		cam.update();
 		Family renderableFamily = Family.all(VisualComp.class, PositionComp.class).get();
 		ImmutableArray<Entity> renderables = engine.getEntitiesFor(renderableFamily);
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.setProjectionMatrix(cam.combined);
-		batch.begin();
+		
+		//Sprites sortiert nach layer
+		@SuppressWarnings("unchecked")
+		ArrayList<Sprite>[] sorted = (ArrayList<Sprite>[])new ArrayList[RenderLayer.MAX-RenderLayer.MIN + 1];
+		for(int i = 0; i < sorted.length; i++) {
+			sorted[i] = new ArrayList<>();
+		}
+		
 		for(Entity renderable : renderables) {
 			VisualComp<?> visualComp = renderable.getComponent(VisualComp.class);
 			for(int i = 0; i < visualComp.visual.getNumberOfSprites() || i == 0; i++) {
@@ -156,8 +166,20 @@ public class MyGdxGame extends ApplicationAdapter {
 				Vector2 pos = renderable.getComponent(PositionComp.class).pos;
 				//Zentrieren
 				sprite.setPosition(pos.x-sprite.getWidth()/2f, pos.y-sprite.getHeight()/2f);
-				sprite.draw(batch);
+//				sprite.draw(batch);
+				sorted[visualComp.visual.renderLayer-RenderLayer.MIN].add(sprite);
 			}
+		}
+		
+		
+		Gdx.gl.glClearColor(1, 1, 1, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		batch.setProjectionMatrix(cam.combined);
+		batch.begin();
+		for(int i = 0; i <= RenderLayer.MAX - RenderLayer.MIN; i++) {
+			ArrayList<Sprite> layerSprites = sorted[i];
+			for(Sprite sprite : layerSprites)
+				sprite.draw(batch);
 		}
 		batch.end();
 		
@@ -237,6 +259,9 @@ public class MyGdxGame extends ApplicationAdapter {
 				vel = new Vector2(vel);
 				vel.scl(Const.PIXEL_TO_METER_RATIO);
 				colliderComp.getBody().setLinearVelocity(vel);
+				if(vel.len()*Gdx.graphics.getDeltaTime() > 2) {
+					Gdx.app.log(Const.LogTags.PHYSIC, "Warning: "+movable+" is Moving faster than 2 m/s! The maximum speed is 2 m/s.");
+				}
 			} else {
 				pos.x+=vel.x*Const.METER_TO_PIXEL_RATIO*Gdx.graphics.getDeltaTime();
 				pos.y+=vel.y*Const.METER_TO_PIXEL_RATIO*Gdx.graphics.getDeltaTime();

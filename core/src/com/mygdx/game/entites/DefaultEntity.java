@@ -20,6 +20,7 @@ import com.mygdx.game.entityComponents.VisualComp;
 import com.mygdx.game.entityComponents.events.DeathEvent;
 import com.mygdx.game.entityComponents.events.DeathListener;
 import com.mygdx.game.entityComponents.visuals.Visual;
+import com.mygdx.game.utils.Const.RenderLayer;
 
 public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disposable {
 
@@ -55,6 +56,7 @@ public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disp
 	 */
 	public DefaultEntity(Vector2 position, VISUAL visual) {
 		visualComp=new VisualComp<VISUAL>(visual);
+		visualComp.visual.renderLayer = RenderLayer.ENTITIES;
 		add(visualComp);
 		positionComp = new PositionComp(position);
 		add(positionComp);
