@@ -14,14 +14,14 @@ public enum EnemyType {
 	float speed;
 	float health;
 	Item item;
-	Action action;
+	Action[] actions;
 	boolean boss;
 
-	EnemyType(float speed, float health, Item item, boolean boss, Action action) {
+	EnemyType(float speed, float health, Item item, boolean boss, Action... actions) {
 		this.speed = speed;
 		this.health = health;
 		this.item = item;
-		this.action=action;
+		this.actions=actions;
 		this.boss = boss;
 	}
 }

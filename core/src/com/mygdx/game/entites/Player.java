@@ -40,8 +40,8 @@ public class Player extends DefaultEntity<SpriteSheetVis> {
 	private boolean running = false;
 	private int playerDirection;
 	
-	public Player( World world, Vector2 position, SpriteSheetVis visual) {
-		super(position, visual);
+	public Player( World world, Engine engine, Vector2 position, SpriteSheetVis visual) {
+		super(position, visual, engine, world);
 		accelerationComp = new FixedAccelerationComp(playerBaseSpeed*5f);
 		add(accelerationComp);
 		createColliderComp(world, visual);

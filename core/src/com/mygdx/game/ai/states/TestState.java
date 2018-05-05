@@ -18,19 +18,7 @@ public enum TestState implements State<AIControlledEntity<?>> {
 		public void update(AIControlledEntity<?> entity) {
 			DefaultEntity<?> target = entity.getTarget();
 			if(target != null) {
-				Vector2 vecToTarget = new Vector2(target.getPositionComp().pos).sub(entity.getPositionComp().pos);
-				for(Action act : entity.getActions()) {
-					if(act instanceof Attack) {
-						if(((Attack)act).range <= vecToTarget.len()) {
-							entity.stateMachine.changeState(ATTACK);
-						}
-					}
-				}
-				
-				 //Kann nicht attackieren 
-				if(entity.stateMachine.getCurrentState() == IDLE) {
-					entity.stateMachine.changeState(PURSUE);
-				}
+				entity.stateMachine.changeState(PURSUE);
 			} else {
 				entity.idle();
 			}
@@ -78,9 +66,16 @@ public enum TestState implements State<AIControlledEntity<?>> {
 			DefaultEntity<?> target = entity.getTarget();
 			if(target == null) {
 				entity.stateMachine.changeState(SEARCH);
-				return;
+			} else {
+				
+				if(entity.canAttack()) {
+					entity.stateMachine.changeState(ATTACK);
+					return;
+				}
+				
+				//Kann nicht angreifen also näher ran gehen
+				entity.moveTowards(target.getPositionComp().pos);
 			}
-			entity.moveTowards(target.getPositionComp().pos);
 		}
 		
 	},
@@ -91,8 +86,12 @@ public enum TestState implements State<AIControlledEntity<?>> {
 	ATTACK() {
 		@Override
 		public void update(AIControlledEntity<?> entity) {
-			if(entity.getTarget() != null)
-				entity.attack();
+			if(entity.canAttack()) {
+				if(!entity.attack()) {
+					//Konnte nicht angreifen
+					entity.stateMachine.changeState(PURSUE);
+				}
+			}
 			else
 				entity.stateMachine.changeState(IDLE);
 		}

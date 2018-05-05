@@ -1,10 +1,13 @@
 package com.mygdx.game.entites;
 
 import java.util.Collection;
+
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.State;
 import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.actions.Action;
 import com.mygdx.game.ai.states.TestState;
 import com.mygdx.game.entityComponents.visuals.Visual;
@@ -18,8 +21,8 @@ public abstract class AIControlledEntity<VISUAL extends Visual> extends DefaultE
 	private Vector2 lastTargetLastPosition;
 	public StateMachine<AIControlledEntity<?>, State<AIControlledEntity<?>>> stateMachine;;
 	
-	public AIControlledEntity(Vector2 position, VISUAL visual) {
-		super(position, visual);
+	public AIControlledEntity(Vector2 position, VISUAL visual, Engine engine, World world) {
+		super(position, visual, engine, world);
 		target.addListener((value, oldVal, newVal) -> {
 			lastTarget = oldVal;
 			if(lastTarget != null)
@@ -28,7 +31,9 @@ public abstract class AIControlledEntity<VISUAL extends Visual> extends DefaultE
 		stateMachine = new DefaultStateMachine<AIControlledEntity<?>, State<AIControlledEntity<?>>>(this);
 		stateMachine.setInitialState(TestState.IDLE);
 	}
-
+	
+	public abstract boolean canAttack();
+	
 	public abstract DefaultEntity<?> getTarget();
 	
 	public DefaultEntity<?> getLastTarget() {
@@ -39,7 +44,10 @@ public abstract class AIControlledEntity<VISUAL extends Visual> extends DefaultE
 		return lastTargetLastPosition;
 	}
 	
-	public abstract void attack();
+	/**
+	 * @return success
+	 */
+	public abstract boolean attack();
 	
 	public abstract void moveTowards(Vector2 targetPos);
 

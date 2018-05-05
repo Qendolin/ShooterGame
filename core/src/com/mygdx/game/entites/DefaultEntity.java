@@ -1,7 +1,9 @@
 package com.mygdx.game.entites;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.State;
@@ -25,6 +27,7 @@ import com.mygdx.game.utils.Const.RenderLayer;
 public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disposable {
 
 	protected World world;
+	protected Engine engine;
 	protected PositionComp positionComp;
 	protected VelocityComp velocityComp;
 	/**
@@ -46,7 +49,7 @@ public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disp
 			return true;
 		}
 	};
-	protected HashMap<String, Action> actions = new HashMap<>();
+	protected ArrayList<Action> actions = new ArrayList<Action>();
 	
 	/**
 	 * Initialisiert die Visuelle, Positions und Geschwindigkeitskomponente.
@@ -54,7 +57,9 @@ public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disp
 	 * @param position
 	 * @param visual
 	 */
-	public DefaultEntity(Vector2 position, VISUAL visual) {
+	public DefaultEntity(Vector2 position, VISUAL visual, Engine engine, World world) {
+		this.engine = engine;
+		this.world = world;
 		visualComp=new VisualComp<VISUAL>(visual);
 		visualComp.visual.renderLayer = RenderLayer.ENTITIES;
 		add(visualComp);

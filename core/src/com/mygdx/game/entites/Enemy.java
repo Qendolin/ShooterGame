@@ -4,12 +4,14 @@ import java.util.Collection;
 import java.util.Set;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.actions.Action;
+import com.mygdx.game.actions.attacks.Attack;
 import com.mygdx.game.entityComponents.BodyComp;
 import com.mygdx.game.entityComponents.FixedAccelerationComp;
 import com.mygdx.game.entityComponents.HealthComp;
@@ -46,7 +48,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 																// abhängig machen) sonder als fixen wert festlegen
 
 	public Enemy(EnemyType type,  World world, Engine engine, Vector2 position, SpriteSheetVis visual) {
-		super(position, visual);
+		super(position, visual, engine, world);
 //		this.type = type;
 		speed = type.speed;
 		item = type.item;
@@ -81,6 +83,10 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 				return true;
 			}
 		};
+		
+		for(Action act : type.actions) {
+			actions.add(act);
+		}
 	}
 	
 	//Experientell, mach ich vllt wieder weg
@@ -197,10 +203,37 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 		
 		return targetEntity;
 	}
+	
+	@Override
+	public boolean canAttack() {
+		DefaultEntity<?> target = getTarget();
+		if(target == null)
+			return false;
+		Vector2 vecToTarget = new Vector2(target.positionComp.pos).sub(positionComp.pos);
+		for(Action act : actions) {
+			if(act instanceof Attack) {
+				Attack attack = (Attack) act;
+				if(attack.range >= vecToTarget.len() && !attack.isActing() && !attack.isOnCooldown())
+					return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
-	public void attack() {
-		System.out.println("Please implement attack");
+	public boolean attack() {
+		//TODO richtig machen, im moment wird einfach der angriff mit der kleinst möglichen range genommen
+		float minRange = Float.MAX_VALUE;
+		Attack attack = null;
+		for(Action act : actions) {
+			if(act instanceof Attack && ((Attack)act).range < minRange) {
+				attack = (Attack) act;
+				minRange = attack.range;
+			}
+		}
+		if(attack == null)
+			return false;
+		return attack.act(this, world, engine);
 	}
 
 	@Override
@@ -219,7 +252,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 
 	@Override
 	public Collection<Action> getActions() {
-		return actions.values();
+		return actions;
 	}
 
 	@Override

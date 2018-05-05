@@ -11,7 +11,7 @@ public class Actions{
 	public static final Attack BEAM = new Attack(10, 250) {
 		
 		@Override
-		public boolean doAction(Enemy enemy, World world, Engine engine, Camera cam) {
+		public boolean doAction(Enemy enemy, World world, Engine engine) {
 			// TODO Auto-generated method stub
 			System.out.println("BEAM!");
 			return true;
@@ -21,7 +21,7 @@ public class Actions{
 	public static final Attack WHIRL = new Attack(5, 50) {
 		
 		@Override
-		public boolean doAction(Enemy enemy, World world, Engine engine, Camera cam) {
+		public boolean doAction(Enemy enemy, World world, Engine engine) {
 			// TODO Auto-generated method stub
 			System.out.println("WHIRL!");
 			return true;

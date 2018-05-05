@@ -1,32 +1,61 @@
 package com.mygdx.game.actions;
 
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.entites.Enemy;
 
 public abstract class Action {
 
-	public float cooldownInSec;
-	protected boolean cooldown;
+	/**
+	 * In seconds
+	 */
+	public float cooldown;
+	/**
+	 * In seconds
+	 */
+	public float duration;
+	protected boolean onCooldown;
+	protected boolean isActing;
 	protected long lastAct;
+	private long lastActBegin = -1;
 	
 	public Action(float cooldownInSec) {
-		this.cooldownInSec = cooldownInSec;
+		this.cooldown = cooldownInSec;
 	}
 	
-	public boolean onCooldown() {
-		return cooldown;
-	}
-	
-	public void act(Enemy enemy, World world, Engine engine, Camera cam) {
-		if(System.currentTimeMillis() - lastAct >= cooldownInSec) {
-			cooldown = false;
-			if(doAction(enemy, world, engine, cam)) {
+	/**
+	 * 
+	 * @param enemy
+	 * @param world
+	 * @param engine
+	 * @return true while action is active
+	 */
+	public boolean act(Enemy enemy, World world, Engine engine) {
+		if(!isOnCooldown()) {
+			onCooldown = false;
+			if(isActing() || lastActBegin == -1) {
+				if(doAction(enemy, world, engine)) {
+					if(lastActBegin == -1)
+						lastActBegin = System.currentTimeMillis();
+					return true;
+				}
+			} else if(lastActBegin != -1) {
 				lastAct = System.currentTimeMillis();
-				cooldown = true;
+				onCooldown = true;
+				lastActBegin = -1;
 			}
 		}
+		return false;
+	}
+	
+	public boolean isOnCooldown() {
+		onCooldown = (System.currentTimeMillis() - lastAct < cooldown*1000);
+		return onCooldown;
+	}
+	
+	public boolean isActing() {
+		isActing = lastActBegin != -1 & System.currentTimeMillis() - lastActBegin <= duration*1000;
+		return isActing;
 	}
 	
 	/**
@@ -37,5 +66,5 @@ public abstract class Action {
 	 * @param cam
 	 * @return success
 	 */
-	protected abstract boolean doAction(Enemy enemy, World world, Engine engine, Camera cam);
+	protected abstract boolean doAction(Enemy enemy, World world, Engine engine);
 }
