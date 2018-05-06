@@ -51,6 +51,7 @@ public class BodyFactory {
 		BodyDef def = new BodyDef();
 		def.type = type;
 		def.bullet = bullet;
+		def.fixedRotation=true;
 		def.position.set(center);
 		return def;
 	}

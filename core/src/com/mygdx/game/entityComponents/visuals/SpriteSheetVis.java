@@ -1,10 +1,13 @@
 package com.mygdx.game.entityComponents.visuals;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.mygdx.game.utils.Const.LogTags;
 
 public class SpriteSheetVis extends Visual {
 
@@ -50,6 +53,22 @@ public class SpriteSheetVis extends Visual {
 		}
 	}
 	
+	public SpriteSheetVis(SpriteSheetVis original) {
+		for(String key : original.animationGroups.keySet()) {
+			this.animationGroups.put(new String(key), original.animationGroups.get(key));
+		}
+		this.currentAnimation = new String(original.currentAnimation);
+		this.animate = original.animate;
+		this.speedFactor = original.speedFactor;
+		this.frames = new Sprite[original.frames.length];
+		for(int i = 0; i < original.frames.length; i++) {
+			frames[i] = new Sprite(original.frames[i]);
+		}
+		this.lastLoopTime = original.lastLoopTime;
+		this.spriteSheet = original.spriteSheet; //Ich glaube man sollte dieselbe instanz wiederverwenden
+		this.currentFrame = original.currentFrame;
+	}
+
 	/**
 	 * 
 	 * @param frame relative to the start frame of the animation
@@ -57,7 +76,7 @@ public class SpriteSheetVis extends Visual {
 	public void setCurrentAnimationFrame(int frame) {
 		SpriteSheetSpriteGroup anim = animationGroups.get(currentAnimation);
 		if(anim == null) {
-			new Exception("Invalid animation group: \""+currentAnimation+"\"").printStackTrace();
+			Gdx.app.error(LogTags.RENDERING, "Invalid animation group: \""+currentAnimation+"\"" ,new Exception("Invalid animation group: \""+currentAnimation+"\""));
 			return;
 		}
 		currentFrame = anim.start + (frame % (anim.end - anim.start + 1));

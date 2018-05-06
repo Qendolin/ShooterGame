@@ -11,6 +11,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -28,6 +29,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.game.engineSystems.MovementSystem;
 import com.mygdx.game.entites.Enemy;
 import com.mygdx.game.entites.EnemyType;
 import com.mygdx.game.entites.Player;
@@ -48,8 +50,10 @@ import com.mygdx.game.items.Shotgun;
 import com.mygdx.game.utils.BodyFactory;
 import com.mygdx.game.utils.Const;
 import com.mygdx.game.utils.Const.RenderLayer;
+import com.mygdx.game.utils.EnemyFactory;
 
 public class MyGdxGame extends ApplicationAdapter {
+	
 	
 	private SpriteBatch batch;
 	private Engine engine;
@@ -57,6 +61,10 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Camera cam;
 	private World world;
 	private Box2DDebugRenderer physicDebugRenderer;
+	private MovementSystem moveSys = new MovementSystem();
+	//TODO: AssetManager
+	public static AssetManager assetManager = new AssetManager(); //Man soll den nicht static machen, geht sonst nicht auf android oder sowas
+
 	
 	@Override
 	public void create () {
@@ -64,6 +72,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		Gdx.graphics.setWindowedMode(1600/2, 900/2);
 		
 		engine = new Engine();
+		engine.addSystem(moveSys);
 		
 		batch = new SpriteBatch();
 		Texture playerSpriteSheet = new Texture("george.png");
@@ -114,11 +123,14 @@ public class MyGdxGame extends ApplicationAdapter {
 																			   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)));
 		player.setItem(new Pistol());
 		engine.addEntity(player);
-		//boss
-		engine.addEntity(new Enemy(EnemyType.Boss1, world, engine, new Vector2(), new SpriteSheetVis(enemySpriteSheet, 4, 4, false, new SpriteSheetSpriteGroup(0, 3, 0.1f, Enemy.ANIM_WALK_DOWN), 
+		
+		EnemyFactory boss1Fact = EnemyFactory.create(world, engine, EnemyType.Boss1, new SpriteSheetVis(enemySpriteSheet, 4, 4, false, new SpriteSheetSpriteGroup(0, 3, 0.1f, Enemy.ANIM_WALK_DOWN), 
 				   new SpriteSheetSpriteGroup(4, 7, 0.1f, Enemy.ANIM_WALK_LEFT),
 				   new SpriteSheetSpriteGroup(8, 11, 0.1f, Enemy.ANIM_WALK_RIGHT),
-				   new SpriteSheetSpriteGroup(12, 15, 0.1f, Enemy.ANIM_WALK_UP))));
+				   new SpriteSheetSpriteGroup(12, 15, 0.1f, Enemy.ANIM_WALK_UP)));
+		
+		boss1Fact.spawn(new Vector2(), 500, 5);
+		
 		cam = new OrthographicCamera(Gdx.graphics.getWidth()*1.25f, Gdx.graphics.getHeight()*1.25f);
 		cam.position.x = Gdx.graphics.getWidth()/2; 
 		cam.position.y = Gdx.graphics.getHeight()/2;
@@ -128,10 +140,14 @@ public class MyGdxGame extends ApplicationAdapter {
 	public void render () {
 		updateUpdateListeners();
 		
-		//Dieser prozess kann vereinfacht werden
-		//Dinge bewegen
-		if(!Gdx.input.isKeyPressed(Input.Keys.SPACE)) //Space drücken stoppt alle bewegeung
-			updateVelocities();
+		if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) //Space drücken stoppt alle bewegeung
+			moveSys.setProcessing(false);
+		else if(!moveSys.checkProcessing())
+			moveSys.setProcessing(true);
+		
+		//Alle systeme werden auferufen und ausgeführ
+		engine.update(Gdx.graphics.getDeltaTime());
+		
 		//Physik simulieren
 		world.step(Gdx.graphics.getDeltaTime(), 2, 6);
 		//Simulierte physik anwenden

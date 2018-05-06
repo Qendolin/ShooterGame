@@ -19,7 +19,7 @@ public class SpriteSheetSpriteGroup {
 		this.name = name;
 		frameDuration = 0;
 	}
-	
+
 	public float getTotalDuration() {
 		return (end-start+1) * frameDuration;
 	}

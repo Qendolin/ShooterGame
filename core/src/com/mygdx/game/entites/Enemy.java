@@ -57,7 +57,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 		healthComp = new HealthComp(type.health, disposeOnDeath);
 		add(healthComp);
 		
-		bodyComp = new BodyComp(world, visualComp.visual.getCenter(), this,
+		bodyComp = new BodyComp(world, position, this,
 				((visual.getHeight() + visual.getWidth()) / 4f) * enemyHitCircleRadiusMultiplyer, BodyType.DynamicBody,
 				type.boss ? Const.Collision.BIG_ENTITY : Const.Collision.ENTITY, (short) (Const.Collision.ENTITY ^ Const.Collision.ALL));
 		add(bodyComp);
