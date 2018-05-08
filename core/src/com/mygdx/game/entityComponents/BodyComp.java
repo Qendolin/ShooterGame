@@ -44,6 +44,13 @@ public final class BodyComp implements Component, Disposable {
 		fixture.setUserData(connection);
 	}
 	
+	public BodyComp(World world, Vector2 pos, Entity entity, float width, float height, BodyType type, short collisionLayer, short collisionLayerMask) {
+		body = BodyFactory.createRectangle(world, type, false, collisionLayer, collisionLayerMask, pos, width, height, false);
+		fixture = body.getFixtureList().get(0);
+		connection = new CollisionEntityConnection(entity);
+		fixture.setUserData(connection);
+	}
+	
 	public BodyComp asSensor() {
 		setSensor(true);
 		return this;
@@ -58,6 +65,8 @@ public final class BodyComp implements Component, Disposable {
 	}
 	
 	public Vector2 getPosition() {
+		if(body == null)
+			return null;
 		return body.getTransform().getPosition();
 	}
 	
