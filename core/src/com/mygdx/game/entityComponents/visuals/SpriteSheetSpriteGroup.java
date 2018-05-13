@@ -1,4 +1,4 @@
-package com.mygdx.game.entityComponents.visualComps;
+package com.mygdx.game.entityComponents.visuals;
 
 public class SpriteSheetSpriteGroup {
 	public int start;
@@ -19,7 +19,7 @@ public class SpriteSheetSpriteGroup {
 		this.name = name;
 		frameDuration = 0;
 	}
-	
+
 	public float getTotalDuration() {
 		return (end-start+1) * frameDuration;
 	}

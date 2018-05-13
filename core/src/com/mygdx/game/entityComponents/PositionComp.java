@@ -3,7 +3,8 @@ package com.mygdx.game.entityComponents;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Vector2;
 
-public class PositionComp implements Component {
+//TODO: Position als Property machen
+public final class PositionComp implements Component {
 	public Vector2 pos = new Vector2();
 	
 	public PositionComp() {
