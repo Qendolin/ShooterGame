@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.ShooterGame;
 import com.mygdx.game.actions.Action;
 import com.mygdx.game.actions.attacks.Attack;
 import com.mygdx.game.entityComponents.BodyComp;

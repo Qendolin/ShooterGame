@@ -22,7 +22,9 @@ public class MovementSystem extends EntitySystem {
 	private ComponentMapper<PositionComp> pm = ComponentMapper.getFor(PositionComp.class);
 	private ComponentMapper<RotationComp> rm = ComponentMapper.getFor(RotationComp.class);
 
-	public MovementSystem() {}
+	public MovementSystem() {
+		super(50); //After physics
+	}
 
 	public void addedToEngine(Engine engine) {
 		entities = engine.getEntitiesFor(Family.all(VelocityComp.class, PositionComp.class).get());

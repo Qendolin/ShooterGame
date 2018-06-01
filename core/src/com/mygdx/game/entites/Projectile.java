@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.utils.Disposable;
-import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.ShooterGame;
 import com.mygdx.game.entityComponents.BodyComp;
 import com.mygdx.game.entityComponents.DamageComp;
 import com.mygdx.game.entityComponents.HealthComp;
