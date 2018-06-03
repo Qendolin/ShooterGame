@@ -47,7 +47,7 @@ public class StartScreen implements Screen {
 
 		game.batch.begin();
 		game.font.draw(game.batch, "Shooter Game", 100, 150);
-		game.font.draw(game.batch, "Clicke irgendwo um zu beginnen!", 100, 100);
+		game.font.draw(game.batch, "Klicke irgendwo um zu beginnen!", 100, 100);
 		game.batch.end();
 
 		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {

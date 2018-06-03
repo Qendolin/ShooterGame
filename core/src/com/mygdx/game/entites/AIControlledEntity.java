@@ -26,7 +26,7 @@ public abstract class AIControlledEntity<VISUAL extends Visual> extends DefaultE
 		target.addListener((value, oldVal, newVal) -> {
 			lastTarget = oldVal;
 			if(lastTarget != null)
-				lastTargetLastPosition = new Vector2(lastTarget.positionComp.pos);
+				lastTargetLastPosition = new Vector2(lastTarget.transformComp.pos);
 		});
 		stateMachine = new DefaultStateMachine<AIControlledEntity<?>, State<AIControlledEntity<?>>>(this);
 		stateMachine.setInitialState(TestState.IDLE);

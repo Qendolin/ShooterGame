@@ -1,59 +1,18 @@
 package com.mygdx.game;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
-import com.mygdx.game.engineSystems.MovementSystem;
-import com.mygdx.game.entites.Enemy;
-import com.mygdx.game.entites.EnemyType;
-import com.mygdx.game.entites.Player;
-import com.mygdx.game.entityComponents.BodyComp;
-import com.mygdx.game.entityComponents.PositionComp;
-import com.mygdx.game.entityComponents.RotationComp;
-import com.mygdx.game.entityComponents.UpdateEventComp;
-import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.entityComponents.VisualComp;
-import com.mygdx.game.entityComponents.events.CollisionEvent;
-import com.mygdx.game.entityComponents.misc.BodyDeleteFlag;
-import com.mygdx.game.entityComponents.misc.CollisionEntityConnection;
-import com.mygdx.game.entityComponents.visuals.SpriteSheetSpriteGroup;
-import com.mygdx.game.entityComponents.visuals.SpriteSheetVis;
 import com.mygdx.game.entityComponents.visuals.Visual;
-import com.mygdx.game.items.Pistol;
-import com.mygdx.game.items.Shotgun;
 import com.mygdx.game.screens.StartScreen;
-import com.mygdx.game.utils.BodyFactory;
-import com.mygdx.game.utils.Const;
-import com.mygdx.game.utils.Const.RenderLayer;
-import com.mygdx.game.utils.EnemyFactory;
 
 public class ShooterGame extends Game {
 	

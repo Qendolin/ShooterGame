@@ -1,10 +1,12 @@
 package com.mygdx.game.entites;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -15,6 +17,9 @@ import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.events.UpdateListener;
 import com.mygdx.game.entityComponents.visuals.SpriteSheetVis;
 import com.mygdx.game.items.Item;
+import com.mygdx.game.items.MachineGun;
+import com.mygdx.game.items.Pistol;
+import com.mygdx.game.items.Shotgun;
 import com.mygdx.game.utils.Const;
 
 public class Player extends DefaultEntity<SpriteSheetVis> {
@@ -36,6 +41,9 @@ public class Player extends DefaultEntity<SpriteSheetVis> {
 	public float currentPlayerSpeed = playerBaseSpeed;
 	
 	private Item item;
+	//Sollte eigentlich nicht von anfang an gefüllt sein ist aber zurzeit am einfachseten
+	private Item[] arsenal = new Item[] {new MachineGun(), new Shotgun(), new Pistol()};
+	private int itemIndex = 0;
 	
 	private boolean running = false;
 	private int playerDirection;
@@ -53,6 +61,9 @@ public class Player extends DefaultEntity<SpriteSheetVis> {
 			}});
 		add(updateComp);
 		
+		if(arsenal.length != 0)
+			setItem(arsenal[0]);
+		
 		playerList.add(this);
 	}
 	
@@ -61,33 +72,6 @@ public class Player extends DefaultEntity<SpriteSheetVis> {
 				((visual.getHeight()+visual.getWidth())/4f)*playerHitCircleRadiusMultiplyer, 
 				BodyType.DynamicBody, Const.Collision.PLAYER, (short) (Const.Collision.PROJECTILE ^ Const.Collision.ENTITY ^ Const.Collision.ALL));
 	}
-/*
-	public Player(SpriteSheetComp visual, VelocityComp velocity, PositionComp position, World world) {
-		add(visual);
-		visualComp = visual;
-		add(velocity);
-		velocityComp = velocity;
-		add(position);
-		positionComp = position;
-		add(accelerationComp);
-		createColliderComp(world, visual);
-		add(collisionComp);
-		playerList.add(this);
-	}
-	
-	public Player(SpriteSheetComp visual, VelocityComp velocity, PositionComp position, FixedAccelerationComp acceleration, World world) {
-		add(visual);
-		visualComp = visual;
-		add(velocity);
-		velocityComp = velocity;
-		add(position);
-		positionComp = position;
-		add(acceleration);
-		accelerationComp = acceleration;
-		createColliderComp(world, visual);
-		add(collisionComp);
-		playerList.add(this);
-	}*/
 	
 	public void setItem(Item item) {
 		this.item = item;
@@ -103,7 +87,7 @@ public class Player extends DefaultEntity<SpriteSheetVis> {
 	}
 	
 	public void update(World world, Camera cam, Engine engine) {
-		//Movement
+		//Movemente
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
 			currentPlayerSpeed = playerBaseSpeed * 1.8f;
@@ -150,6 +134,18 @@ public class Player extends DefaultEntity<SpriteSheetVis> {
 			visualComp.visual.animate = false;
 		} else
 			visualComp.visual.animate = true;
+		
+		if(arsenal.length != 0) {
+			if(Gdx.input.isKeyJustPressed(Keys.Q)) {
+				itemIndex--;
+				if(itemIndex < 0) itemIndex = arsenal.length-1;
+				setItem(arsenal[itemIndex]);
+			} else if(Gdx.input.isKeyJustPressed(Keys.E)) {
+				itemIndex++;
+				itemIndex %= arsenal.length;
+				setItem(arsenal[itemIndex]);
+			}
+		}
 		
 		//Item
 		if(item != null)

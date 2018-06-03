@@ -27,14 +27,15 @@ public class Shotgun extends Gun {
 			Vector3 mousePos = cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 			
 			for(int i = 0; i < 5; i++) {
-				Sprite shotSprite = new Sprite(new Texture("badlogic.jpg"));
+				Sprite shotSprite = new Sprite(new Texture("schrot.png"));
 				shotSprite.setSize(25f, 25f);
-				//Das projektiel fliegt zwischen 30 und 70 units
+				//Das projektiel fliegt zwischen 100 und 130 units
 				Projectile shot = new Projectile(world, engine, owner,
 						getOwnerCenter(),
 						new SpriteVis(shotSprite),
 						getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y), true),
-						2, (float) ((Math.random()*40f+30f)/bulletSpeed));
+						new Vector2(mousePos.x, mousePos.y).sub(owner.getPositionComp().pos).angle(),
+						4, (float) ((Math.random()*30f+100f)/bulletSpeed));
 				engine.addEntity(shot);
 			}
 			return true;

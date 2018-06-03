@@ -34,7 +34,8 @@ import com.mygdx.game.engineSystems.UpdateSystem;
 import com.mygdx.game.entites.Enemy;
 import com.mygdx.game.entites.EnemyType;
 import com.mygdx.game.entites.Player;
-import com.mygdx.game.entityComponents.PositionComp;
+import com.mygdx.game.entityComponents.BodyComp;
+import com.mygdx.game.entityComponents.TrasformationComp;
 import com.mygdx.game.entityComponents.VisualComp;
 import com.mygdx.game.entityComponents.events.CollisionEvent;
 import com.mygdx.game.entityComponents.misc.BodyDeleteFlag;
@@ -58,7 +59,7 @@ public class GameScreen implements Screen{
 	
 	@SuppressWarnings("rawtypes")
 	private ComponentMapper<VisualComp> rm = ComponentMapper.getFor(VisualComp.class);
-	private ComponentMapper<PositionComp> pm = ComponentMapper.getFor(PositionComp.class);
+	private ComponentMapper<TrasformationComp> pm = ComponentMapper.getFor(TrasformationComp.class);
 
 	public GameScreen(final ShooterGame game) {
 		this.game = game;
@@ -120,7 +121,6 @@ public class GameScreen implements Screen{
 																			   new SpriteSheetSpriteGroup(4, 7, 0.05f, Player.ANIM_RUN_LEFT),
 																			   new SpriteSheetSpriteGroup(8, 11, 0.05f, Player.ANIM_RUN_UP),
 																			   new SpriteSheetSpriteGroup(12, 15, 0.05f, Player.ANIM_RUN_RIGHT)));
-		player.setItem(new Pistol());
 		game.engine.addEntity(player);
 		
 		EnemyFactory boss1Fact = EnemyFactory.create(world, game.engine, EnemyType.Boss1, new SpriteSheetVis(enemySpriteSheet, 4, 4, false, new SpriteSheetSpriteGroup(0, 3, 0.1f, Enemy.ANIM_WALK_DOWN), 
@@ -156,8 +156,7 @@ public class GameScreen implements Screen{
 			moveSys.setProcessing(false);
 		else if(!moveSys.checkProcessing())
 			moveSys.setProcessing(true);
-		
-		System.out.println("Vor update: "+Gdx.graphics.getDeltaTime());
+
 		//Alle systeme werden aufgerufen und ausgeführ
 		game.engine.update(Gdx.graphics.getDeltaTime());
 		
@@ -171,7 +170,7 @@ public class GameScreen implements Screen{
 		
 		//Sprites rendern
 		cam.update();
-		Family renderableFamily = Family.all(VisualComp.class, PositionComp.class).get();
+		Family renderableFamily = Family.all(VisualComp.class, TrasformationComp.class).get();
 		ImmutableArray<Entity> renderables = game.engine.getEntitiesFor(renderableFamily);
 		
 		//Sprites sortiert nach layer
@@ -183,6 +182,7 @@ public class GameScreen implements Screen{
 		
 		for(Entity renderable : renderables) {
 			VisualComp<?> visualComp = rm.get(renderable);
+			BodyComp bodyComp = renderable.getComponent(BodyComp.class);
 			for(int i = 0; i < visualComp.visual.getNumberOfSprites() || i == 0; i++) {
 				Sprite sprite = visualComp.visual.get(i);
 				if(sprite == null)
@@ -190,13 +190,12 @@ public class GameScreen implements Screen{
 				Vector2 pos = pm.get(renderable).pos;
 				//Zentrieren
 				sprite.setPosition(pos.x-sprite.getWidth()/2f, pos.y-sprite.getHeight()/2f);
+				if(bodyComp != null && bodyComp.getBody() != null)
+					sprite.setRotation((float) Math.toDegrees(bodyComp.getBody().getAngle()));
 //				sprite.draw(batch);
 				sorted[visualComp.visual.renderLayer-RenderLayer.MIN].add(sprite);
 			}
 		}
-		
-		System.out.println("Render: "+Gdx.graphics.getDeltaTime());
-		
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		game.batch.setProjectionMatrix(cam.combined);
@@ -208,7 +207,7 @@ public class GameScreen implements Screen{
 		}
 		game.batch.end();
 		
-		//Physic debug rener
+		//Physic debug render
 		Matrix4 physicMVMatrix = cam.combined.cpy();
 		physicMVMatrix.scl(Const.METER_TO_PIXEL_RATIO);
 		physicDebugRenderer.render(world, physicMVMatrix);

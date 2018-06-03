@@ -10,7 +10,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.entityComponents.BodyComp;
-import com.mygdx.game.entityComponents.PositionComp;
+import com.mygdx.game.entityComponents.TrasformationComp;
 import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.utils.Const;
@@ -20,7 +20,7 @@ public class PhysicSystem extends EntitySystem {
 	private World world;
 	
 	private ComponentMapper<BodyComp> bm = ComponentMapper.getFor(BodyComp.class);
-	private ComponentMapper<PositionComp> pm = ComponentMapper.getFor(PositionComp.class);
+	private ComponentMapper<TrasformationComp> pm = ComponentMapper.getFor(TrasformationComp.class);
 	
 	public PhysicSystem(World world) {
 		super(40);//Before movement
@@ -28,7 +28,7 @@ public class PhysicSystem extends EntitySystem {
 	}
 	
 	public void addedToEngine(Engine engine) {
-		entities = engine.getEntitiesFor(Family.all(BodyComp.class, PositionComp.class).get());
+		entities = engine.getEntitiesFor(Family.all(BodyComp.class, TrasformationComp.class).get());
 	}
 	
 	public void update(float deltaTime) {
@@ -36,9 +36,9 @@ public class PhysicSystem extends EntitySystem {
 		
 		for(Entity collider : entities) {
 			BodyComp colliderComp = bm.get(collider);
-			PositionComp positionComp = pm.get(collider);
-			if(colliderComp != null && positionComp != null)
-				positionComp.pos = new Vector2(colliderComp.getPosition()).scl(Const.METER_TO_PIXEL_RATIO);
+			TrasformationComp transformComp = pm.get(collider);
+			if(colliderComp != null && transformComp != null)
+				transformComp.pos = new Vector2(colliderComp.getPosition()).scl(Const.METER_TO_PIXEL_RATIO);
 		}
 	}
 }

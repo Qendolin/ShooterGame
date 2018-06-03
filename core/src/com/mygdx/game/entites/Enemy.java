@@ -70,7 +70,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 		add(updateComp);
 		accelerationComp = new FixedAccelerationComp(Float.MAX_VALUE); //Instant
 		add(accelerationComp);
-		healthBar = new HealthBar(positionComp, new Vector2(), healthComp);
+		healthBar = new HealthBar(transformComp, new Vector2(), healthComp);
 		engine.addEntity(healthBar);
 		
 		healthComp.deathListener = new DeathListener() {
@@ -103,16 +103,16 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 		//
 /*
 		for (Player player : Player.getAllPlayers()) {
-			Vector2 v = new Vector2(player.positionComp.pos);
-			if (v.sub(positionComp.pos).len() < attackRadius) {
+			Vector2 v = new Vector2(player.transformComp.pos);
+			if (v.sub(transformComp.pos).len() < attackRadius) {
 				target = player;
 				break;
 			}
 		}
 		Vector2 nextVel;
 		if (target != null) {
-			nextVel = new Vector2((target.positionComp.pos.x - positionComp.pos.x) / 1.3f,
-					(target.positionComp.pos.y - positionComp.pos.y) / 1.3f);
+			nextVel = new Vector2((target.transformComp.pos.x - transformComp.pos.x) / 1.3f,
+					(target.transformComp.pos.y - transformComp.pos.y) / 1.3f);
 
 			if (System.currentTimeMillis() - lastAction >= type.action.cooldownInSec*1000) {
 				lastAction = System.currentTimeMillis();
@@ -138,13 +138,13 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 			break;
 		}
 
-		if (positionComp.pos.isZero()) {
+		if (transformComp.pos.isZero()) {
 			visualComp.visual.setCurrentAnimationFrame(0);
 			visualComp.visual.animate = false;
 		} else
 			visualComp.visual.animate = true;
 		
-//		healthBar.get().setPosition(positionComp.pos.x+visualComp.visual.getWidth(), positionComp.pos.y+visualComp.visual.getHeight()+10);*/
+//		healthBar.get().setPosition(transformComp.pos.x+visualComp.visual.getWidth(), transformComp.pos.y+visualComp.visual.getHeight()+10);*/
 	}
 
 	private void updateSprite() {
@@ -182,9 +182,9 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 		
 		if(target.get() == null) {
 			for (Player player : Player.getAllPlayers()) {
-				Vector2 v = new Vector2(player.positionComp.pos);
+				Vector2 v = new Vector2(player.transformComp.pos);
 				//Das 500 muss noch geändert werden
-				if (v.sub(positionComp.pos).len() < 250) {
+				if (v.sub(transformComp.pos).len() < 250) {
 					target.set(player);
 					return target.get();
 				}
@@ -194,7 +194,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 		
 		DefaultEntity<?> targetEntity = target.get();
 		
-		Vector2 toTargetVector = new Vector2(targetEntity.positionComp.pos).sub(positionComp.pos);
+		Vector2 toTargetVector = new Vector2(targetEntity.transformComp.pos).sub(transformComp.pos);
 		//500 muss noch geändert werden
 		if(toTargetVector.len() > 250) {
 			target.set(null);
@@ -209,7 +209,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 		DefaultEntity<?> target = getTarget();
 		if(target == null)
 			return false;
-		Vector2 vecToTarget = new Vector2(target.positionComp.pos).sub(positionComp.pos);
+		Vector2 vecToTarget = new Vector2(target.transformComp.pos).sub(transformComp.pos);
 		for(Action act : actions) {
 			if(act instanceof Attack) {
 				Attack attack = (Attack) act;
@@ -238,7 +238,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 
 	@Override
 	public void moveTowards(Vector2 targetPos) {
-		Vector2 nextVel = new Vector2((targetPos.x - positionComp.pos.x), (targetPos.y - positionComp.pos.y));
+		Vector2 nextVel = new Vector2((targetPos.x - transformComp.pos.x), (targetPos.y - transformComp.pos.y));
 		nextVel.nor();
 		nextVel.scl(speed);
 		velocityComp.vel.set(nextVel);

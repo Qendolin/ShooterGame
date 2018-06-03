@@ -15,7 +15,7 @@ import com.mygdx.game.actions.Action;
 import com.mygdx.game.entityComponents.BodyComp;
 import com.mygdx.game.entityComponents.FixedAccelerationComp;
 import com.mygdx.game.entityComponents.HealthComp;
-import com.mygdx.game.entityComponents.PositionComp;
+import com.mygdx.game.entityComponents.TrasformationComp;
 import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.entityComponents.VisualComp;
@@ -28,7 +28,7 @@ public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disp
 
 	protected World world;
 	protected Engine engine;
-	protected PositionComp positionComp;
+	protected TrasformationComp transformComp;
 	protected VelocityComp velocityComp;
 	/**
 	 * Optional
@@ -63,8 +63,8 @@ public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disp
 		visualComp=new VisualComp<VISUAL>(visual);
 		visualComp.visual.renderLayer = RenderLayer.ENTITIES;
 		add(visualComp);
-		positionComp = new PositionComp(position);
-		add(positionComp);
+		transformComp = new TrasformationComp(position);
+		add(transformComp);
 		velocityComp = new VelocityComp();
 		add(velocityComp);
 	}
@@ -99,7 +99,7 @@ public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disp
 	 *    ╲
 	 *     ╲
 	 *  
-	 *  return = 3
+	 * return = 3
 	 *  
 	 * @param directions
 	 * @return
@@ -108,8 +108,8 @@ public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disp
 		return (int) Math.floor((velocityComp.vel.angle()+degreeOffset) / (360f/directions));
 	}
 
-	public PositionComp getPositionComp() {
-		return positionComp;
+	public TrasformationComp getPositionComp() {
+		return transformComp;
 	}
 
 	public VelocityComp getVelocityComp() {
@@ -137,7 +137,7 @@ public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disp
 	}
 	
 	public void moveTowards(Vector2 pos) {
-		Vector2 myPos = positionComp.pos;
+		Vector2 myPos = transformComp.pos;
 		Vector2 nextVel = new Vector2(pos).sub(myPos);
 		nextVel.nor();
 		nextVel.scl(speed);

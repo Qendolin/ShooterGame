@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.entityComponents.HealthComp;
-import com.mygdx.game.entityComponents.PositionComp;
+import com.mygdx.game.entityComponents.TrasformationComp;
 import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.VisualComp;
 import com.mygdx.game.entityComponents.events.UpdateListener;
@@ -23,8 +23,8 @@ import javafx.beans.value.ObservableValue;
 
 public class HealthBar extends Entity implements Disposable {
 	
-	public PositionComp trackingPosition;
-	public PositionComp barPosition;
+	public TrasformationComp trackingPosition;
+	public TrasformationComp barPosition;
 	public HealthComp trackingHealth;
 	public Vector2 offset;
 	private UpdateEventComp updateComp = new UpdateEventComp(new UpdateListener() {
@@ -36,9 +36,9 @@ public class HealthBar extends Entity implements Disposable {
 	private VisualComp<CompositeVis> visualComp;
 	private Visual bar;
 		
-	public HealthBar(PositionComp trackingPosition, Vector2 offset, HealthComp trackingHealth) {
+	public HealthBar(TrasformationComp trackingPosition, Vector2 offset, HealthComp trackingHealth) {
 		this.trackingPosition = trackingPosition;
-		barPosition = new PositionComp(new Vector2(trackingPosition.pos).add(offset));
+		barPosition = new TrasformationComp(new Vector2(trackingPosition.pos).add(offset));
 		add(barPosition);
 		this.offset = offset;
 		add(updateComp);

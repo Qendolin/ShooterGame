@@ -9,8 +9,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.entityComponents.BodyComp;
-import com.mygdx.game.entityComponents.PositionComp;
-import com.mygdx.game.entityComponents.RotationComp;
+import com.mygdx.game.entityComponents.TrasformationComp;
 import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.utils.Const;
 
@@ -19,15 +18,14 @@ public class MovementSystem extends EntitySystem {
 
 	private ComponentMapper<BodyComp> bm = ComponentMapper.getFor(BodyComp.class);
 	private ComponentMapper<VelocityComp> vm = ComponentMapper.getFor(VelocityComp.class);
-	private ComponentMapper<PositionComp> pm = ComponentMapper.getFor(PositionComp.class);
-	private ComponentMapper<RotationComp> rm = ComponentMapper.getFor(RotationComp.class);
+	private ComponentMapper<TrasformationComp> tm = ComponentMapper.getFor(TrasformationComp.class);
 
 	public MovementSystem() {
 		super(50); //After physics
 	}
 
 	public void addedToEngine(Engine engine) {
-		entities = engine.getEntitiesFor(Family.all(VelocityComp.class, PositionComp.class).get());
+		entities = engine.getEntitiesFor(Family.all(VelocityComp.class, TrasformationComp.class).get());
 	}
 	
 	public void update(float deltaTime) {
@@ -35,20 +33,15 @@ public class MovementSystem extends EntitySystem {
 			Entity entity = entities.get(i);
 			BodyComp bodyComp = bm.get(entity);
 			VelocityComp velocityComp = vm.get(entity);
-			PositionComp positionComp = pm.get(entity);
+			TrasformationComp transformComp = tm.get(entity);
 			
 			Vector2 vel = velocityComp.vel;
-			Vector2 pos = positionComp.pos;
+			Vector2 pos = transformComp.pos;
 			
 			if(vel == null)
 				continue;
 			if(bodyComp != null) {
-				//Rotation
-				RotationComp rotation = rm.get(entity);
-				if(rotation != null)
-					bodyComp.getBody().setTransform(bodyComp.getPosition(), rotation.asRadians());
-				else
-					bodyComp.getBody().setTransform(bodyComp.getPosition(), 0);
+				bodyComp.getBody().setTransform(bodyComp.getPosition(), (float) Math.toRadians(transformComp.rotation));
 				
 				//Gschwindikeit
 				vel = new Vector2(vel);

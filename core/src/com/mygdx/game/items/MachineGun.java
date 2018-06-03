@@ -27,13 +27,14 @@ public class MachineGun extends Gun {
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
 			Vector3 mousePos = cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 
-			Sprite shotSprite = new Sprite(new Texture("badlogic.jpg"));
+			Sprite shotSprite = new Sprite(new Texture("bullet.png"));
 			shotSprite.setSize(25f, 25f);
 			//Das projektil wird 5k units fliegen bevor es despawnt
 			Projectile shot = new Projectile(world, engine, owner,
 					getOwnerCenter(),
 					new SpriteVis(shotSprite),
 					getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y), true),
+					new Vector2(mousePos.x, mousePos.y).sub(owner.getPositionComp().pos).angle(),
 					2, 5000/bulletSpeed);
 			engine.addEntity(shot);
 			return true;
