@@ -36,7 +36,7 @@ public class Player extends DefaultEntity<SpriteSheetVis> {
 	
 	public static ArrayList<Player> playerList = new ArrayList<>();
 	
-	public static float playerHitCircleRadiusMultiplyer = 0.8f;
+	public static float playerHitCircleRadiusMultiplyer = 0.7f;
 	public static float playerBaseSpeed = 150f;
 	
 	public float currentPlayerSpeed = playerBaseSpeed;
