@@ -13,10 +13,11 @@ public class Actions{
 		@Override
 		public boolean doAction(Enemy enemy, World world, Engine engine, boolean begin) {
 			// TODO Auto-generated method stub
+			/*
 			if(begin)
 				System.out.println("BEAM!");
 			else
-				System.out.println("Shooting Beam...");
+				System.out.println("Shooting Beam...");*/
 			return true;
 		}
 	};

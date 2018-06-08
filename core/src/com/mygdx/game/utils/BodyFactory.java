@@ -1,5 +1,6 @@
 package com.mygdx.game.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -39,6 +40,30 @@ public class BodyFactory {
 		BodyDef bdef = createBodyDef(type, bullet, center);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(width/2, height/2, new Vector2(), 0); //vec2(0) weil position im body gespeichert wird
+		FixtureDef fdef = createFixtureDef(collisionLayer, collisionLayerMask, shape, sensor);
+		fdef.density=1f;
+		Body body = world.createBody(bdef);
+		body.createFixture(fdef);
+		shape.dispose();
+		return body;
+	}
+	
+	public static Body createPolygon(World world, BodyType type, boolean bullet, short collisionLayer, short collisionLayerMask, Vector2 center, Vector2[] verts, boolean sensor) {
+		if(world == null || type == null || center == null)
+			return null;
+		center = new Vector2(center).scl(Const.PIXEL_TO_METER_RATIO);
+		BodyDef bdef = createBodyDef(type, bullet, center);
+		PolygonShape shape = new PolygonShape();
+		if(verts.length < 3 || verts.length > 8) {
+			Gdx.app.error(Const.LogTags.PHYSIC, "Polygon vertex count invald, count must be >= 3 and <= 8. Vertex count: "+verts.length+System.lineSeparator()+"Cutting excess vertices");
+			Vector2[] tmp = new Vector2[8];
+			for(int i = 0; i < 8; i++)
+				tmp[i] = verts[i];
+			verts = tmp;
+		}
+		for(Vector2 v : verts)
+			v.scl(Const.PIXEL_TO_METER_RATIO);
+		shape.set(verts);
 		FixtureDef fdef = createFixtureDef(collisionLayer, collisionLayerMask, shape, sensor);
 		fdef.density=1f;
 		Body body = world.createBody(bdef);

@@ -101,8 +101,8 @@ public enum TestState implements State<AIControlledEntity<?>> {
 	
 	@Override
 	public void enter(AIControlledEntity<?> entity) {
-		System.out.println("Exited State: " + entity.stateMachine.getPreviousState());
-		System.out.println("Entered State: " + entity.stateMachine.getCurrentState());
+		//System.out.println("Exited State: " + entity.stateMachine.getPreviousState());
+		//System.out.println("Entered State: " + entity.stateMachine.getCurrentState());
 		if(entity.stateMachine.getCurrentState() != IDLE && entity.stateMachine.getPreviousState() == IDLE)
 			entity.wake();
 	}

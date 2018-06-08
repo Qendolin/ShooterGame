@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.entityComponents.BodyComp;
 import com.mygdx.game.entityComponents.FixedAccelerationComp;
+import com.mygdx.game.entityComponents.HealthComp;
 import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.events.UpdateListener;
 import com.mygdx.game.entityComponents.visuals.SpriteSheetVis;
@@ -54,6 +55,10 @@ public class Player extends DefaultEntity<SpriteSheetVis> {
 		add(accelerationComp);
 		createColliderComp(world, visual);
 		add(bodyComp);
+		healthComp = new HealthComp(500, null);
+		add(healthComp);
+		HealthBar healthBar = new HealthBar(transformComp, new Vector2(), healthComp);
+		engine.addEntity(healthBar);
 		updateComp = new UpdateEventComp(new UpdateListener() {
 			@Override
 			public void onUpdate(World world, Engine engine, Camera cam) {

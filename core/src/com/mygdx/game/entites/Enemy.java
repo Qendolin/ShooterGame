@@ -73,8 +73,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 		healthBar = new HealthBar(transformComp, new Vector2(), healthComp);
 		engine.addEntity(healthBar);
 		
-		healthComp.deathListener = new DeathListener() {
-			
+		healthComp.deathListener = new DeathListener() {		
 			@Override
 			protected boolean onDeath(DeathEvent event) {
 				healthBar.dispose();

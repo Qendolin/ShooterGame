@@ -1,6 +1,7 @@
 package com.mygdx.game.screens;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
@@ -14,10 +15,18 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -26,6 +35,8 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.ShooterGame;
 import com.mygdx.game.engineSystems.MovementSystem;
@@ -43,6 +54,7 @@ import com.mygdx.game.entityComponents.misc.CollisionEntityConnection;
 import com.mygdx.game.entityComponents.visuals.SpriteSheetSpriteGroup;
 import com.mygdx.game.entityComponents.visuals.SpriteSheetVis;
 import com.mygdx.game.items.Pistol;
+import com.mygdx.game.map.MapPreparer;
 import com.mygdx.game.utils.BodyFactory;
 import com.mygdx.game.utils.Const;
 import com.mygdx.game.utils.EnemyFactory;
@@ -52,10 +64,13 @@ public class GameScreen implements Screen{
 	
 	private final ShooterGame game;
 	private Player player;
-	public Camera cam;
-	public World world;
-	public Box2DDebugRenderer physicDebugRenderer;
+	private OrthographicCamera cam;
+	private World world;
+	private Box2DDebugRenderer physicDebugRenderer;
 	private MovementSystem moveSys = new MovementSystem();	
+	private PhysicSystem physSys;
+	private MapRenderer mapRenderer;
+	private TiledMap map;
 	
 	@SuppressWarnings("rawtypes")
 	private ComponentMapper<VisualComp> rm = ComponentMapper.getFor(VisualComp.class);
@@ -106,14 +121,14 @@ public class GameScreen implements Screen{
 		game.engine.addSystem(moveSys);
 		UpdateSystem updateSys = new UpdateSystem(world, game.engine, cam);
 		game.engine.addSystem(updateSys);
-		PhysicSystem physicSystem = new PhysicSystem(world);
-		game.engine.addSystem(physicSystem);
+		physSys = new PhysicSystem(world);
+		game.engine.addSystem(physSys);
 		
-		BodyFactory.createBorder(world, new Vector2(), 1000, 1000);
+		//BodyFactory.createBorder(world, new Vector2(), 1000, 1000);
 		
 		physicDebugRenderer = new Box2DDebugRenderer();
 		
-		player = new Player(world, game.engine, new Vector2(), new SpriteSheetVis(playerSpriteSheet, 4, 4, true, new SpriteSheetSpriteGroup(0, 3, 0.1f, Player.ANIM_WALK_DOWN), 
+		player = new Player(world, game.engine, new Vector2(0,0), new SpriteSheetVis(playerSpriteSheet, 4, 4, true, new SpriteSheetSpriteGroup(0, 3, 0.1f, Player.ANIM_WALK_DOWN), 
 																			   new SpriteSheetSpriteGroup(4, 7, 0.1f, Player.ANIM_WALK_LEFT),
 																			   new SpriteSheetSpriteGroup(8, 11, 0.1f, Player.ANIM_WALK_UP),
 																			   new SpriteSheetSpriteGroup(12, 15, 0.1f, Player.ANIM_WALK_RIGHT),
@@ -128,8 +143,14 @@ public class GameScreen implements Screen{
 				   new SpriteSheetSpriteGroup(8, 11, 0.1f, Enemy.ANIM_WALK_RIGHT),
 				   new SpriteSheetSpriteGroup(12, 15, 0.1f, Enemy.ANIM_WALK_UP)));
 		
-		boss1Fact.spawn(new Vector2(), 500, 5);
+		boss1Fact.spawn(new Vector2(), 500, 1);
 		
+		TmxMapLoader.Parameters mapParams = new TmxMapLoader.Parameters();
+	    mapParams.textureMagFilter = TextureFilter.Nearest;
+	    mapParams.textureMinFilter = TextureFilter.Nearest;
+		map = new TmxMapLoader().load("./maps/test.tmx", mapParams);
+		MapPreparer.prepare(map, world, new Vector2());
+		mapRenderer = new OrthogonalTiledMapRenderer(map, 1);
 	}
 
 	@Override
@@ -156,6 +177,11 @@ public class GameScreen implements Screen{
 			moveSys.setProcessing(false);
 		else if(!moveSys.checkProcessing())
 			moveSys.setProcessing(true);
+		
+		if(Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) //Alt drücken macht noclip an
+			player.getBodyComp().getBody().getFixtureList().get(0).setSensor(true);
+		else if(player.getBodyComp().getBody().getFixtureList().get(0).isSensor())
+			player.getBodyComp().getBody().getFixtureList().get(0).setSensor(false);
 
 		//Alle systeme werden aufgerufen und ausgeführ
 		game.engine.update(Gdx.graphics.getDeltaTime());
@@ -167,9 +193,16 @@ public class GameScreen implements Screen{
 		//Die kontrolle der kamera gehört nicht in die spieler klasse!! (Weil man z.b. mehrer spieler haben kann)
 		cam.position.x = player.getPositionComp().pos.x;
 		cam.position.y = player.getPositionComp().pos.y;
+		cam.update();
+		
+		Gdx.gl.glClearColor(1, 1, 1, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		//Map rendern
+		mapRenderer.setView(cam);
+		mapRenderer.render();
 		
 		//Sprites rendern
-		cam.update();
 		Family renderableFamily = Family.all(VisualComp.class, TrasformationComp.class).get();
 		ImmutableArray<Entity> renderables = game.engine.getEntitiesFor(renderableFamily);
 		
@@ -196,8 +229,7 @@ public class GameScreen implements Screen{
 				sorted[visualComp.visual.renderLayer-RenderLayer.MIN].add(sprite);
 			}
 		}
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
 		game.batch.setProjectionMatrix(cam.combined);
 		game.batch.begin();
 		for(int i = 0; i <= RenderLayer.MAX - RenderLayer.MIN; i++) {

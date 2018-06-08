@@ -15,6 +15,7 @@ public class Const {
 		public static final short ALWAYS = 0x8; //0000 1000
 		public static final short DEFAULT = 0x10; //0001 0000
 		public static final short PLAYER = ENTITY | 0x20; //0010 0100
+		public static final short MAP_OBJECT_COLLIDER = BIG_ENTITY|PLAYER;
 		public static final short ALL = 0xFFF; //1111 1111
 		
 		/*
@@ -87,7 +88,7 @@ public class Const {
 		
 	}
 	
-	public static final float METER_TO_PIXEL_RATIO = 1000;
+	public static final float METER_TO_PIXEL_RATIO = 225;
 	public static final float PIXEL_TO_METER_RATIO = 1/METER_TO_PIXEL_RATIO;
 	
 }
