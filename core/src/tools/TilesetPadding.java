@@ -1,5 +1,6 @@
 package tools;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -48,32 +49,60 @@ public class TilesetPadding {
 	    	for(int y = 0; y < height; y++) {
 	    	    //get pixel value
 	    	    int col = cols[x+y*height];
-
-	    	    if(x % tWidth == 0) {
-    	    		if(y!=0)
+	    	    
+	    	    if(y % tHeight == 0 && x % tWidth == 0) {
+	    	    	if(y!=0)
     	    			ox-=pad;
-	    	    	for(int i = 0; i < pad; i++) {
-	    	    		int pCol = 0;
-	    	    		if(i<pad/2)
-	    	    			pCol=cols[Math.max(x-1,0)+y*height];
-    	    			else
-    	    				pCol=col;
-			    	    out.setRGB(x+ox, y+oy, pCol);
-			    	    ox++;
+	    	    	for(int i = 0; i < pad; i++, ox++) {
+	    	    		if(i!=0)
+	    	    			oy-=pad;
+	    	    		for(int j = 0; j < pad; j++, oy++) {
+	    	    			int pCol = 0;
+		    	    		if(i<pad/2)
+		    	    			if(j<pad)
+		    	    				pCol=cols[Math.max(x-1+i,0)+(Math.max(y+j-1,0))*height];
+		    	    			else
+		    	    				pCol=cols[Math.max(x+i-1,0)+(y+j)*height];
+			    			else
+			    				if(j<pad)
+			    	    			pCol=cols[x+i+(Math.max(y+j-1,0))*height];
+		    	    			else
+		    	    				pCol=cols[x+i+(y+j)*height];
+		    	    		
+	    	    			out.setRGB(x+ox, y+oy, pCol);
+	    	    		}
 	    	    	}
-	    	    }
-	    	    if(y % tHeight == 0) {
-	    	    	for(int i = 0; i < pad; i++) {
-	    	    		int pCol = 0;
-	    	    		if(i<pad/2)
-	    	    			pCol=cols[x+(Math.max(y-1,0))*height];
-		    			else
-		    				pCol=col;
-	    	    		if(x % tWidth == 0) pCol = col;
-	    	    		
-			    	    out.setRGB(x+ox, y+oy, pCol);
-			    	    oy++;
-	    	    	}
+	    	    } else {
+		    	    if(x % tWidth == 0) {
+	    	    		if(y!=0)
+	    	    			ox-=pad;
+		    	    	for(int i = 0; i < pad; i++) {
+		    	    		int pCol = 0;
+		    	    		if(i<pad/2)
+		    	    			pCol=cols[Math.max(x-1,0)+y*height];
+	    	    			else
+	    	    				pCol=col;
+		    	    		
+		    	    		if((y-1) % tHeight == 0)
+		    	    			out.setRGB(x+ox, Math.max(y+oy-1,0), pCol);
+				    	    out.setRGB(x+ox, y+oy, pCol);
+				    	    ox++;
+		    	    	}
+		    	    }
+		    	    else if(y % tHeight == 0) {
+		    	    	for(int i = 0; i < pad; i++) {
+		    	    		int pCol = 0;
+		    	    		if(i<pad/2)
+		    	    			pCol=cols[x+(Math.max(y-1,0))*height];
+			    			else
+			    				pCol=col;
+		    	    		
+		    	    		if((x-1) % tWidth == 0)
+		    	    			out.setRGB(Math.max(x+ox-1,0), y+oy, pCol);
+				    	    out.setRGB(x+ox, y+oy, pCol);
+				    	    oy++;
+		    	    	}
+		    	    }
 	    	    }
 	    	    
 	    	    out.setRGB(x+ox, y+oy, col);
