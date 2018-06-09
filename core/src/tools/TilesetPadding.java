@@ -64,25 +64,9 @@ public class TilesetPadding {
 	    	    }
 	    	    if(y % tHeight == 0) {
 	    	    	for(int i = 0; i < pad; i++) {
-	    	    		if(x % tWidth == 0) {
-	    	    	    	for(int j = 0; j < pad; j++) {
-	    	    	    		int pCol = 0;
-	    	    	    		if(j<pad/2)
-	    	    	    			if(i<pad/2)
-	    	    	    				pCol=cols[Math.max(x-1,0)+Math.max(y-1,0)*height];
-	    	    	    			else
-	    	    	    				pCol=cols[Math.max(x-1,0)+y*height];
-	        	    			else
-	        	    				if(i<pad/2)
-	        	    					pCol=cols[x+Math.max(y-1,0)*height];
-	        	    				else
-	        	    					pCol=col;
-	    			    	    out.setRGB(Math.max(x+ox-pad+j,0), y+oy+1, pCol);
-	    	    	    	}
-	    	    	    }
 	    	    		int pCol = 0;
 	    	    		if(i<pad/2)
-	    	    			pCol=cols[x+Math.max(y-1,0)*height];
+	    	    			pCol=cols[x+(Math.max(y-1,0))*height];
 		    			else
 		    				pCol=col;
 	    	    		if(x % tWidth == 0) pCol = col;
