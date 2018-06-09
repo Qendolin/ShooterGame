@@ -57,7 +57,7 @@ public class Player extends DefaultEntity<SpriteSheetVis> {
 		add(bodyComp);
 		healthComp = new HealthComp(500, null);
 		add(healthComp);
-		HealthBar healthBar = new HealthBar(transformComp, new Vector2(), healthComp);
+		HealthBar healthBar = new HealthBar(transformComp, new Vector2(0, visual.getHeight()/2), healthComp);
 		engine.addEntity(healthBar);
 		updateComp = new UpdateEventComp(new UpdateListener() {
 			@Override

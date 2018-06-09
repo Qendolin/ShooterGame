@@ -26,7 +26,7 @@ public final class HealthComp implements Component{
 	}
 	
 	private void checkDead() {
-		if(health.get() <= 0)
+		if(health.get() <= 0 && deathListener != null)
 			deathListener.handle(new DeathEvent());
 	}
 

@@ -90,7 +90,7 @@ public abstract class Gun extends Item {
 	protected abstract boolean tryShoot(World world, Engine engine, Camera cam);
 	
 	protected Vector2 getOwnerCenter() {
-		return new Vector2(owner.getPositionComp().pos);
+		return new Vector2(owner.getTransformComp().pos);
 	}
 	
 	protected Vector2 getProjectileVelocityTowards(Vector2 target, boolean applySpread) {

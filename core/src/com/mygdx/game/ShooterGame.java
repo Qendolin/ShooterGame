@@ -42,28 +42,6 @@ public class ShooterGame extends Game {
 		Gdx.graphics.setTitle("FPS: "+Gdx.graphics.getFramesPerSecond());
 	}
 
-	/*private void updatePositions() {
-		Family movableFamily = Family.all(VelocityComp.class, PositionComp.class).get();
-		ImmutableArray<Entity> movables = engine.getEntitiesFor(movableFamily);
-		for(Entity movable : movables) {
-			Vector2 vel = movable.getComponent(VelocityComp.class).vel;
-			Vector2 pos = movable.getComponent(PositionComp.class).pos;
-			if(vel == null || pos == null)
-				continue;
-			pos.x+=vel.x*Gdx.graphics.getDeltaTime();
-			pos.y+=vel.y*Gdx.graphics.getDeltaTime();
-			ColliderComp colliderComp = movable.getComponent(ColliderComp.class);
-			if(colliderComp != null) {
-				RotationComp rotation = movable.getComponent(RotationComp.class);
-				if(rotation != null)
-					colliderComp.getBody().setTransform(pos, rotation.asRadians());
-				else
-					colliderComp.getBody().setTransform(pos, 0);
-			}
-		}
-	}*/
-	
-
 	@Override
 	public void dispose () {
 		batch.dispose();

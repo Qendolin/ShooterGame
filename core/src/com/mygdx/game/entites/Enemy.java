@@ -70,7 +70,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 		add(updateComp);
 		accelerationComp = new FixedAccelerationComp(Float.MAX_VALUE); //Instant
 		add(accelerationComp);
-		healthBar = new HealthBar(transformComp, new Vector2(), healthComp);
+		healthBar = new HealthBar(transformComp, new Vector2(0, visual.getHeight()/2), healthComp);
 		engine.addEntity(healthBar);
 		
 		healthComp.deathListener = new DeathListener() {		

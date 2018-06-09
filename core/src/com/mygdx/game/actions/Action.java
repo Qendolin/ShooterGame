@@ -34,12 +34,13 @@ public abstract class Action {
 	public boolean act(Enemy enemy, World world, Engine engine) {
 		if(!isOnCooldown()) {
 			if(isActing() || lastActBegin == -1) {
-				if(doAction(enemy, world, engine, lastActBegin==-1)) {
+				if(doAction(enemy, world, engine, lastActBegin==-1, false)) {
 					if(lastActBegin == -1)
 						lastActBegin = System.currentTimeMillis();
 					return true;
 				}
 			} else if(lastActBegin != -1) {
+				doAction(enemy, world, engine, false, true);
 				lastAct = System.currentTimeMillis();
 				onCooldown = true;
 				lastActBegin = -1;
@@ -71,5 +72,5 @@ public abstract class Action {
 	 * @param begin Is beginning of action
 	 * @return success
 	 */
-	protected abstract boolean doAction(Enemy enemy, World world, Engine engine, boolean begin);
+	protected abstract boolean doAction(Enemy enemy, World world, Engine engine, boolean begin, boolean end);
 }

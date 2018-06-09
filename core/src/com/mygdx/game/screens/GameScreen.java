@@ -191,8 +191,8 @@ public class GameScreen implements Screen{
 		
 		//Camera bewegen
 		//Die kontrolle der kamera gehört nicht in die spieler klasse!! (Weil man z.b. mehrer spieler haben kann)
-		cam.position.x = player.getPositionComp().pos.x;
-		cam.position.y = player.getPositionComp().pos.y;
+		cam.position.x = player.getTransformComp().pos.x;
+		cam.position.y = player.getTransformComp().pos.y;
 		cam.update();
 		
 		Gdx.gl.glClearColor(1, 1, 1, 1);

@@ -56,6 +56,11 @@ public final class BodyComp implements Component, Disposable {
 		return this;
 	}
 	
+	public BodyComp withRotation(float rot) {
+		body.setTransform(body.getPosition(), rot);
+		return this;
+	}
+	
 	public void setSensor(boolean sensor) {
 		fixture.setSensor(sensor);
 	}

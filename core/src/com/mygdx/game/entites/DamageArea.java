@@ -34,20 +34,20 @@ public class DamageArea extends Entity implements Disposable{
 	};
 	private Engine engine;
 	
-	public DamageArea(World world, Engine engine, Vector2 pos, float damage, int maxHits, short collisionLayer, short collisionLayerMask, float radius) {
+	public DamageArea(World world, Engine engine, Vector2 pos, float rot, float scale, float damage, int maxHits, short collisionLayer, short collisionLayerMask, float radius) {
 		this.damage = damage;
 		this.maxHits = maxHits;
 		this.engine = engine;
-		bodyComp = new BodyComp(world, pos, this, radius, BodyType.DynamicBody, collisionLayer, collisionLayerMask).asSensor();
+		bodyComp = new BodyComp(world, pos, this, radius, BodyType.DynamicBody, collisionLayer, collisionLayerMask).asSensor().withRotation(rot);
 		bodyComp.setCollisionListener(onCollide);
 		add(bodyComp);
 	}
 	
-	public DamageArea(World world, Engine engine, Vector2 pos, float damage, int maxHits, short collisionLayer, short collisionLayerMask, float width, float height) {
+	public DamageArea(World world, Engine engine, Vector2 pos, float rot, float scale, float damage, int maxHits, short collisionLayer, short collisionLayerMask, float width, float height) {
 		this.damage = damage;
 		this.maxHits = maxHits;
 		this.engine = engine;
-		bodyComp = new BodyComp(world, pos, this, width, height, BodyType.DynamicBody, collisionLayer, collisionLayerMask).asSensor();
+		bodyComp = new BodyComp(world, pos, this, width, height, BodyType.DynamicBody, collisionLayer, collisionLayerMask).asSensor().withRotation(rot);;
 		bodyComp.setCollisionListener(onCollide);
 		add(bodyComp);
 	}

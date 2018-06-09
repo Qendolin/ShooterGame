@@ -33,7 +33,7 @@ public enum TestState implements State<AIControlledEntity<?>> {
 		@Override
 		public void update(AIControlledEntity<?> entity) {
 			//epsilon ist der fehlerabstand. Also wenn sie nicht genau gleich sind z.B.: (0.99998,0,0) und (1,0,0),  dann sind sie trotzdem gleich
-			if(entity.getLastTargetLastPosition().epsilonEquals(entity.getPositionComp().pos, 1)) {
+			if(entity.getLastTargetLastPosition().epsilonEquals(entity.getTransformComp().pos, 1)) {
 				entity.stateMachine.changeState(IDLE);
 			}
 			else
@@ -49,7 +49,7 @@ public enum TestState implements State<AIControlledEntity<?>> {
 		@Override
 		public void update(AIControlledEntity<?> entity) {
 			DefaultEntity<?> target = entity.getLastTarget();
-			Vector2 vecToTarget = new Vector2(target.getPositionComp().pos).sub(entity.getPositionComp().pos);
+			Vector2 vecToTarget = new Vector2(target.getTransformComp().pos).sub(entity.getTransformComp().pos);
 			vecToTarget.nor();
 			vecToTarget.scl(-Float.MAX_VALUE);
 			entity.moveTowards(vecToTarget);
@@ -74,7 +74,7 @@ public enum TestState implements State<AIControlledEntity<?>> {
 				}
 				
 				//Kann nicht angreifen also näher ran gehen
-				entity.moveTowards(target.getPositionComp().pos);
+				entity.moveTowards(target.getTransformComp().pos);
 			}
 		}
 		

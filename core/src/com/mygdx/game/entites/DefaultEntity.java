@@ -108,7 +108,7 @@ public class DefaultEntity<VISUAL extends Visual> extends Entity implements Disp
 		return (int) Math.floor((velocityComp.vel.angle()+degreeOffset) / (360f/directions));
 	}
 
-	public TrasformationComp getPositionComp() {
+	public TrasformationComp getTransformComp() {
 		return transformComp;
 	}
 

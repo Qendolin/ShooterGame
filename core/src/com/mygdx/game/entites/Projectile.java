@@ -29,7 +29,7 @@ public class Projectile extends DamageArea implements Disposable {
 	public Entity source;
 	
 	public Projectile(World world, Engine engine, Entity source, Vector2 pos, Visual visual, Vector2 velocity, float rotation, float damage, float timeoutInSec) {
-		super(world, engine, pos, damage, 1, Collision.PROJECTILE, (short) (Collision.PROJECTILE ^ Const.Collision.ALL), 4f);
+		super(world, engine, pos, 0, 1, damage, 1, Collision.PROJECTILE, (short) (Collision.PROJECTILE ^ Const.Collision.ALL), 4f);
 		damageComp = new DamageComp(damage);
 		add(damageComp);
 		add(new TimeoutComp(engine, timeoutInSec, new EventListener() {

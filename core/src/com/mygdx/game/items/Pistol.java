@@ -32,7 +32,7 @@ public class Pistol extends Gun {
 					getOwnerCenter(),
 					new SpriteVis(shotSprite),
 					getProjectileVelocityTowards(new Vector2(mousePos.x, mousePos.y), true),
-					new Vector2(mousePos.x, mousePos.y).sub(owner.getPositionComp().pos).angle(),
+					new Vector2(mousePos.x, mousePos.y).sub(owner.getTransformComp().pos).angle(),
 					2, 5000/bulletSpeed);
 			
 			engine.addEntity(shot);

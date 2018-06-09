@@ -58,7 +58,7 @@ public class HealthBar extends Entity implements Disposable {
 	}
 	
 	public void setBarPrecent(float precent) {
-		bar.get().setScale(precent, bar.get().getScaleY());
+		bar.get().setScale(Math.min(1, Math.max(0, precent)), bar.get().getScaleY());
 	}
 
 	@Override
