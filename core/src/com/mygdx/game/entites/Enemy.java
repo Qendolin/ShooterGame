@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -63,8 +64,8 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 		add(bodyComp);
 		updateComp = new UpdateEventComp(new UpdateListener() {
 			@Override
-			public void onUpdate(World world, Engine engine, Camera cam) {
-				update(world, cam, engine);
+			public void onUpdate(World world, Engine engine, Camera cam, AssetManager assets) {
+				update(world, cam, engine, assets);
 			}
 		});
 		add(updateComp);
@@ -93,7 +94,7 @@ public class Enemy extends AIControlledEntity<SpriteSheetVis> {
 		
 	}
 
-	public void update(World world, Camera cam, Engine engine) {
+	public void update(World world, Camera cam, Engine engine, AssetManager assets) {
 		/*
 		 * Das wird alles duch die state machine gesteuert werden
 		 */

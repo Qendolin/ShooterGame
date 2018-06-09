@@ -3,6 +3,7 @@ package com.mygdx.game.items;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.entites.Projectile;
 import com.mygdx.game.entityComponents.visuals.SpriteVis;
+import com.mygdx.game.utils.Const.Paths;
 
 public class Shotgun extends Gun {
 
@@ -19,7 +21,7 @@ public class Shotgun extends Gun {
 	}
 
 	@Override
-	protected boolean tryShoot(World world, Engine engine, Camera cam) {
+	protected boolean tryShoot(World world, Engine engine, Camera cam, AssetManager assets) {
 		if(owner == null)
 			return false;
 		
@@ -27,7 +29,7 @@ public class Shotgun extends Gun {
 			Vector3 mousePos = cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 			
 			for(int i = 0; i < 5; i++) {
-				Sprite shotSprite = new Sprite(new Texture("schrot.png"));
+				Sprite shotSprite = new Sprite(assets.get(Paths.SPRITES+"schrot.png", Texture.class));
 				shotSprite.setSize(25f, 25f);
 				//Das projektiel fliegt zwischen 100 und 130 units
 				Projectile shot = new Projectile(world, engine, owner,

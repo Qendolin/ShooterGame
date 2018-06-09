@@ -2,6 +2,8 @@ package com.mygdx.game.entites;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
@@ -16,6 +18,7 @@ import com.mygdx.game.entityComponents.visuals.CompositeVis;
 import com.mygdx.game.entityComponents.visuals.SpriteVis;
 import com.mygdx.game.entityComponents.visuals.Visual;
 import com.mygdx.game.entityComponents.visuals.VisualNameGroup;
+import com.mygdx.game.utils.Const.Paths;
 import com.mygdx.game.utils.Const.RenderLayer;
 
 import javafx.beans.value.ChangeListener;
@@ -29,7 +32,7 @@ public class HealthBar extends Entity implements Disposable {
 	public Vector2 offset;
 	private UpdateEventComp updateComp = new UpdateEventComp(new UpdateListener() {
 		@Override
-		public void onUpdate(World world, Engine engine, Camera cam) {
+		public void onUpdate(World world, Engine engine, Camera cam, AssetManager assets) {
 			barPosition.pos = new Vector2(trackingPosition.pos).add(offset);
 		}
 	});
@@ -42,9 +45,9 @@ public class HealthBar extends Entity implements Disposable {
 		add(barPosition);
 		this.offset = offset;
 		add(updateComp);
-		visualComp = new VisualComp<CompositeVis>(new CompositeVis(new VisualNameGroup("hpBack", new SpriteVis(new Texture("HBBackground.png"))), 
-				new VisualNameGroup("hpMid", new SpriteVis(new Texture("HBMidground.png"))),
-				new VisualNameGroup("hpFront", new SpriteVis(new Texture("HBForeground.png")))));
+		visualComp = new VisualComp<CompositeVis>(new CompositeVis(new VisualNameGroup("hpBack", new SpriteVis(new Texture(Gdx.files.internal(Paths.SPRITES+"HBBackground.png")))), 
+				new VisualNameGroup("hpMid", new SpriteVis(new Texture(Gdx.files.internal(Paths.SPRITES+"HBMidground.png")))),
+				new VisualNameGroup("hpFront", new SpriteVis(new Texture(Gdx.files.internal(Paths.SPRITES+"HBForeground.png"))))));
 		visualComp.visual.renderLayer = RenderLayer.WINDOW_UI;
 		add(visualComp);
 		trackingHealth.health.addListener(new ChangeListener<Number>() {

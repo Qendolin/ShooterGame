@@ -19,8 +19,6 @@ public class ShooterGame extends Game {
 	
 	public SpriteBatch batch;
 	public Engine engine;
-	//TODO: AssetManager
-	public AssetManager assetManager = new AssetManager();
 	public BitmapFont font;
 
 	

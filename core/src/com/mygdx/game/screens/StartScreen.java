@@ -51,7 +51,7 @@ public class StartScreen implements Screen {
 		game.batch.end();
 
 		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-			game.setScreen(new GameScreen(game));
+			new GameScreen(game);
 			dispose();
 		}
 	}

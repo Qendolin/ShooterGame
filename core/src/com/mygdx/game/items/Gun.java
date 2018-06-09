@@ -1,6 +1,7 @@
 package com.mygdx.game.items;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -46,7 +47,7 @@ public abstract class Gun extends Item {
 	}
 	
 	@Override
-	public void update(World world, Engine engine, Camera cam) {
+	public void update(World world, Engine engine, Camera cam, AssetManager assets) {
 		
 		if(isEmpty())
 			return;
@@ -63,7 +64,7 @@ public abstract class Gun extends Item {
 			cooldown = false;
 		
 		if(!reloading && !cooldown) {
-			if(tryShoot(world, engine, cam)) {
+			if(tryShoot(world, engine, cam, assets)) {
 				magAmmo--;
 				if(magAmmo == 0) {
 					reloading = true;
@@ -87,7 +88,7 @@ public abstract class Gun extends Item {
 		System.out.println(name + ": " + magAmmo+"/"+magSize + " ("+ammo+"/"+maxAmmo+") "+status);
 	}
 	
-	protected abstract boolean tryShoot(World world, Engine engine, Camera cam);
+	protected abstract boolean tryShoot(World world, Engine engine, Camera cam, AssetManager assets);
 	
 	protected Vector2 getOwnerCenter() {
 		return new Vector2(owner.getTransformComp().pos);

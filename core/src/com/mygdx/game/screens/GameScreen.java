@@ -1,8 +1,6 @@
 package com.mygdx.game.screens;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -11,22 +9,27 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
+import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -35,9 +38,14 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntIntMap;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.ShooterGame;
 import com.mygdx.game.engineSystems.MovementSystem;
 import com.mygdx.game.engineSystems.PhysicSystem;
@@ -53,11 +61,10 @@ import com.mygdx.game.entityComponents.misc.BodyDeleteFlag;
 import com.mygdx.game.entityComponents.misc.CollisionEntityConnection;
 import com.mygdx.game.entityComponents.visuals.SpriteSheetSpriteGroup;
 import com.mygdx.game.entityComponents.visuals.SpriteSheetVis;
-import com.mygdx.game.items.Pistol;
 import com.mygdx.game.map.MapPreparer;
-import com.mygdx.game.utils.BodyFactory;
 import com.mygdx.game.utils.Const;
 import com.mygdx.game.utils.EnemyFactory;
+import com.mygdx.game.utils.Const.Paths;
 import com.mygdx.game.utils.Const.RenderLayer;
 
 public class GameScreen implements Screen{
@@ -71,6 +78,10 @@ public class GameScreen implements Screen{
 	private PhysicSystem physSys;
 	private MapRenderer mapRenderer;
 	private TiledMap map;
+	private Stage stage;
+	public AssetManager assets = new AssetManager();
+	
+	private boolean preInit = false;
 	
 	@SuppressWarnings("rawtypes")
 	private ComponentMapper<VisualComp> rm = ComponentMapper.getFor(VisualComp.class);
@@ -78,10 +89,44 @@ public class GameScreen implements Screen{
 
 	public GameScreen(final ShooterGame game) {
 		this.game = game;
+		preInit = true;
+		loadAssets();
+	}
+	
+	public void loadAssets() {
+		FileHandleResolver resolver = new InternalFileHandleResolver();
+		assets.setLoader(Texture.class, new TextureLoader(resolver));
+		assets.setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
+		assets.setLoader(Skin.class, new SkinLoader(resolver));
+		assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
+		assets.load(Paths.SPRITES+"george.png", Texture.class);
+		assets.load(Paths.SPRITES+"bahamut.png", Texture.class);
+		assets.load(Paths.SPRITES+"bullet.png", Texture.class);
+		assets.load(Paths.SPRITES+"schrot.png", Texture.class);
+		assets.load(Paths.SKINS+"default/uiskin.atlas", TextureAtlas.class);
+
+		try {
+			game.setScreen(new LoadingScreen(game, assets, GameScreen.class.getConstructor(ShooterGame.class, AssetManager.class)));
+		} catch (NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public GameScreen(ShooterGame game, AssetManager assets) {
+		this.game = game;
+		this.assets = assets;
+		preInit = false;
 		
-		Texture playerSpriteSheet = new Texture("george.png");
-		Texture enemySpriteSheet = new Texture("bahamut.png");
+		for(String name : assets.getAssetNames())
+			System.out.println("Loaded Asset: "+name);
 		
+		initEssentials();
+		initMap();
+		initUI();
+		
+	}
+	
+	public void initEssentials() {
 		cam = new OrthographicCamera(Gdx.graphics.getWidth()*1.25f, Gdx.graphics.getHeight()*1.25f);
 		cam.position.x = Gdx.graphics.getWidth()/2; 
 		cam.position.y = Gdx.graphics.getHeight()/2;
@@ -119,14 +164,20 @@ public class GameScreen implements Screen{
 		
 		game.engine = new Engine();
 		game.engine.addSystem(moveSys);
-		UpdateSystem updateSys = new UpdateSystem(world, game.engine, cam);
+		UpdateSystem updateSys = new UpdateSystem(world, game.engine, cam, assets);
 		game.engine.addSystem(updateSys);
 		physSys = new PhysicSystem(world);
 		game.engine.addSystem(physSys);
 		
-		//BodyFactory.createBorder(world, new Vector2(), 1000, 1000);
-		
 		physicDebugRenderer = new Box2DDebugRenderer();
+	}
+	
+	public void initMap() {
+		//BodyFactory.createBorder(world, new Vector2(), 1000, 1000);
+		Texture playerSpriteSheet = assets.get(Paths.SPRITES+"george.png", Texture.class);
+		Texture enemySpriteSheet = assets.get(Paths.SPRITES+"bahamut.png", Texture.class);
+		
+		
 		
 		player = new Player(world, game.engine, new Vector2(0,0), new SpriteSheetVis(playerSpriteSheet, 4, 4, true, new SpriteSheetSpriteGroup(0, 3, 0.1f, Player.ANIM_WALK_DOWN), 
 																			   new SpriteSheetSpriteGroup(4, 7, 0.1f, Player.ANIM_WALK_LEFT),
@@ -152,11 +203,20 @@ public class GameScreen implements Screen{
 		MapPreparer.prepare(map, world, new Vector2());
 		mapRenderer = new OrthogonalTiledMapRenderer(map, 1);
 	}
+	
+	public void initUI() {
+		Skin skin = new Skin(Gdx.files.internal(Paths.SKINS+"default/uiskin.json"), assets.get(Paths.SKINS+"default/uiskin.atlas", TextureAtlas.class));
+		stage = new Stage(new ScreenViewport());
+		stage.addActor(new Label("UI Text", skin));
+		stage.addActor(new TextButton("UI Button", skin));
+		Gdx.input.setInputProcessor(stage);
+	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
+		world.dispose();
+		stage.dispose();
+		assets.dispose();
 	}
 
 	@Override
@@ -173,6 +233,17 @@ public class GameScreen implements Screen{
 
 	@Override
 	public void render(float delta) {
+		if(preInit) return;
+		
+		updateGame(delta);
+		
+		Gdx.gl.glClearColor(1, 1, 1, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		renderGame(delta);
+		renderUI(delta);
+	}
+	
+	public void updateGame(float delta) {
 		if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) //Space drücken stoppt alle bewegeung
 			moveSys.setProcessing(false);
 		else if(!moveSys.checkProcessing())
@@ -194,9 +265,14 @@ public class GameScreen implements Screen{
 		cam.position.x = player.getTransformComp().pos.x;
 		cam.position.y = player.getTransformComp().pos.y;
 		cam.update();
-		
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	}
+	
+	public void renderUI(float delta) {
+		stage.act(delta);
+		stage.draw();
+	}
+	
+	public void renderGame(float delta) {
 		
 		//Map rendern
 		mapRenderer.setView(cam);
@@ -243,7 +319,6 @@ public class GameScreen implements Screen{
 		Matrix4 physicMVMatrix = cam.combined.cpy();
 		physicMVMatrix.scl(Const.METER_TO_PIXEL_RATIO);
 		physicDebugRenderer.render(world, physicMVMatrix);
-		
 	}
 	
 	private void deleteBodies() {
@@ -257,9 +332,10 @@ public class GameScreen implements Screen{
 	}
 
 	@Override
-	public void resize(int x, int y) {
-		// TODO Auto-generated method stub
+	public void resize(int width, int height) {
+		if(preInit) return;
 		
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override

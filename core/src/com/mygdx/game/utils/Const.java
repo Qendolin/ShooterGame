@@ -1,5 +1,7 @@
 package com.mygdx.game.utils;
 
+import com.mygdx.game.entityComponents.visuals.SpriteSheetSpriteGroup;
+
 /**
  * Diese Klasse ist da um konstanten zu deffinieren
  */
@@ -52,6 +54,12 @@ public class Const {
 		public static final String PHYSIC = "Physic";
 		public static final String RENDERING = "Rendering";
 		public static final String MISC = "Misc";
+	}
+	
+	public static class Paths {
+		public static final String SPRITES = "./sprites/";
+		public static final String MAPS = "./maps/";
+		public static final String SKINS = "./skins/";
 	}
 	
 	public static class RenderLayer {

@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -61,8 +62,8 @@ public class Player extends DefaultEntity<SpriteSheetVis> {
 		engine.addEntity(healthBar);
 		updateComp = new UpdateEventComp(new UpdateListener() {
 			@Override
-			public void onUpdate(World world, Engine engine, Camera cam) {
-				update(world, cam, engine);
+			public void onUpdate(World world, Engine engine, Camera cam, AssetManager assets) {
+				update(world, cam, engine, assets);
 			}});
 		add(updateComp);
 		
@@ -91,7 +92,7 @@ public class Player extends DefaultEntity<SpriteSheetVis> {
 		return running;
 	}
 	
-	public void update(World world, Camera cam, Engine engine) {
+	public void update(World world, Camera cam, Engine engine, AssetManager assets) {
 		//Movemente
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
@@ -154,7 +155,7 @@ public class Player extends DefaultEntity<SpriteSheetVis> {
 		
 		//Item
 		if(item != null)
-			item.update(world, engine, cam);
+			item.update(world, engine, cam, assets);
 	}
 	
 	public static ArrayList<Player> getAllPlayers(){

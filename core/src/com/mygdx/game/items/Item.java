@@ -1,6 +1,7 @@
 package com.mygdx.game.items;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.entites.DefaultEntity;
@@ -19,6 +20,6 @@ public abstract class Item {
 		this.owner = owner;
 	}
 	
-	public abstract void update(World world, Engine engine, Camera cam);
+	public abstract void update(World world, Engine engine, Camera cam, AssetManager assets);
 	
 }
