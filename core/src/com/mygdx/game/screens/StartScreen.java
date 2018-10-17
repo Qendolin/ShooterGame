@@ -8,16 +8,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.mygdx.game.ShooterGame;
 
-/**
- * StartScreen kontrolliert das, was angezeigt wird sobald das Fenster da ist.
- * In dem Fall einfach nur text.
- */
 public class StartScreen implements Screen {
 
-	private final ShooterGame game = ShooterGame.instance;
+	private final ShooterGame game;
 	private OrthographicCamera cam;
 	
-	public StartScreen() {
+	public StartScreen(final ShooterGame game) {
+		this.game = game;
 		cam = new OrthographicCamera();
 		cam.setToOrtho(false, 800, 480);
 	}
@@ -53,12 +50,8 @@ public class StartScreen implements Screen {
 		game.font.draw(game.batch, "Klicke irgendwo um zu beginnen!", 100, 100);
 		game.batch.end();
 
-		/**
-		 * Sobald der User die linke Maustaste drückt wird das Spiel gestarten. Dazu muss der Screen auf den Game Screen geändert werden.
-		 * In diesem fall wird der Screen nur erzeugt und nicht "Angewant" da der GameScreen den Screen gleich auf Einen Loading Screen ändert
-		 */
 		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-			new GameScreen();
+			new GameScreen(game);
 			dispose();
 		}
 	}
