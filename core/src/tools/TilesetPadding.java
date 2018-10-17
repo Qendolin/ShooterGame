@@ -8,6 +8,9 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
+/**
+ * Fügt Padding zwischen Tiles ein um flackernde Lienien zwischen Tiles zu vermeiden
+ */
 public class TilesetPadding {
 	public static void main(String args[])throws IOException{
 	    BufferedImage img = null;

@@ -13,6 +13,9 @@ import com.mygdx.game.entityComponents.TrasformationComp;
 import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.utils.Const;
 
+/**
+ * Bewegt entities
+ */
 public class MovementSystem extends EntitySystem {
 	private ImmutableArray<Entity> entities;
 
@@ -21,6 +24,7 @@ public class MovementSystem extends EntitySystem {
 	private ComponentMapper<TrasformationComp> tm = ComponentMapper.getFor(TrasformationComp.class);
 
 	public MovementSystem() {
+		//50 ist die Updatepriorität
 		super(50); //After physics
 	}
 
