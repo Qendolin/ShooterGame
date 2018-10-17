@@ -69,7 +69,7 @@ import com.mygdx.game.utils.Const.RenderLayer;
 
 public class GameScreen implements Screen{
 	
-	private final ShooterGame game = ShooterGame.instance;
+	private final ShooterGame game;
 	private Player player;
 	private OrthographicCamera cam;
 	private World world;
@@ -87,23 +87,14 @@ public class GameScreen implements Screen{
 	private ComponentMapper<VisualComp> rm = ComponentMapper.getFor(VisualComp.class);
 	private ComponentMapper<TrasformationComp> pm = ComponentMapper.getFor(TrasformationComp.class);
 
-	/**
-	 * Konstruktor zum Initalisieren eines GameScreens.
-	 * Es müssen noch Assets geladen werden deswegen wird der Screen auf einen LoadingScreen gesetzt und wieder zurück auf einden GameScreen sobald die Assets geladen haben.
-	 */
-	public GameScreen() {
+	public GameScreen(final ShooterGame game) {
+		this.game = game;
 		preInit = true;
 		loadAssets();
 	}
 	
-	/**
-	 * Hier werden die Asset loader Konfiguriert und Festgelegt welche Assets geladen werden sollen.
-	 */
 	public void loadAssets() {
 		FileHandleResolver resolver = new InternalFileHandleResolver();
-		/**
-		 * Assets.setLoader(Typ, Loader): Setzt einen Loader für einen bestimmten Datentyp
-		 */
 		assets.setLoader(Texture.class, new TextureLoader(resolver));
 		assets.setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
 		assets.setLoader(Skin.class, new SkinLoader(resolver));
@@ -115,50 +106,31 @@ public class GameScreen implements Screen{
 		assets.load(Paths.SKINS+"default/uiskin.atlas", TextureAtlas.class);
 
 		try {
-			/**
-			 * Screen wird auf einen LoadingScreen gesetzt, der den Fortschritt anzeigt und dann den Festgelegten Konstruktor aufruft.
-			 */
-			game.setScreen(new LoadingScreen(assets, GameScreen.class.getConstructor(AssetManager.class)));
+			game.setScreen(new LoadingScreen(game, assets, GameScreen.class.getConstructor(ShooterGame.class, AssetManager.class)));
 		} catch (NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	/**
-	 * Dieser Konstruktor wird nach GameScreen() aufgerufen, sobald die Assets geladen haben.
-	 * @param assets - Die geladenen assets
-	 */
-	public GameScreen(AssetManager assets) {
+	public GameScreen(ShooterGame game, AssetManager assets) {
+		this.game = game;
 		this.assets = assets;
 		preInit = false;
 		
 		for(String name : assets.getAssetNames())
 			System.out.println("Loaded Asset: "+name);
 		
-		/**
-		 * Initialisiert zeugs
-		 */
 		initEssentials();
 		initMap();
 		initUI();
 		
 	}
 	
-	/**
-	 * Initialisiert sehr wichtige dinge die unbedingt gebraucht werden
-	 */
 	public void initEssentials() {
-		/**
-		 * Erstellt einen neue Orthographische Kamera. D. h. ohne Perspektive
-		 */
 		cam = new OrthographicCamera(Gdx.graphics.getWidth()*1.25f, Gdx.graphics.getHeight()*1.25f);
 		cam.position.x = Gdx.graphics.getWidth()/2; 
 		cam.position.y = Gdx.graphics.getHeight()/2;
 		
-		/**
-		 * Erstellt die Welt für die Physic engine.
-		 * Setzt einen ContactListener der bei Kollisionen ausgeführt wird
-		 */
 		world = new World(new Vector2(), false);
 		world.setContactListener(new ContactListener() {
 			
@@ -174,9 +146,6 @@ public class GameScreen implements Screen{
 			public void endContact(Contact contact) {
 			}
 			
-			/**
-			 * Benachrichtigt zwei Bodys dass sie zusammengestoßen sind
-			 */
 			@Override
 			public void beginContact(Contact contact) {
 				Fixture fixA = contact.getFixtureA();
@@ -193,9 +162,6 @@ public class GameScreen implements Screen{
 			}
 		});
 		
-		/**
-		 * Erstellt die Engine die für die Entitysysteme zuständig ist. Z. B.: Sprite und Body synchroniseren, Velocity, Updates, ...
-		 */
 		game.engine = new Engine();
 		game.engine.addSystem(moveSys);
 		UpdateSystem updateSys = new UpdateSystem(world, game.engine, cam, assets);
@@ -206,9 +172,6 @@ public class GameScreen implements Screen{
 		physicDebugRenderer = new Box2DDebugRenderer();
 	}
 	
-	/**
-	 * Initialisiert die Map
-	 */
 	public void initMap() {
 		//BodyFactory.createBorder(world, new Vector2(), 1000, 1000);
 		Texture playerSpriteSheet = assets.get(Paths.SPRITES+"george.png", Texture.class);
@@ -241,9 +204,6 @@ public class GameScreen implements Screen{
 		mapRenderer = new OrthogonalTiledMapRenderer(map, 1);
 	}
 	
-	/**
-	 * Initialisiert das UI
-	 */
 	public void initUI() {
 		Skin skin = new Skin(Gdx.files.internal(Paths.SKINS+"default/uiskin.json"), assets.get(Paths.SKINS+"default/uiskin.atlas", TextureAtlas.class));
 		stage = new Stage(new ScreenViewport());
@@ -273,13 +233,10 @@ public class GameScreen implements Screen{
 
 	@Override
 	public void render(float delta) {
-		//Überprüft ob das Spiel schon initialisert wurde. (Assets geladen)
 		if(preInit) return;
 		
-		//Updated das Spiel
 		updateGame(delta);
 		
-		//Rendert alles
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		renderGame(delta);
@@ -287,7 +244,7 @@ public class GameScreen implements Screen{
 	}
 	
 	public void updateGame(float delta) {
-		if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) //Space drücken stoppt alle bewegungsupdates
+		if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) //Space drücken stoppt alle bewegeung
 			moveSys.setProcessing(false);
 		else if(!moveSys.checkProcessing())
 			moveSys.setProcessing(true);
@@ -340,15 +297,15 @@ public class GameScreen implements Screen{
 				if(sprite == null)
 					continue;
 				Vector2 pos = pm.get(renderable).pos;
-				//Positioniert die Sprites dort wo ihre Bodies sind
+				//Zentrieren
 				sprite.setPosition(pos.x-sprite.getWidth()/2f, pos.y-sprite.getHeight()/2f);
-				if(bodyComp != null && bodyComp.getBody() != null) //Dreht sprites in die richtung der Bodies
+				if(bodyComp != null && bodyComp.getBody() != null)
 					sprite.setRotation((float) Math.toDegrees(bodyComp.getBody().getAngle()));
+//				sprite.draw(batch);
 				sorted[visualComp.visual.renderLayer-RenderLayer.MIN].add(sprite);
 			}
 		}
 		
-		//Sprites rendern
 		game.batch.setProjectionMatrix(cam.combined);
 		game.batch.begin();
 		for(int i = 0; i <= RenderLayer.MAX - RenderLayer.MIN; i++) {
@@ -364,10 +321,6 @@ public class GameScreen implements Screen{
 		physicDebugRenderer.render(world, physicMVMatrix);
 	}
 	
-	/**
-	 * Box2d lässt es nicht zu dass man Bodies löscht während die Welt sich updated.
-	 * Deswegen markieren wir sie dass sie gelöscht gehören und löschen sie nach dem Welt-Update.
-	 */
 	private void deleteBodies() {
 		Array<Body> bodies = new Array<Body>(world.getBodyCount());
 		world.getBodies(bodies);
@@ -378,9 +331,6 @@ public class GameScreen implements Screen{
 		}
 	}
 
-	/**
-	 * Ändert die größe der angezeigten Fläche
-	 */
 	@Override
 	public void resize(int width, int height) {
 		if(preInit) return;

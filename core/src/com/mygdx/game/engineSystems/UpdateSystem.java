@@ -11,9 +11,6 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.entityComponents.UpdateEventComp;
 
-/**
- * Updates Update event listeners
- */
 public class UpdateSystem extends EntitySystem {
 	private ImmutableArray<Entity> entities;
 	private World world;
