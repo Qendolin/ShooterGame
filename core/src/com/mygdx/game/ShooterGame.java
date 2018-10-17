@@ -16,29 +16,14 @@ import com.mygdx.game.screens.StartScreen;
 
 public class ShooterGame extends Game {
 	
-	public static ShooterGame instance;
 	
 	public SpriteBatch batch;
 	public Engine engine;
 	public BitmapFont font;
 
 	
-	/**
-	 * Verschiedens:
-	 * Asset Manager - Lädt und bietet einfachen zugriff auf Assets
-	 * ComponentMapper - Eine Hiflsklasse die schnell Entity Components (z.B.: Position, Geschwindigkeit, ...) findet
-	 * Body - Ein Collider, ein Physikobjekt
-	 * Entity - Eine von Ashley gemanagte Klasse/Objekt. In unserem Fall meißtens etwas das angezeigt Wird 
-	 */
-	
-	/**
-	 * Hier beginnt alles. Die Instanz wird in DesktopLauncher.java erzeugt dann wird diese Methode aufgerufen.
-	 * Es werden ein paar Dinge festegleng (font, batch) die eig. in jedem Screen benötigt werden.
-	 * Dann wird der Screen auf StartScreen gesetzt.
-	 */
 	@Override
 	public void create () {
-		ShooterGame.instance = this;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		Gdx.graphics.setWindowedMode(1600/2, 900/2);
 		
@@ -46,7 +31,7 @@ public class ShooterGame extends Game {
 		
 		batch = new SpriteBatch();
 		
-		setScreen(new StartScreen());
+		setScreen(new StartScreen(this));
 	}
 
 	@Override
@@ -55,9 +40,6 @@ public class ShooterGame extends Game {
 		Gdx.graphics.setTitle("FPS: "+Gdx.graphics.getFramesPerSecond());
 	}
 
-	/**
-	 * Dispose wird aufgerufen wenn das Spiel beendet wird
-	 */
 	@Override
 	public void dispose () {
 		batch.dispose();

@@ -8,10 +8,6 @@ import com.mygdx.game.entites.DamageArea;
 import com.mygdx.game.entites.Enemy;
 import com.mygdx.game.utils.Const.Collision;
 
-/**
- * @Deprecated - NICHT VERWENDEN! Brauche ersatz
- */
-@Deprecated
 public class Actions{
 
 	public static final Attack BEAM = new Attack(10, 1.5f, 250) {
@@ -21,7 +17,7 @@ public class Actions{
 			// TODO Auto-generated method stub
 			
 			if(begin) {
-				DamageArea beam = new DamageArea(world, engine, enemy.getTransformComp().pos, 0, 1, 30, Integer.MAX_VALUE, Collision.ALL, Collision.ATTACKABLE, 10, 10);
+				//DamageArea beam = new DamageArea(world, engine, enemy.getTransformComp().pos, 0, 1, 30, Integer.MAX_VALUE, Collision.ALL, Collision.ATTACKABLE, 10, 10);
 			}
 				
 			return true;
