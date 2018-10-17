@@ -15,13 +15,16 @@ import com.mygdx.game.entityComponents.UpdateEventComp;
 import com.mygdx.game.entityComponents.VelocityComp;
 import com.mygdx.game.utils.Const;
 
+/**
+ * Positioniert Entities an ihren Bodies
+ */
 public class PhysicSystem extends EntitySystem {
 	private ImmutableArray<Entity> entities;
 	private World world;
 	
 	private ComponentMapper<BodyComp> bm = ComponentMapper.getFor(BodyComp.class);
 	private ComponentMapper<TrasformationComp> pm = ComponentMapper.getFor(TrasformationComp.class);
-	
+
 	public PhysicSystem(World world) {
 		super(40);//Before movement
 		this.world = world;

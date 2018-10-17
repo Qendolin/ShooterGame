@@ -4,6 +4,10 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.entites.Enemy;
 
+/**
+ * @Deprecated - NICHT VERWENDEN! Brauche ersatz
+ */
+@Deprecated
 public abstract class Action {
 
 	/**

@@ -14,6 +14,11 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.mygdx.game.utils.BodyFactory;
 import com.mygdx.game.utils.Const;
 
+/**
+ * Ein kleiner Parser der Maps an unsere Bedürfnisse anpasst.
+ * 
+ * Erstellt Bodies für Objekte im Collision layer und Zentriert die Map
+ */
 public class MapPreparer {
 
 	public static void prepare(TiledMap map, World world, Vector2 spawnOffset) {
@@ -24,6 +29,7 @@ public class MapPreparer {
 		while(layerIterator.hasNext()) {
 			MapLayer layer = layerIterator.next();
 			if(layer.getParent() != null) continue;
+			//TODO fix spawn offset
 			layer.setOffsetX(layer.getOffsetX()-spawnX-spawnOffset.x);
 			layer.setOffsetY(layer.getOffsetY()+spawnY/2+spawnOffset.y);
 		}
