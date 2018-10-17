@@ -14,6 +14,10 @@ import com.mygdx.game.entites.Projectile;
 import com.mygdx.game.entityComponents.visuals.SpriteVis;
 import com.mygdx.game.utils.Const.Paths;
 
+/**
+ * @deprecated NICHT VERWENDEN! Klassen für Waffen werden durch einfache Datein (JSON / XML) ersetzt
+ */
+@Deprecated
 public class MachineGun extends Gun {
 
 	public MachineGun() {

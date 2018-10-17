@@ -24,15 +24,20 @@ import com.mygdx.game.utils.Const.Paths;
 
 public class LoadingScreen implements com.badlogic.gdx.Screen {
 
+	public final ShooterGame game = ShooterGame.instance;;
 	public AssetManager assets;
-	public ShooterGame game;
 	public Constructor<? extends Screen> nextScreen;
 	private ProgressBar bar;
 	private Stage stage;
-	
-	public LoadingScreen(ShooterGame game, AssetManager assets, Constructor<? extends Screen> constructor) {
+
+	/**
+	 * @param assets - Die Assets die geladen werden
+	 * @param constructor - Der Konstruktor der aufgerufen wird sobald die Assets geladen sind.
+	 * 
+	 * Erstellt eine neue Fortschrittsanzeige
+	 */
+	public LoadingScreen(AssetManager assets, Constructor<? extends Screen> constructor) {
 		this.assets = assets;
-		this.game = game;
 		this.nextScreen = constructor;
 		
 		stage = new Stage(new ScreenViewport());
@@ -71,11 +76,15 @@ public class LoadingScreen implements com.badlogic.gdx.Screen {
 
 	}
 
+	/**
+	 * Updated die Fortschrittsanzeige bis assets.update() true returned. Dies passiert wenn die Assets geladen wurden.
+	 * Dann wird der Festegelegt Konstruktor aufgrufen. (z.B. GameScreen(assets)
+	 */
 	@Override
 	public void render(float delta) {
 		if(assets.update()) {
 			try {
-				game.setScreen(nextScreen.newInstance(new Object[] {game, assets}));
+				game.setScreen(nextScreen.newInstance(new Object[] {assets}));
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException e) {
 				// TODO Auto-generated catch block
