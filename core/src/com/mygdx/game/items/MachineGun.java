@@ -28,7 +28,6 @@ public class MachineGun extends Gun {
 	protected boolean tryShoot(World world, Engine engine, Camera cam, AssetManager assets) {
 		if(owner == null)
 			return false;
-		
 
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
 			Vector3 mousePos = cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));

@@ -6,10 +6,9 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
-public abstract class Gun extends Item {
+public abstract class Gun extends Item<GunAttribs> {
 	
 	protected float reloadTime;
-	protected int ammo;
 	protected int magAmmo;
 	protected int maxAmmo;
 	protected int magSize;
@@ -17,9 +16,11 @@ public abstract class Gun extends Item {
 	protected boolean auto;
 	protected float bulletSpeed;
 	protected float spread;
+	
 	private double miscTimer;
 	private boolean reloading;
 	private boolean cooldown;
+	protected int ammo;
 	
 	/**
 	 * 
@@ -45,6 +46,10 @@ public abstract class Gun extends Item {
 		this.spread = spread;
 		magAmmo = Math.min(magSize, ammo);
 	}
+	
+	/*public public Gun() {
+		super(new GunAttribs)
+	}*/
 	
 	@Override
 	public void update(World world, Engine engine, Camera cam, AssetManager assets) {
