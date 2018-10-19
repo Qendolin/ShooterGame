@@ -11,5 +11,10 @@
 	<classpathentry kind="lib" path="libs/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.9.8/d92b5b8beab10e3b3c0dd836d4fc186f95e7ea4b/gdx-freetype-1.9.8.jar" sourcepath="/libs/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.9.8/a16774d14a95c8e45b9ae4cd3f2d7450fa1f7c94/gdx-freetype-1.9.8-sources.jar"/>
 	<classpathentry kind="lib" path="libs/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers/1.9.8/8cdc9ab6826a74594c3b0084d8a7669f8124592b/gdx-controllers-1.9.8.jar" sourcepath="/libs/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers/1.9.8/5be4e61f2a04718e82f5fecbaffeff0035021902/gdx-controllers-1.9.8-sources.jar"/>
 	<classpathentry kind="lib" path="libs/modules-2/files-2.1/com.badlogicgames.gdx/gdx-tools/1.9.8/5c32820fccee957cc77990d353297ceed1a63159/gdx-tools-1.9.8.jar" sourcepath="libs/modules-2/files-2.1/com.badlogicgames.gdx/gdx-tools/1.9.8/6c7486ec4bf38d3a632455638356f6e85c97f437/gdx-tools-1.9.8-sources.jar"/>
+	<classpathentry kind="lib" path="libs/gson/gson-2.8.2.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/ShooterGame-core/libs/gson/gson-2.8.2-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
